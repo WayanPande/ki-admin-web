@@ -4,40 +4,54 @@ import UserMenu from "@/components/user-menu";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { createFileRoute } from "@tanstack/react-router";
 import {
-	Authenticated,
-	AuthLoading,
-	Unauthenticated,
-	useQuery,
+  Authenticated,
+  AuthLoading,
+  Unauthenticated,
+  useQuery,
 } from "convex/react";
 import { useState } from "react";
+import { queryOptions } from "@tanstack/react-query";
+import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/dashboard")({
-	component: RouteComponent,
+  loader: ({ context: { queryClient } }) =>
+    queryClient.ensureQueryData(
+      queryOptions({
+        queryKey: ["posts"],
+        queryFn: async () => {
+          const response = await authClient.admin.listUsers({
+            query: {},
+          });
+          return response;
+        },
+      })
+    ),
+  component: RouteComponent,
 });
 
 function RouteComponent() {
-	const [showSignIn, setShowSignIn] = useState(false);
-	const privateData = useQuery(api.privateData.get);
+  const [showSignIn, setShowSignIn] = useState(false);
+  const privateData = useQuery(api.privateData.get);
 
-	return (
-		<>
-			<Authenticated>
-				<div>
-					<h1>Dashboard</h1>
-					<p>privateData: {privateData?.message}</p>
-					<UserMenu />
-				</div>
-			</Authenticated>
-			<Unauthenticated>
-				{showSignIn ? (
-					<SignInForm onSwitchToSignUp={() => setShowSignIn(false)} />
-				) : (
-					<SignUpForm onSwitchToSignIn={() => setShowSignIn(true)} />
-				)}
-			</Unauthenticated>
-			<AuthLoading>
-				<div>Loading...</div>
-			</AuthLoading>
-		</>
-	);
+  return (
+    <>
+      <Authenticated>
+        <div>
+          <h1>Dashboard</h1>
+          <p>privateData: {privateData?.message}</p>
+          <UserMenu />
+        </div>
+      </Authenticated>
+      <Unauthenticated>
+        {showSignIn ? (
+          <SignInForm onSwitchToSignUp={() => setShowSignIn(false)} />
+        ) : (
+          <SignUpForm onSwitchToSignIn={() => setShowSignIn(true)} />
+        )}
+      </Unauthenticated>
+      <AuthLoading>
+        <div>Loading...</div>
+      </AuthLoading>
+    </>
+  );
 }
