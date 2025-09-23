@@ -15,6 +15,7 @@ import type * as betterAuth_adapter from "../betterAuth/adapter.js";
 import type * as betterAuth_auth from "../betterAuth/auth.js";
 import type * as healthCheck from "../healthCheck.js";
 import type * as http from "../http.js";
+import type * as instansi from "../instansi.js";
 import type * as privateData from "../privateData.js";
 import type * as todos from "../todos.js";
 
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   "betterAuth/auth": typeof betterAuth_auth;
   healthCheck: typeof healthCheck;
   http: typeof http;
+  instansi: typeof instansi;
   privateData: typeof privateData;
   todos: typeof todos;
 }>;
