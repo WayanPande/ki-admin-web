@@ -9,104 +9,180 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TodosRouteImport } from './routes/todos'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as DefaultLayoutRouteImport } from './routes/_default/_layout'
+import { Route as AuthLayoutRouteImport } from './routes/_auth/_layout'
+import { Route as DefaultLayoutIndexRouteImport } from './routes/_default/_layout/index'
+import { Route as DefaultLayoutTodosRouteImport } from './routes/_default/_layout/todos'
+import { Route as DefaultLayoutSignupRouteImport } from './routes/_default/_layout/signup'
+import { Route as DefaultLayoutLoginRouteImport } from './routes/_default/_layout/login'
+import { Route as AuthLayoutDashboardRouteImport } from './routes/_auth/_layout/dashboard'
 
-const TodosRoute = TodosRouteImport.update({
-  id: '/todos',
-  path: '/todos',
+const DefaultLayoutRoute = DefaultLayoutRouteImport.update({
+  id: '/_default/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AuthLayoutRoute = AuthLayoutRouteImport.update({
+  id: '/_auth/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
+const DefaultLayoutIndexRoute = DefaultLayoutIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DefaultLayoutRoute,
+} as any)
+const DefaultLayoutTodosRoute = DefaultLayoutTodosRouteImport.update({
+  id: '/todos',
+  path: '/todos',
+  getParentRoute: () => DefaultLayoutRoute,
+} as any)
+const DefaultLayoutSignupRoute = DefaultLayoutSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => DefaultLayoutRoute,
+} as any)
+const DefaultLayoutLoginRoute = DefaultLayoutLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => DefaultLayoutRoute,
+} as any)
+const AuthLayoutDashboardRoute = AuthLayoutDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthLayoutRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
-  '/dashboard': typeof DashboardRoute
-  '/todos': typeof TodosRoute
+  '/dashboard': typeof AuthLayoutDashboardRoute
+  '/login': typeof DefaultLayoutLoginRoute
+  '/signup': typeof DefaultLayoutSignupRoute
+  '/todos': typeof DefaultLayoutTodosRoute
+  '/': typeof DefaultLayoutIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
-  '/dashboard': typeof DashboardRoute
-  '/todos': typeof TodosRoute
+  '/dashboard': typeof AuthLayoutDashboardRoute
+  '/login': typeof DefaultLayoutLoginRoute
+  '/signup': typeof DefaultLayoutSignupRoute
+  '/todos': typeof DefaultLayoutTodosRoute
+  '/': typeof DefaultLayoutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
-  '/dashboard': typeof DashboardRoute
-  '/todos': typeof TodosRoute
+  '/_auth/_layout': typeof AuthLayoutRouteWithChildren
+  '/_default/_layout': typeof DefaultLayoutRouteWithChildren
+  '/_auth/_layout/dashboard': typeof AuthLayoutDashboardRoute
+  '/_default/_layout/login': typeof DefaultLayoutLoginRoute
+  '/_default/_layout/signup': typeof DefaultLayoutSignupRoute
+  '/_default/_layout/todos': typeof DefaultLayoutTodosRoute
+  '/_default/_layout/': typeof DefaultLayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/dashboard' | '/todos'
+  fullPaths: '/dashboard' | '/login' | '/signup' | '/todos' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/dashboard' | '/todos'
-  id: '__root__' | '/' | '/admin' | '/dashboard' | '/todos'
+  to: '/dashboard' | '/login' | '/signup' | '/todos' | '/'
+  id:
+    | '__root__'
+    | '/_auth/_layout'
+    | '/_default/_layout'
+    | '/_auth/_layout/dashboard'
+    | '/_default/_layout/login'
+    | '/_default/_layout/signup'
+    | '/_default/_layout/todos'
+    | '/_default/_layout/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
-  DashboardRoute: typeof DashboardRoute
-  TodosRoute: typeof TodosRoute
+  AuthLayoutRoute: typeof AuthLayoutRouteWithChildren
+  DefaultLayoutRoute: typeof DefaultLayoutRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/todos': {
-      id: '/todos'
-      path: '/todos'
-      fullPath: '/todos'
-      preLoaderRoute: typeof TodosRouteImport
+    '/_default/_layout': {
+      id: '/_default/_layout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof DefaultLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/_auth/_layout': {
+      id: '/_auth/_layout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
+    '/_default/_layout/': {
+      id: '/_default/_layout/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DefaultLayoutIndexRouteImport
+      parentRoute: typeof DefaultLayoutRoute
+    }
+    '/_default/_layout/todos': {
+      id: '/_default/_layout/todos'
+      path: '/todos'
+      fullPath: '/todos'
+      preLoaderRoute: typeof DefaultLayoutTodosRouteImport
+      parentRoute: typeof DefaultLayoutRoute
+    }
+    '/_default/_layout/signup': {
+      id: '/_default/_layout/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof DefaultLayoutSignupRouteImport
+      parentRoute: typeof DefaultLayoutRoute
+    }
+    '/_default/_layout/login': {
+      id: '/_default/_layout/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof DefaultLayoutLoginRouteImport
+      parentRoute: typeof DefaultLayoutRoute
+    }
+    '/_auth/_layout/dashboard': {
+      id: '/_auth/_layout/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthLayoutDashboardRouteImport
+      parentRoute: typeof AuthLayoutRoute
     }
   }
 }
 
+interface AuthLayoutRouteChildren {
+  AuthLayoutDashboardRoute: typeof AuthLayoutDashboardRoute
+}
+
+const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
+  AuthLayoutDashboardRoute: AuthLayoutDashboardRoute,
+}
+
+const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
+  AuthLayoutRouteChildren,
+)
+
+interface DefaultLayoutRouteChildren {
+  DefaultLayoutLoginRoute: typeof DefaultLayoutLoginRoute
+  DefaultLayoutSignupRoute: typeof DefaultLayoutSignupRoute
+  DefaultLayoutTodosRoute: typeof DefaultLayoutTodosRoute
+  DefaultLayoutIndexRoute: typeof DefaultLayoutIndexRoute
+}
+
+const DefaultLayoutRouteChildren: DefaultLayoutRouteChildren = {
+  DefaultLayoutLoginRoute: DefaultLayoutLoginRoute,
+  DefaultLayoutSignupRoute: DefaultLayoutSignupRoute,
+  DefaultLayoutTodosRoute: DefaultLayoutTodosRoute,
+  DefaultLayoutIndexRoute: DefaultLayoutIndexRoute,
+}
+
+const DefaultLayoutRouteWithChildren = DefaultLayoutRoute._addFileChildren(
+  DefaultLayoutRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
-  DashboardRoute: DashboardRoute,
-  TodosRoute: TodosRoute,
+  AuthLayoutRoute: AuthLayoutRouteWithChildren,
+  DefaultLayoutRoute: DefaultLayoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

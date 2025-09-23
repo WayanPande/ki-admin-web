@@ -9,13 +9,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import z from "zod";
 
-export function SignUpForm({
+export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
@@ -25,25 +25,22 @@ export function SignUpForm({
 
   const form = useForm({
     defaultValues: {
-      email: "",
-      password: "",
-      name: "",
       username: "",
+      password: "",
     },
     onSubmit: async ({ value }) => {
-      await authClient.signUp.email(
+      await authClient.signIn.username(
         {
-          email: value.email,
-          password: value.password,
-          name: value.name,
           username: value.username,
+          password: value.password,
         },
         {
-          onSuccess: () => {
+          onSuccess: async () => {
             navigate({
               to: "/dashboard",
+              replace: true,
             });
-            toast.success("Sign up successful");
+            toast.success("Sign in successful");
           },
           onError: (error) => {
             toast.error(error.error.message || error.error.statusText);
@@ -53,10 +50,8 @@ export function SignUpForm({
     },
     validators: {
       onSubmit: z.object({
-        name: z.string().min(2, "Name must be at least 2 characters"),
-        email: z.email("Invalid email address"),
+        username: z.string(),
         password: z.string().min(8, "Password must be at least 8 characters"),
-        username: z.string().min(2, "Name must be at least 2 characters"),
       }),
     },
   });
@@ -65,8 +60,8 @@ export function SignUpForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Buat Akun</CardTitle>
-          <CardDescription>Lengkapi Form Untuk Buat Akun</CardDescription>
+          <CardTitle>Login</CardTitle>
+          <CardDescription>Masukkan Username Untuk Masuk</CardDescription>
         </CardHeader>
         <CardContent>
           <form
@@ -77,50 +72,10 @@ export function SignUpForm({
             }}
           >
             <div className="flex flex-col gap-6">
-              <form.Field name="email">
-                {(field) => (
-                  <div className="grid gap-3">
-                    <Label htmlFor={field.name}>Email</Label>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type="text"
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                    {field.state.meta.errors.map((error) => (
-                      <p key={error?.message} className="text-red-500">
-                        {error?.message}
-                      </p>
-                    ))}
-                  </div>
-                )}
-              </form.Field>
               <form.Field name="username">
                 {(field) => (
                   <div className="grid gap-3">
                     <Label htmlFor={field.name}>Username</Label>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type="text"
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                    {field.state.meta.errors.map((error) => (
-                      <p key={error?.message} className="text-red-500">
-                        {error?.message}
-                      </p>
-                    ))}
-                  </div>
-                )}
-              </form.Field>
-              <form.Field name="name">
-                {(field) => (
-                  <div className="grid gap-3">
-                    <Label htmlFor={field.name}>Nama</Label>
                     <Input
                       id={field.name}
                       name={field.name}
@@ -166,10 +121,13 @@ export function SignUpForm({
                       className="w-full"
                       disabled={!state.canSubmit || state.isSubmitting}
                     >
-                      {state.isSubmitting ? "Submitting..." : "Buat Akun"}
+                      {state.isSubmitting ? "Submitting..." : "Masuk"}
                     </Button>
                   )}
                 </form.Subscribe>
+                <Button variant={"outline"}>
+                  <Link to="/signup">Daftar</Link>
+                </Button>
               </div>
             </div>
           </form>

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_default/_layout/")({
 	component: HomeComponent,
 });
 
@@ -46,5 +46,5 @@ function HomeComponent() {
 				</section>
 			</div>
 		</div>
-	);
+	)
 }

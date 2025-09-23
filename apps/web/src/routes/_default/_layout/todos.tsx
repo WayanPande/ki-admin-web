@@ -16,7 +16,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
 
-export const Route = createFileRoute("/todos")({
+export const Route = createFileRoute("/_default/_layout/todos")({
 	component: TodosRoute,
 });
 
@@ -34,15 +34,15 @@ function TodosRoute() {
 		if (!text) return;
 		await createTodo({ text });
 		setNewTodoText("");
-	};
+	}
 
 	const handleToggleTodo = (id: Id<"todos">, currentCompleted: boolean) => {
 		toggleTodo({ id, completed: !currentCompleted });
-	};
+	}
 
 	const handleDeleteTodo = (id: Id<"todos">) => {
 		deleteTodo({ id });
-	};
+	}
 
 	return (
 		<div className="mx-auto w-full max-w-md py-10">
@@ -85,10 +85,10 @@ function TodosRoute() {
 											onCheckedChange={() =>
 												handleToggleTodo(todo._id, todo.completed)
 											}
-											id={`todo-${todo._id}`}
+											id={"todo-${todo._id}"}
 										/>
 										<label
-											htmlFor={`todo-${todo._id}`}
+											htmlFor={"todo-${todo._id}"}
 											className={`${todo.completed ? "line-through text-muted-foreground" : ""}`}
 										>
 											{todo.text}
@@ -109,5 +109,5 @@ function TodosRoute() {
 				</CardContent>
 			</Card>
 		</div>
-	);
+	)
 }
