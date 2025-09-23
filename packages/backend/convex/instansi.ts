@@ -1,6 +1,6 @@
 import { paginationOptsValidator } from "convex/server";
-import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 
 export const getAllInstansi = query({
   args: { paginationOpts: paginationOptsValidator },
@@ -23,7 +23,7 @@ export const createInstansi = mutation({
   },
 });
 
-export const toggle = mutation({
+export const updateInstansi = mutation({
   args: {
     id: v.id("instansi"),
     name: v.optional(v.string()),
@@ -35,7 +35,7 @@ export const toggle = mutation({
   },
 });
 
-export const deleteTodo = mutation({
+export const deleteInstansi = mutation({
   args: {
     id: v.id("instansi"),
   },
