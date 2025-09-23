@@ -1,9 +1,19 @@
 import { LoginForm } from "@/components/login-form";
 import { SignUpForm } from "@/components/sign-up-form";
-import { createFileRoute } from "@tanstack/react-router";
+import { authClient } from "@/lib/auth-client";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_default/_layout/signup")({
   component: RouteComponent,
+  beforeLoad: async () => {
+    const { data: session } = await authClient.getSession();
+
+    if (session) {
+      throw redirect({
+        to: "/dashboard",
+      });
+    }
+  },
 });
 
 function RouteComponent() {
