@@ -16,6 +16,7 @@ import { Route as DefaultLayoutTodosRouteImport } from './routes/_default/_layou
 import { Route as DefaultLayoutSignupRouteImport } from './routes/_default/_layout/signup'
 import { Route as DefaultLayoutLoginRouteImport } from './routes/_default/_layout/login'
 import { Route as AuthLayoutDashboardRouteImport } from './routes/_auth/_layout/dashboard'
+import { Route as AuthLayoutMasterDataInstansiRouteImport } from './routes/_auth/_layout/master-data/instansi'
 
 const DefaultLayoutRoute = DefaultLayoutRouteImport.update({
   id: '/_default/_layout',
@@ -50,6 +51,12 @@ const AuthLayoutDashboardRoute = AuthLayoutDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const AuthLayoutMasterDataInstansiRoute =
+  AuthLayoutMasterDataInstansiRouteImport.update({
+    id: '/master-data/instansi',
+    path: '/master-data/instansi',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthLayoutDashboardRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof DefaultLayoutSignupRoute
   '/todos': typeof DefaultLayoutTodosRoute
   '/': typeof DefaultLayoutIndexRoute
+  '/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
 }
 export interface FileRoutesByTo {
   '/dashboard': typeof AuthLayoutDashboardRoute
@@ -64,6 +72,7 @@ export interface FileRoutesByTo {
   '/signup': typeof DefaultLayoutSignupRoute
   '/todos': typeof DefaultLayoutTodosRoute
   '/': typeof DefaultLayoutIndexRoute
+  '/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -74,12 +83,25 @@ export interface FileRoutesById {
   '/_default/_layout/signup': typeof DefaultLayoutSignupRoute
   '/_default/_layout/todos': typeof DefaultLayoutTodosRoute
   '/_default/_layout/': typeof DefaultLayoutIndexRoute
+  '/_auth/_layout/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/dashboard' | '/login' | '/signup' | '/todos' | '/'
+  fullPaths:
+    | '/dashboard'
+    | '/login'
+    | '/signup'
+    | '/todos'
+    | '/'
+    | '/master-data/instansi'
   fileRoutesByTo: FileRoutesByTo
-  to: '/dashboard' | '/login' | '/signup' | '/todos' | '/'
+  to:
+    | '/dashboard'
+    | '/login'
+    | '/signup'
+    | '/todos'
+    | '/'
+    | '/master-data/instansi'
   id:
     | '__root__'
     | '/_auth/_layout'
@@ -89,6 +111,7 @@ export interface FileRouteTypes {
     | '/_default/_layout/signup'
     | '/_default/_layout/todos'
     | '/_default/_layout/'
+    | '/_auth/_layout/master-data/instansi'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -147,15 +170,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutDashboardRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_auth/_layout/master-data/instansi': {
+      id: '/_auth/_layout/master-data/instansi'
+      path: '/master-data/instansi'
+      fullPath: '/master-data/instansi'
+      preLoaderRoute: typeof AuthLayoutMasterDataInstansiRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
   }
 }
 
 interface AuthLayoutRouteChildren {
   AuthLayoutDashboardRoute: typeof AuthLayoutDashboardRoute
+  AuthLayoutMasterDataInstansiRoute: typeof AuthLayoutMasterDataInstansiRoute
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLayoutDashboardRoute: AuthLayoutDashboardRoute,
+  AuthLayoutMasterDataInstansiRoute: AuthLayoutMasterDataInstansiRoute,
 }
 
 const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(

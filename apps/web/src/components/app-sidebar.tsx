@@ -45,7 +45,7 @@ const menuKanwil = [
   },
   {
     title: "Master Data",
-    url: "#",
+    url: "/master-data/instansi",
     icon: IconUsers,
   },
 ];

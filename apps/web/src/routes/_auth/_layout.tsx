@@ -1,12 +1,8 @@
+import { AppSidebar } from "@/components/app-sidebar";
 import Loader from "@/components/loader";
 import { LoginForm } from "@/components/login-form";
-import { authClient } from "@/lib/auth-client";
-import {
-  createFileRoute,
-  Navigate,
-  Outlet,
-  redirect,
-} from "@tanstack/react-router";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
 
 export const Route = createFileRoute("/_auth/_layout")({
@@ -17,7 +13,19 @@ function RouteComponent() {
   return (
     <>
       <Authenticated>
-        <Outlet />
+        <SidebarProvider
+          style={
+            {
+              "--sidebar-width": "calc(var(--spacing) * 72)",
+              "--header-height": "calc(var(--spacing) * 12)",
+            } as React.CSSProperties
+          }
+        >
+          <AppSidebar variant="inset" />
+          <SidebarInset>
+            <Outlet />
+          </SidebarInset>
+        </SidebarProvider>
       </Authenticated>
       <Unauthenticated>
         <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
