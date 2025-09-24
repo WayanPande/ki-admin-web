@@ -22,11 +22,11 @@ export const createInstansi = mutation({
     type: v.string(),
   },
   handler: async (ctx, args) => {
-    const newData = await ctx.db.insert("instansi", {
+    const instansiId = await ctx.db.insert("instansi", {
       name: args.name,
       type: args.type,
     });
-    return await ctx.db.get(newData);
+    return instansiId;
   },
 });
 
@@ -37,8 +37,14 @@ export const updateInstansi = mutation({
     type: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.id, { name: args.name, type: args.type });
-    return { success: true };
+    const { id, ...updates } = args;
+
+    const cleanUpdates = Object.fromEntries(
+      Object.entries(updates).filter(([_, value]) => value !== undefined)
+    );
+
+    await ctx.db.patch(id, cleanUpdates);
+    return id;
   },
 });
 
@@ -47,7 +53,16 @@ export const deleteInstansi = mutation({
     id: v.id("instansi"),
   },
   handler: async (ctx, args) => {
+    const referencingSentraKi = await ctx.db
+      .query("sentra_ki")
+      .filter((q) => q.eq(q.field("instansi_id"), args.id))
+      .first();
+
+    if (referencingSentraKi) {
+      throw new Error("Cannot delete instansi: it has sentra_ki records");
+    }
+
     await ctx.db.delete(args.id);
-    return { success: true };
+    return args.id;
   },
 });

@@ -18,6 +18,7 @@ import type * as http from "../http.js";
 import type * as instansi from "../instansi.js";
 import type * as pks from "../pks.js";
 import type * as privateData from "../privateData.js";
+import type * as sentra_ki from "../sentra_ki.js";
 import type * as todos from "../todos.js";
 
 import type {
@@ -45,6 +46,7 @@ declare const fullApi: ApiFromModules<{
   instansi: typeof instansi;
   pks: typeof pks;
   privateData: typeof privateData;
+  sentra_ki: typeof sentra_ki;
   todos: typeof todos;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

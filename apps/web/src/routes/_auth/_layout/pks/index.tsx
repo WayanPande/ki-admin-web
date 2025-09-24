@@ -18,6 +18,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
 import { useForm } from "@tanstack/react-form";
@@ -28,7 +35,7 @@ import {
   type ColumnDef,
   type VisibilityState,
 } from "@tanstack/react-table";
-import { useMutation, usePaginatedQuery } from "convex/react";
+import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -57,28 +64,36 @@ function RouteComponent() {
     { initialNumItems: 5 }
   );
 
+  const sentraKiData = useQuery(api.sentra_ki.getAllSentraKi);
+
   const createPks = useMutation(api.pks.createPks);
   const updatePks = useMutation(api.pks.updatePks);
   const deletePks = useMutation(api.pks.deletePks);
 
-  console.log(results);
-
   const columns: ColumnDef<(typeof results)[number]>[] = [
     {
-      accessorKey: "no_pks",
+      accessorKey: "no",
       header: "Nomor PKS",
     },
     {
-      accessorKey: "name_pks",
+      accessorKey: "name",
       header: "Nama PKS",
     },
     {
-      accessorKey: "name_sentra_ki",
+      id: "sentra_ki",
       header: "Sentra KI",
+      cell: ({ row }) => {
+        const data = row.original;
+        return data.sentra_ki?.name ?? "-";
+      },
     },
     {
-      accessorKey: "name_instansi",
+      id: "name_instansi",
       header: "Instansi",
+      cell: ({ row }) => {
+        const data = row.original;
+        return data.instansi?.name ?? "-";
+      },
     },
     {
       accessorKey: "expiry_date_to",
@@ -97,9 +112,9 @@ function RouteComponent() {
                 formAdd.reset();
 
                 formAdd.setFieldValue("id", data._id);
-                formAdd.setFieldValue("name_sentra_ki", data.name_sentra_ki);
-                formAdd.setFieldValue("name_pks", data.name_pks);
-                formAdd.setFieldValue("no_pks", data.no_pks);
+                formAdd.setFieldValue("sentra_ki_id", data.sentra_ki_id);
+                formAdd.setFieldValue("name", data.name);
+                formAdd.setFieldValue("no", data.no);
                 formAdd.setFieldValue("description", data.description ?? "");
                 formAdd.setFieldValue("document", data.document ?? "");
                 formAdd.setFieldValue(
@@ -147,24 +162,23 @@ function RouteComponent() {
 
   const formAdd = useForm({
     defaultValues: {
-      name_sentra_ki: "",
-      name_pks: "",
-      no_pks: "",
+      sentra_ki_id: "",
+      name: "",
+      no: "",
       description: "",
       document: "",
       expiry_date_from: new Date().toLocaleDateString(),
       expiry_date_to: "",
       id: "",
-      name_instansi: "",
     },
     onSubmit: async ({ value }) => {
       if (value.id) {
         try {
           await updatePks({
             id: value.id as Id<"pks">,
-            name_sentra_ki: value.name_sentra_ki,
-            name_pks: value.name_pks,
-            no_pks: value.no_pks,
+            sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
+            name: value.name,
+            no: value.no,
             description: value.description,
             document: value.document,
             expiry_date_from: value.expiry_date_from,
@@ -178,14 +192,13 @@ function RouteComponent() {
       } else {
         try {
           await createPks({
-            name_sentra_ki: value.name_sentra_ki,
-            name_pks: value.name_pks,
-            no_pks: value.no_pks,
+            sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
+            name: value.name,
+            no: value.no,
             description: value.description,
             document: value.document,
             expiry_date_from: value.expiry_date_from,
             expiry_date_to: value.expiry_date_to,
-            name_instansi: value.name_instansi,
           });
           toast.success("PKS Berhasil Diubah");
         } catch (error) {
@@ -197,9 +210,9 @@ function RouteComponent() {
     },
     validators: {
       onSubmit: z.object({
-        name_sentra_ki: z.string().min(2, "Name must be at least 2 characters"),
-        name_pks: z.string().min(2, "Name must be at least 2 characters"),
-        no_pks: z.string().min(2, "Name must be at least 2 characters"),
+        sentra_ki_id: z.string().min(2, "Name must be at least 2 characters"),
+        name: z.string().min(2, "Name must be at least 2 characters"),
+        no: z.string().min(2, "Name must be at least 2 characters"),
         description: z.string().min(2, "Name must be at least 2 characters"),
         document: z.string().min(2, "Name must be at least 2 characters"),
         expiry_date_from: z
@@ -207,7 +220,6 @@ function RouteComponent() {
           .min(2, "Name must be at least 2 characters"),
         expiry_date_to: z.string().min(2, "Name must be at least 2 characters"),
         id: z.any().and(z.any()),
-        name_instansi: z.string().min(2, "Name must be at least 2 characters"),
       }),
     },
   });
@@ -245,24 +257,35 @@ function RouteComponent() {
               </DialogTitle>
             </DialogHeader>
             <div className="grid gap-4">
-              <formAdd.Field name="name_sentra_ki">
+              <formAdd.Field name="sentra_ki_id">
                 {(field) => (
                   <div className="grid gap-3">
                     <Label htmlFor={field.name}>Nama Sentra KI</Label>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type="text"
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
+                    <Select
+                      onValueChange={(data) => {
+                        field.handleChange(data);
+                      }}
+                      defaultValue={field.state.value}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Pilih Sentra Ki" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {sentraKiData?.map((data) => {
+                          return (
+                            <SelectItem value={data._id} key={data._id}>
+                              {data.name}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
                     <FieldInfo field={field} />
                   </div>
                 )}
               </formAdd.Field>
 
-              <formAdd.Field name="no_pks">
+              <formAdd.Field name="no">
                 {(field) => (
                   <div className="grid gap-3">
                     <Label htmlFor={field.name}>Nomor PKS</Label>
@@ -279,7 +302,7 @@ function RouteComponent() {
                 )}
               </formAdd.Field>
 
-              <formAdd.Field name="name_pks">
+              <formAdd.Field name="name">
                 {(field) => (
                   <div className="grid gap-3">
                     <Label htmlFor={field.name}>Nama PKS</Label>
