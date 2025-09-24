@@ -41,7 +41,7 @@ function RouteComponent() {
   const [open, setOpen] = useState(false);
 
   const { results, status, loadMore } = usePaginatedQuery(
-    api.instansi.getAllInstansi,
+    api.instansi.getAllInstansiPaginated,
     {},
     { initialNumItems: 5 }
   );

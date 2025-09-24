@@ -12,8 +12,16 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { authClient } from "@/lib/auth-client";
 import { usersQueryOptions } from "@/lib/query/users";
+import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { useForm } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -23,6 +31,7 @@ import {
   type ColumnDef,
   type VisibilityState,
 } from "@tanstack/react-table";
+import { useQuery } from "convex/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
@@ -85,6 +94,8 @@ function RouteComponent() {
     usersQueryOptions({ pageSize: search.limit, currentPage: search.page })
   );
 
+  const instansi = useQuery(api.instansi.getAllInstansi);
+
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "username",
@@ -120,6 +131,7 @@ function RouteComponent() {
                 formAdd.setFieldValue("phoneNumber", data.phoneNumber);
                 formAdd.setFieldValue("username", data.username);
                 formAdd.setFieldValue("password", "12345678");
+                formAdd.setFieldValue("instansi", data.instansi);
 
                 setOpen(true);
               }}
@@ -167,6 +179,7 @@ function RouteComponent() {
       username: "",
       id: "",
       phoneNumber: "",
+      instansi: "",
     },
     onSubmit: async ({ value }) => {
       if (value.id) {
@@ -178,6 +191,7 @@ function RouteComponent() {
               email: value.email,
               phoneNumber: value.phoneNumber,
               name: value.name,
+              instansi: value.instansi,
             },
           },
           {
@@ -203,6 +217,7 @@ function RouteComponent() {
                   userId: data.data.user.id,
                   data: {
                     username: value.username,
+                    instansi: value.instansi,
                   },
                 },
                 {
@@ -233,6 +248,7 @@ function RouteComponent() {
         email: z.email("Invalid email address"),
         phoneNumber: z.string().min(2, "Name must be at least 2 characters"),
         id: z.any().and(z.any()),
+        instansi: z.string().min(2, "Name must be at least 2 characters"),
       }),
     },
   });
@@ -299,6 +315,35 @@ function RouteComponent() {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
+                    <FieldInfo field={field} />
+                  </div>
+                )}
+              </formAdd.Field>
+
+              <formAdd.Field name="instansi">
+                {(field) => (
+                  <div className="grid gap-3">
+                    <Label htmlFor={field.name}>Instansi</Label>
+                    <Select
+                      onValueChange={(data) => {
+                        field.handleChange(data);
+                      }}
+                      defaultValue={field.state.value}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Pilih Instansi" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {instansi?.map((data) => {
+                          return (
+                            <SelectItem value={data.name} key={data._id}>
+                              {data.name}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+
                     <FieldInfo field={field} />
                   </div>
                 )}

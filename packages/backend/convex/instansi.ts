@@ -2,10 +2,17 @@ import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-export const getAllInstansi = query({
+export const getAllInstansiPaginated = query({
   args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
     return await ctx.db.query("instansi").paginate(args.paginationOpts);
+  },
+});
+
+export const getAllInstansi = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("instansi").collect();
   },
 });
 
