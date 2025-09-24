@@ -1,11 +1,11 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex, crossDomain } from "@convex-dev/better-auth/plugins";
+import { betterAuth } from "better-auth";
+import { admin, username } from "better-auth/plugins";
 import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
-import { betterAuth } from "better-auth";
 import authSchema from "./betterAuth/schema";
-import { admin, username } from "better-auth/plugins";
 
 const siteUrl = process.env.SITE_URL!;
 
@@ -30,6 +30,18 @@ export const createAuth = (
       requireEmailVerification: false,
     },
     plugins: [crossDomain({ siteUrl }), convex(), username(), admin()],
+    user: {
+      additionalFields: {
+        instansi: {
+          type: "string",
+          required: false,
+        },
+        phoneNumber: {
+          type: "string",
+          required: false,
+        },
+      },
+    },
   });
 };
 

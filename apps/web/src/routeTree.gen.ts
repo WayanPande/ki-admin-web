@@ -16,6 +16,7 @@ import { Route as DefaultLayoutTodosRouteImport } from './routes/_default/_layou
 import { Route as DefaultLayoutSignupRouteImport } from './routes/_default/_layout/signup'
 import { Route as DefaultLayoutLoginRouteImport } from './routes/_default/_layout/login'
 import { Route as AuthLayoutDashboardRouteImport } from './routes/_auth/_layout/dashboard'
+import { Route as AuthLayoutMasterDataUserRouteImport } from './routes/_auth/_layout/master-data/user'
 import { Route as AuthLayoutMasterDataInstansiRouteImport } from './routes/_auth/_layout/master-data/instansi'
 
 const DefaultLayoutRoute = DefaultLayoutRouteImport.update({
@@ -51,6 +52,12 @@ const AuthLayoutDashboardRoute = AuthLayoutDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const AuthLayoutMasterDataUserRoute =
+  AuthLayoutMasterDataUserRouteImport.update({
+    id: '/master-data/user',
+    path: '/master-data/user',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
 const AuthLayoutMasterDataInstansiRoute =
   AuthLayoutMasterDataInstansiRouteImport.update({
     id: '/master-data/instansi',
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/todos': typeof DefaultLayoutTodosRoute
   '/': typeof DefaultLayoutIndexRoute
   '/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
+  '/master-data/user': typeof AuthLayoutMasterDataUserRoute
 }
 export interface FileRoutesByTo {
   '/dashboard': typeof AuthLayoutDashboardRoute
@@ -73,6 +81,7 @@ export interface FileRoutesByTo {
   '/todos': typeof DefaultLayoutTodosRoute
   '/': typeof DefaultLayoutIndexRoute
   '/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
+  '/master-data/user': typeof AuthLayoutMasterDataUserRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -84,6 +93,7 @@ export interface FileRoutesById {
   '/_default/_layout/todos': typeof DefaultLayoutTodosRoute
   '/_default/_layout/': typeof DefaultLayoutIndexRoute
   '/_auth/_layout/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
+  '/_auth/_layout/master-data/user': typeof AuthLayoutMasterDataUserRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
     | '/todos'
     | '/'
     | '/master-data/instansi'
+    | '/master-data/user'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dashboard'
@@ -102,6 +113,7 @@ export interface FileRouteTypes {
     | '/todos'
     | '/'
     | '/master-data/instansi'
+    | '/master-data/user'
   id:
     | '__root__'
     | '/_auth/_layout'
@@ -112,6 +124,7 @@ export interface FileRouteTypes {
     | '/_default/_layout/todos'
     | '/_default/_layout/'
     | '/_auth/_layout/master-data/instansi'
+    | '/_auth/_layout/master-data/user'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -170,6 +183,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutDashboardRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_auth/_layout/master-data/user': {
+      id: '/_auth/_layout/master-data/user'
+      path: '/master-data/user'
+      fullPath: '/master-data/user'
+      preLoaderRoute: typeof AuthLayoutMasterDataUserRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
     '/_auth/_layout/master-data/instansi': {
       id: '/_auth/_layout/master-data/instansi'
       path: '/master-data/instansi'
@@ -183,11 +203,13 @@ declare module '@tanstack/react-router' {
 interface AuthLayoutRouteChildren {
   AuthLayoutDashboardRoute: typeof AuthLayoutDashboardRoute
   AuthLayoutMasterDataInstansiRoute: typeof AuthLayoutMasterDataInstansiRoute
+  AuthLayoutMasterDataUserRoute: typeof AuthLayoutMasterDataUserRoute
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLayoutDashboardRoute: AuthLayoutDashboardRoute,
   AuthLayoutMasterDataInstansiRoute: AuthLayoutMasterDataInstansiRoute,
+  AuthLayoutMasterDataUserRoute: AuthLayoutMasterDataUserRoute,
 }
 
 const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(

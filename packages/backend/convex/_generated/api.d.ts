@@ -74,7 +74,9 @@ export declare const components: {
                   email: string;
                   emailVerified: boolean;
                   image?: null | string;
+                  instansi?: null | string;
                   name: string;
+                  phoneNumber?: null | string;
                   role?: null | string;
                   updatedAt: number;
                   userId?: null | string;
@@ -158,6 +160,8 @@ export declare const components: {
                     | "banned"
                     | "banReason"
                     | "banExpires"
+                    | "instansi"
+                    | "phoneNumber"
                     | "id";
                   operator?:
                     | "lt"
@@ -342,6 +346,8 @@ export declare const components: {
                     | "banned"
                     | "banReason"
                     | "banExpires"
+                    | "instansi"
+                    | "phoneNumber"
                     | "id";
                   operator?:
                     | "lt"
@@ -583,7 +589,9 @@ export declare const components: {
                   email?: string;
                   emailVerified?: boolean;
                   image?: null | string;
+                  instansi?: null | string;
                   name?: string;
+                  phoneNumber?: null | string;
                   role?: null | string;
                   updatedAt?: number;
                   userId?: null | string;
@@ -605,6 +613,8 @@ export declare const components: {
                     | "banned"
                     | "banReason"
                     | "banExpires"
+                    | "instansi"
+                    | "phoneNumber"
                     | "id";
                   operator?:
                     | "lt"
@@ -818,7 +828,9 @@ export declare const components: {
                   email?: string;
                   emailVerified?: boolean;
                   image?: null | string;
+                  instansi?: null | string;
                   name?: string;
+                  phoneNumber?: null | string;
                   role?: null | string;
                   updatedAt?: number;
                   userId?: null | string;
@@ -840,6 +852,8 @@ export declare const components: {
                     | "banned"
                     | "banReason"
                     | "banExpires"
+                    | "instansi"
+                    | "phoneNumber"
                     | "id";
                   operator?:
                     | "lt"

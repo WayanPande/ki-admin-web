@@ -46,7 +46,9 @@ export type Mounts = {
                 email: string;
                 emailVerified: boolean;
                 image?: null | string;
+                instansi?: null | string;
                 name: string;
+                phoneNumber?: null | string;
                 role?: null | string;
                 updatedAt: number;
                 userId?: null | string;
@@ -130,6 +132,8 @@ export type Mounts = {
                   | "banned"
                   | "banReason"
                   | "banExpires"
+                  | "instansi"
+                  | "phoneNumber"
                   | "id";
                 operator?:
                   | "lt"
@@ -314,6 +318,8 @@ export type Mounts = {
                   | "banned"
                   | "banReason"
                   | "banExpires"
+                  | "instansi"
+                  | "phoneNumber"
                   | "id";
                 operator?:
                   | "lt"
@@ -555,7 +561,9 @@ export type Mounts = {
                 email?: string;
                 emailVerified?: boolean;
                 image?: null | string;
+                instansi?: null | string;
                 name?: string;
+                phoneNumber?: null | string;
                 role?: null | string;
                 updatedAt?: number;
                 userId?: null | string;
@@ -577,6 +585,8 @@ export type Mounts = {
                   | "banned"
                   | "banReason"
                   | "banExpires"
+                  | "instansi"
+                  | "phoneNumber"
                   | "id";
                 operator?:
                   | "lt"
@@ -790,7 +800,9 @@ export type Mounts = {
                 email?: string;
                 emailVerified?: boolean;
                 image?: null | string;
+                instansi?: null | string;
                 name?: string;
+                phoneNumber?: null | string;
                 role?: null | string;
                 updatedAt?: number;
                 userId?: null | string;
@@ -812,6 +824,8 @@ export type Mounts = {
                   | "banned"
                   | "banReason"
                   | "banExpires"
+                  | "instansi"
+                  | "phoneNumber"
                   | "id";
                 operator?:
                   | "lt"

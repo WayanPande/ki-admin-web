@@ -1,0 +1,382 @@
+import { DataTable } from "@/components/data-table";
+import FieldInfo from "@/components/field-info";
+import { SiteHeader } from "@/components/site-header";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { authClient } from "@/lib/auth-client";
+import { usersQueryOptions } from "@/lib/query/users";
+import { useForm } from "@tanstack/react-form";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  getCoreRowModel,
+  useReactTable,
+  type ColumnDef,
+  type VisibilityState,
+} from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
+import z from "zod";
+
+const routeSearchSchema = z.object({
+  page: z
+    .union([z.string(), z.number()])
+    .optional()
+    .default(1)
+    .transform((val) => {
+      const num = typeof val === "string" ? Number(val) : val;
+      return isNaN(num) ? 1 : num;
+    })
+    .refine((val) => val > 0, { message: "Page must be greater than 0" }),
+  limit: z
+    .union([z.string(), z.number()])
+    .optional()
+    .default(5)
+    .transform((val) => {
+      const num = typeof val === "string" ? Number(val) : val;
+      return isNaN(num) ? 5 : num;
+    })
+    .refine((val) => val > 0 && val <= 100, {
+      message: "Limit must be between 1 and 100",
+    }),
+  query: z
+    .union([z.string(), z.undefined(), z.null()])
+    .optional()
+    .default("")
+    .transform((val) => val ?? ""),
+});
+
+type RouteSearch = z.infer<typeof routeSearchSchema>;
+
+export const Route = createFileRoute("/_auth/_layout/master-data/user")({
+  component: RouteComponent,
+  validateSearch: (search: Record<string, unknown>): RouteSearch => {
+    return routeSearchSchema.parse(search);
+  },
+  loaderDeps: ({ search: { page, limit, query } }) => ({ page, limit, query }),
+  loader: ({ context: { queryClient }, deps: { page, limit, query } }) =>
+    queryClient.ensureQueryData(
+      usersQueryOptions({ pageSize: limit, currentPage: page, query })
+    ),
+});
+
+export const schema = z.object({
+  id: z.number(),
+  name: z.string(),
+  type: z.string(),
+});
+
+const emptyArray: any[] = [];
+
+function RouteComponent() {
+  const [open, setOpen] = useState(false);
+  const search = Route.useSearch();
+
+  const usersQuery = useSuspenseQuery(
+    usersQueryOptions({ pageSize: search.limit, currentPage: search.page })
+  );
+
+  const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "username",
+      header: "Username",
+    },
+    {
+      accessorKey: "name",
+      header: "Nama Langkap",
+    },
+    {
+      accessorKey: "phoneNumber",
+      header: "Nomor Telepon",
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+    },
+    {
+      id: "action",
+      cell: ({ row }) => {
+        const data = row.original;
+
+        return (
+          <div className="flex gap-2">
+            <Button
+              size={"sm"}
+              onClick={() => {
+                formAdd.reset();
+
+                formAdd.setFieldValue("id", data.id);
+                formAdd.setFieldValue("name", data.name);
+                formAdd.setFieldValue("email", data.email);
+                formAdd.setFieldValue("phoneNumber", data.phoneNumber);
+                formAdd.setFieldValue("username", data.username);
+                formAdd.setFieldValue("password", "12345678");
+
+                setOpen(true);
+              }}
+            >
+              Ubah
+            </Button>
+            <Button
+              size={"sm"}
+              variant={"destructive"}
+              onClick={async () => {
+                await authClient.admin.removeUser({
+                  userId: data.id,
+                });
+                await usersQuery.refetch();
+              }}
+            >
+              Remove
+            </Button>
+          </div>
+        );
+      },
+      enableSorting: false,
+      enableHiding: false,
+    },
+  ];
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  const table = useReactTable({
+    data: usersQuery.data.data?.users ?? emptyArray,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      columnVisibility,
+    },
+    manualPagination: true,
+  });
+
+  const formAdd = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+      name: "",
+      username: "",
+      id: "",
+      phoneNumber: "",
+    },
+    onSubmit: async ({ value }) => {
+      if (value.id) {
+        await authClient.admin.updateUser(
+          {
+            userId: value.id,
+            data: {
+              username: value.username,
+              email: value.email,
+              phoneNumber: value.phoneNumber,
+              name: value.name,
+            },
+          },
+          {
+            onSuccess: () => {
+              toast.success("User Berhasil Diubah");
+            },
+            onError: (error) => {
+              toast.error(error.error.message || error.error.statusText);
+            },
+          }
+        );
+      } else {
+        await authClient.admin.createUser(
+          {
+            email: value.email,
+            password: value.password,
+            name: value.name,
+          },
+          {
+            onSuccess: async (data) => {
+              await authClient.admin.updateUser(
+                {
+                  userId: data.data.user.id,
+                  data: {
+                    username: value.username,
+                  },
+                },
+                {
+                  onSuccess: () => {
+                    toast.success("User Berhasil Ditambah");
+                  },
+                  onError: (error) => {
+                    toast.error(error.error.message || error.error.statusText);
+                  },
+                }
+              );
+            },
+            onError: (error) => {
+              toast.error(error.error.message || error.error.statusText);
+            },
+          }
+        );
+      }
+
+      await usersQuery.refetch();
+      setOpen(false);
+    },
+    validators: {
+      onSubmit: z.object({
+        username: z.string().min(2, "Name must be at least 2 characters"),
+        name: z.string().min(2, "Name must be at least 2 characters"),
+        password: z.string().min(8, "Password must be at least 8 characters"),
+        email: z.email("Invalid email address"),
+        phoneNumber: z.string().min(2, "Name must be at least 2 characters"),
+        id: z.any().and(z.any()),
+      }),
+    },
+  });
+
+  return (
+    <>
+      <SiteHeader title="Master Data User" />
+      <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
+        <div className="mx-4 lg:mx-6 flex justify-end">
+          <Button
+            onClick={() => {
+              formAdd.reset();
+              setOpen(true);
+            }}
+          >
+            Add New
+          </Button>
+        </div>
+        <DataTable table={table} />
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[425px]" aria-describedby="dialog">
+          <form
+            className="space-y-6"
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              formAdd.handleSubmit();
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>
+                {formAdd.getFieldValue("id") ? "Ubah" : "Tambah"} User
+              </DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4">
+              <formAdd.Field name="name">
+                {(field) => (
+                  <div className="grid gap-3">
+                    <Label htmlFor={field.name}>Nama</Label>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      type="text"
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                    <FieldInfo field={field} />
+                  </div>
+                )}
+              </formAdd.Field>
+
+              <formAdd.Field name="username">
+                {(field) => (
+                  <div className="grid gap-3">
+                    <Label htmlFor={field.name}>Username</Label>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      type="text"
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                    <FieldInfo field={field} />
+                  </div>
+                )}
+              </formAdd.Field>
+
+              <formAdd.Field name="phoneNumber">
+                {(field) => (
+                  <div className="grid gap-3">
+                    <Label htmlFor={field.name}>Nomor Telepon</Label>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      type="text"
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                    <FieldInfo field={field} />
+                  </div>
+                )}
+              </formAdd.Field>
+
+              <formAdd.Field name="email">
+                {(field) => (
+                  <div className="grid gap-3">
+                    <Label htmlFor={field.name}>Email</Label>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      type="text"
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                    <FieldInfo field={field} />
+                  </div>
+                )}
+              </formAdd.Field>
+
+              {!formAdd.getFieldValue("id") ? (
+                <formAdd.Field name="password">
+                  {(field) => (
+                    <div className="grid gap-3">
+                      <Label htmlFor={field.name}>Password</Label>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        type="text"
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                      />
+                      <FieldInfo field={field} />
+                    </div>
+                  )}
+                </formAdd.Field>
+              ) : null}
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" type="button">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <formAdd.Subscribe>
+                {(state) => (
+                  <Button
+                    type="submit"
+                    disabled={!state.canSubmit || state.isSubmitting}
+                  >
+                    {state.isSubmitting ? "Submitting..." : "Simpan"}
+                  </Button>
+                )}
+              </formAdd.Subscribe>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
