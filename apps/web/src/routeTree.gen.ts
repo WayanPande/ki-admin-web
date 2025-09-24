@@ -16,6 +16,7 @@ import { Route as DefaultLayoutTodosRouteImport } from './routes/_default/_layou
 import { Route as DefaultLayoutSignupRouteImport } from './routes/_default/_layout/signup'
 import { Route as DefaultLayoutLoginRouteImport } from './routes/_default/_layout/login'
 import { Route as AuthLayoutDashboardRouteImport } from './routes/_auth/_layout/dashboard'
+import { Route as AuthLayoutPksIndexRouteImport } from './routes/_auth/_layout/pks/index'
 import { Route as AuthLayoutMasterDataUserRouteImport } from './routes/_auth/_layout/master-data/user'
 import { Route as AuthLayoutMasterDataInstansiRouteImport } from './routes/_auth/_layout/master-data/instansi'
 
@@ -52,6 +53,11 @@ const AuthLayoutDashboardRoute = AuthLayoutDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const AuthLayoutPksIndexRoute = AuthLayoutPksIndexRouteImport.update({
+  id: '/pks/',
+  path: '/pks/',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
 const AuthLayoutMasterDataUserRoute =
   AuthLayoutMasterDataUserRouteImport.update({
     id: '/master-data/user',
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/': typeof DefaultLayoutIndexRoute
   '/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
   '/master-data/user': typeof AuthLayoutMasterDataUserRoute
+  '/pks': typeof AuthLayoutPksIndexRoute
 }
 export interface FileRoutesByTo {
   '/dashboard': typeof AuthLayoutDashboardRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/': typeof DefaultLayoutIndexRoute
   '/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
   '/master-data/user': typeof AuthLayoutMasterDataUserRoute
+  '/pks': typeof AuthLayoutPksIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/_default/_layout/': typeof DefaultLayoutIndexRoute
   '/_auth/_layout/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
   '/_auth/_layout/master-data/user': typeof AuthLayoutMasterDataUserRoute
+  '/_auth/_layout/pks/': typeof AuthLayoutPksIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/master-data/instansi'
     | '/master-data/user'
+    | '/pks'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dashboard'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
     | '/'
     | '/master-data/instansi'
     | '/master-data/user'
+    | '/pks'
   id:
     | '__root__'
     | '/_auth/_layout'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
     | '/_default/_layout/'
     | '/_auth/_layout/master-data/instansi'
     | '/_auth/_layout/master-data/user'
+    | '/_auth/_layout/pks/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -183,6 +195,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutDashboardRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_auth/_layout/pks/': {
+      id: '/_auth/_layout/pks/'
+      path: '/pks'
+      fullPath: '/pks'
+      preLoaderRoute: typeof AuthLayoutPksIndexRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
     '/_auth/_layout/master-data/user': {
       id: '/_auth/_layout/master-data/user'
       path: '/master-data/user'
@@ -204,12 +223,14 @@ interface AuthLayoutRouteChildren {
   AuthLayoutDashboardRoute: typeof AuthLayoutDashboardRoute
   AuthLayoutMasterDataInstansiRoute: typeof AuthLayoutMasterDataInstansiRoute
   AuthLayoutMasterDataUserRoute: typeof AuthLayoutMasterDataUserRoute
+  AuthLayoutPksIndexRoute: typeof AuthLayoutPksIndexRoute
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLayoutDashboardRoute: AuthLayoutDashboardRoute,
   AuthLayoutMasterDataInstansiRoute: AuthLayoutMasterDataInstansiRoute,
   AuthLayoutMasterDataUserRoute: AuthLayoutMasterDataUserRoute,
+  AuthLayoutPksIndexRoute: AuthLayoutPksIndexRoute,
 }
 
 const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(

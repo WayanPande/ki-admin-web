@@ -35,7 +35,7 @@ const menuKanwil = [
   },
   {
     title: "PKS",
-    url: "#",
+    url: "/pks",
     icon: IconChartBar,
   },
   {
