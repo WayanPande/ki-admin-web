@@ -32,3 +32,13 @@ export const routeSearchSchema = z.object({
     .default("")
     .transform((val) => val ?? ""),
 });
+
+export const KI_TYPES = [
+  "Merek",
+  "Paten",
+  "Hak Cipta",
+  "Indikasi Geografis",
+  "DTSL",
+  "Rahasia Dagang",
+  "KI Komunal",
+] as const;

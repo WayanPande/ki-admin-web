@@ -80,7 +80,7 @@ export const KI_TYPES = [
   "KI Komunal",
 ] as const;
 
-export interface ChartDataByType {
+interface ChartDataByType {
   month: string;
   total: number;
   [key: string]: number | string;
