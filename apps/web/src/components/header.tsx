@@ -32,6 +32,9 @@ export default function Header() {
               <NavigationMenuItem>
                 <NavigationMenuLink
                   to="/"
+                  activeProps={{
+                    className: "bg-accent text-accent-foreground",
+                  }}
                   className={navigationMenuTriggerStyle()}
                 >
                   Beranda
@@ -40,6 +43,9 @@ export default function Header() {
               <NavigationMenuItem>
                 <NavigationMenuLink
                   to="/sentra-ki"
+                  activeProps={{
+                    className: "bg-accent text-accent-foreground",
+                  }}
                   className={navigationMenuTriggerStyle()}
                 >
                   Sentra KI
