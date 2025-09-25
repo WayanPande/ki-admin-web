@@ -20,6 +20,7 @@ import { Route as AuthLayoutSentraKiIndexRouteImport } from './routes/_auth/_lay
 import { Route as AuthLayoutPksIndexRouteImport } from './routes/_auth/_layout/pks/index'
 import { Route as AuthLayoutMasterDataUserRouteImport } from './routes/_auth/_layout/master-data/user'
 import { Route as AuthLayoutMasterDataInstansiRouteImport } from './routes/_auth/_layout/master-data/instansi'
+import { Route as AuthLayoutAdminSentraDaftarKiRouteImport } from './routes/_auth/_layout/admin-sentra/daftar-ki'
 
 const DefaultLayoutRoute = DefaultLayoutRouteImport.update({
   id: '/_default/_layout',
@@ -76,6 +77,12 @@ const AuthLayoutMasterDataInstansiRoute =
     path: '/master-data/instansi',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const AuthLayoutAdminSentraDaftarKiRoute =
+  AuthLayoutAdminSentraDaftarKiRouteImport.update({
+    id: '/admin-sentra/daftar-ki',
+    path: '/admin-sentra/daftar-ki',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthLayoutDashboardRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof DefaultLayoutSignupRoute
   '/todos': typeof DefaultLayoutTodosRoute
   '/': typeof DefaultLayoutIndexRoute
+  '/admin-sentra/daftar-ki': typeof AuthLayoutAdminSentraDaftarKiRoute
   '/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
   '/master-data/user': typeof AuthLayoutMasterDataUserRoute
   '/pks': typeof AuthLayoutPksIndexRoute
@@ -94,6 +102,7 @@ export interface FileRoutesByTo {
   '/signup': typeof DefaultLayoutSignupRoute
   '/todos': typeof DefaultLayoutTodosRoute
   '/': typeof DefaultLayoutIndexRoute
+  '/admin-sentra/daftar-ki': typeof AuthLayoutAdminSentraDaftarKiRoute
   '/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
   '/master-data/user': typeof AuthLayoutMasterDataUserRoute
   '/pks': typeof AuthLayoutPksIndexRoute
@@ -108,6 +117,7 @@ export interface FileRoutesById {
   '/_default/_layout/signup': typeof DefaultLayoutSignupRoute
   '/_default/_layout/todos': typeof DefaultLayoutTodosRoute
   '/_default/_layout/': typeof DefaultLayoutIndexRoute
+  '/_auth/_layout/admin-sentra/daftar-ki': typeof AuthLayoutAdminSentraDaftarKiRoute
   '/_auth/_layout/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
   '/_auth/_layout/master-data/user': typeof AuthLayoutMasterDataUserRoute
   '/_auth/_layout/pks/': typeof AuthLayoutPksIndexRoute
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/todos'
     | '/'
+    | '/admin-sentra/daftar-ki'
     | '/master-data/instansi'
     | '/master-data/user'
     | '/pks'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/todos'
     | '/'
+    | '/admin-sentra/daftar-ki'
     | '/master-data/instansi'
     | '/master-data/user'
     | '/pks'
@@ -145,6 +157,7 @@ export interface FileRouteTypes {
     | '/_default/_layout/signup'
     | '/_default/_layout/todos'
     | '/_default/_layout/'
+    | '/_auth/_layout/admin-sentra/daftar-ki'
     | '/_auth/_layout/master-data/instansi'
     | '/_auth/_layout/master-data/user'
     | '/_auth/_layout/pks/'
@@ -235,11 +248,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutMasterDataInstansiRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_auth/_layout/admin-sentra/daftar-ki': {
+      id: '/_auth/_layout/admin-sentra/daftar-ki'
+      path: '/admin-sentra/daftar-ki'
+      fullPath: '/admin-sentra/daftar-ki'
+      preLoaderRoute: typeof AuthLayoutAdminSentraDaftarKiRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
   }
 }
 
 interface AuthLayoutRouteChildren {
   AuthLayoutDashboardRoute: typeof AuthLayoutDashboardRoute
+  AuthLayoutAdminSentraDaftarKiRoute: typeof AuthLayoutAdminSentraDaftarKiRoute
   AuthLayoutMasterDataInstansiRoute: typeof AuthLayoutMasterDataInstansiRoute
   AuthLayoutMasterDataUserRoute: typeof AuthLayoutMasterDataUserRoute
   AuthLayoutPksIndexRoute: typeof AuthLayoutPksIndexRoute
@@ -248,6 +269,7 @@ interface AuthLayoutRouteChildren {
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLayoutDashboardRoute: AuthLayoutDashboardRoute,
+  AuthLayoutAdminSentraDaftarKiRoute: AuthLayoutAdminSentraDaftarKiRoute,
   AuthLayoutMasterDataInstansiRoute: AuthLayoutMasterDataInstansiRoute,
   AuthLayoutMasterDataUserRoute: AuthLayoutMasterDataUserRoute,
   AuthLayoutPksIndexRoute: AuthLayoutPksIndexRoute,

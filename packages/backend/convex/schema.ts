@@ -32,4 +32,18 @@ export default defineSchema({
     pic_id: v.string(),
     custom_id: v.string(),
   }).index("by_custom_id", ["custom_id"]),
+  daftar_ki: defineTable({
+    nomor_permohonan: v.string(),
+    name: v.string(),
+    type: v.string(),
+    sub_type: v.string(),
+    name_pemilik: v.string(),
+    address_pemilik: v.string(),
+    pemberi_fasilitas: v.string(),
+    document: v.string(),
+    pic_name: v.string(),
+    pic_phone: v.string(),
+    pic_email: v.string(),
+    pic_id: v.string(),
+  }),
 });

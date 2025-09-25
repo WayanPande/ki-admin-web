@@ -53,12 +53,12 @@ const menuKanwil = [
 const menuKi = [
   {
     title: "Dashboard",
-    url: "/dashboard",
+    url: "/admin-sentra/dashboard",
     icon: IconDashboard,
   },
   {
     title: "Pencatatan KI",
-    url: "#",
+    url: "/admin-sentra/daftar-ki",
     icon: IconListDetails,
   },
 ];
