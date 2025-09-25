@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { usersQueryOptions } from "@/lib/query/users";
+import { routeSearchSchema } from "@/lib/utils";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
 import { useForm } from "@tanstack/react-form";
@@ -31,6 +32,7 @@ import {
   type ColumnDef,
   type VisibilityState,
 } from "@tanstack/react-table";
+import { zodValidator } from "@tanstack/zod-adapter";
 import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -38,6 +40,7 @@ import z from "zod";
 
 export const Route = createFileRoute("/_auth/_layout/sentra-ki/")({
   component: RouteComponent,
+  validateSearch: zodValidator(routeSearchSchema),
 });
 
 const emptyArray: any[] = [];
@@ -45,11 +48,12 @@ const emptyArray: any[] = [];
 function RouteComponent() {
   const [open, setOpen] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
+  const search = Route.useSearch();
 
   const { results, status, loadMore } = usePaginatedQuery(
     api.sentra_ki.getAllSentraKiPaginated,
     {},
-    { initialNumItems: 5 }
+    { initialNumItems: search.limit }
   );
 
   const instansiData = useQuery(api.instansi.getAllInstansi);
@@ -65,6 +69,11 @@ function RouteComponent() {
   );
 
   const columns: ColumnDef<(typeof results)[number]>[] = [
+    {
+      id: "#",
+      header: "No",
+      cell: ({ row }) => (search.page - 1) * search.limit + row.index + 1,
+    },
     {
       accessorKey: "custom_id",
       id: "ID",

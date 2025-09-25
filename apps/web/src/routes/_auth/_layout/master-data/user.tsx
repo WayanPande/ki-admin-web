@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { authClient } from "@/lib/auth-client";
 import { usersPaginatedQueryOptions } from "@/lib/query/users";
+import { routeSearchSchema } from "@/lib/utils";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { useForm } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -31,57 +32,20 @@ import {
   type ColumnDef,
   type VisibilityState,
 } from "@tanstack/react-table";
+import { zodValidator } from "@tanstack/zod-adapter";
 import { useQuery } from "convex/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
 
-const routeSearchSchema = z.object({
-  page: z
-    .union([z.string(), z.number()])
-    .optional()
-    .default(1)
-    .transform((val) => {
-      const num = typeof val === "string" ? Number(val) : val;
-      return isNaN(num) ? 1 : num;
-    })
-    .refine((val) => val > 0, { message: "Page must be greater than 0" }),
-  limit: z
-    .union([z.string(), z.number()])
-    .optional()
-    .default(5)
-    .transform((val) => {
-      const num = typeof val === "string" ? Number(val) : val;
-      return isNaN(num) ? 5 : num;
-    })
-    .refine((val) => val > 0 && val <= 100, {
-      message: "Limit must be between 1 and 100",
-    }),
-  query: z
-    .union([z.string(), z.undefined(), z.null()])
-    .optional()
-    .default("")
-    .transform((val) => val ?? ""),
-});
-
-type RouteSearch = z.infer<typeof routeSearchSchema>;
-
 export const Route = createFileRoute("/_auth/_layout/master-data/user")({
   component: RouteComponent,
-  validateSearch: (search: Record<string, unknown>): RouteSearch => {
-    return routeSearchSchema.parse(search);
-  },
+  validateSearch: zodValidator(routeSearchSchema),
   loaderDeps: ({ search: { page, limit, query } }) => ({ page, limit, query }),
   loader: ({ context: { queryClient }, deps: { page, limit, query } }) =>
     queryClient.ensureQueryData(
       usersPaginatedQueryOptions({ pageSize: limit, currentPage: page, query })
     ),
-});
-
-export const schema = z.object({
-  id: z.number(),
-  name: z.string(),
-  type: z.string(),
 });
 
 const emptyArray: any[] = [];
@@ -100,6 +64,11 @@ function RouteComponent() {
   const instansi = useQuery(api.instansi.getAllInstansi);
 
   const columns: ColumnDef<any>[] = [
+    {
+      id: "#",
+      header: "No",
+      cell: ({ row }) => (search.page - 1) * search.limit + row.index + 1,
+    },
     {
       accessorKey: "username",
       header: "Username",

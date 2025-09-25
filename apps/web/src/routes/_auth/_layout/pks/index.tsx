@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { routeSearchSchema } from "@/lib/utils";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
 import { useForm } from "@tanstack/react-form";
@@ -35,6 +36,7 @@ import {
   type ColumnDef,
   type VisibilityState,
 } from "@tanstack/react-table";
+import { zodValidator } from "@tanstack/zod-adapter";
 import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
@@ -43,12 +45,7 @@ import z from "zod";
 
 export const Route = createFileRoute("/_auth/_layout/pks/")({
   component: RouteComponent,
-});
-
-export const schema = z.object({
-  id: z.number(),
-  name: z.string(),
-  type: z.string(),
+  validateSearch: zodValidator(routeSearchSchema),
 });
 
 const emptyArray: any[] = [];
@@ -58,10 +55,12 @@ function RouteComponent() {
   const [openFromCalendar, setOpenFromCalendar] = useState(false);
   const [openToCalendar, setOpenToCalendar] = useState(false);
 
+  const search = Route.useSearch();
+
   const { results, status, loadMore } = usePaginatedQuery(
     api.pks.getAllPksPaginated,
     {},
-    { initialNumItems: 5 }
+    { initialNumItems: search.limit }
   );
 
   const sentraKiData = useQuery(api.sentra_ki.getAllSentraKi);
@@ -71,6 +70,11 @@ function RouteComponent() {
   const deletePks = useMutation(api.pks.deletePks);
 
   const columns: ColumnDef<(typeof results)[number]>[] = [
+    {
+      id: "#",
+      header: "No",
+      cell: ({ row }) => (search.page - 1) * search.limit + row.index + 1,
+    },
     {
       accessorKey: "no",
       header: "Nomor PKS",

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { routeSearchSchema } from "@/lib/utils";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
 import { useForm } from "@tanstack/react-form";
@@ -21,18 +22,14 @@ import {
   type ColumnDef,
   type VisibilityState,
 } from "@tanstack/react-table";
+import { zodValidator } from "@tanstack/zod-adapter";
 import { useMutation, usePaginatedQuery } from "convex/react";
 import { useState } from "react";
 import z from "zod";
 
 export const Route = createFileRoute("/_auth/_layout/master-data/instansi")({
   component: RouteComponent,
-});
-
-export const schema = z.object({
-  id: z.number(),
-  name: z.string(),
-  type: z.string(),
+  validateSearch: zodValidator(routeSearchSchema),
 });
 
 const emptyArray: any[] = [];
@@ -40,10 +37,12 @@ const emptyArray: any[] = [];
 function RouteComponent() {
   const [open, setOpen] = useState(false);
 
+  const search = Route.useSearch();
+
   const { results, status, loadMore } = usePaginatedQuery(
     api.instansi.getAllInstansiPaginated,
     {},
-    { initialNumItems: 5 }
+    { initialNumItems: search.limit }
   );
 
   const createInstansi = useMutation(api.instansi.createInstansi);
@@ -51,6 +50,11 @@ function RouteComponent() {
   const deleteInstansi = useMutation(api.instansi.deleteInstansi);
 
   const columns: ColumnDef<(typeof results)[number]>[] = [
+    {
+      id: "#",
+      header: "No",
+      cell: ({ row }) => (search.page - 1) * search.limit + row.index + 1,
+    },
     {
       accessorKey: "name",
       header: "Nama",
