@@ -22,6 +22,7 @@ import {
 import { routeSearchSchema } from "@/lib/utils";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
+import { KI_TYPES } from "@ki-admin-web/backend/convex/daftar_ki";
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -42,16 +43,6 @@ export const Route = createFileRoute("/_auth/_layout/admin-sentra/daftar-ki")({
 });
 
 const emptyArray: any[] = [];
-
-const jenisKi = [
-  "Merek",
-  "Paten",
-  "Hak Cipta",
-  "Indikasi Geografis",
-  "DTSL",
-  "Rahasia Dagang",
-  "KI Komunal",
-];
 
 const subJenisKi = ["Kelompok", "Rumah", "Ruang", "Tempat"];
 
@@ -389,7 +380,7 @@ function RouteComponent() {
                             <SelectValue placeholder="Pilih Instansi" />
                           </SelectTrigger>
                           <SelectContent>
-                            {jenisKi.map((data) => {
+                            {KI_TYPES.map((data) => {
                               return (
                                 <SelectItem value={data} key={data}>
                                   {data}

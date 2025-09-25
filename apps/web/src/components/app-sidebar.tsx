@@ -53,7 +53,7 @@ const menuKanwil = [
 const menuKi = [
   {
     title: "Dashboard",
-    url: "/admin-sentra/dashboard",
+    url: "/dashboard",
     icon: IconDashboard,
   },
   {

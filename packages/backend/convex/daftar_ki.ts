@@ -9,10 +9,140 @@ export const getAllDaftarKiPaginated = query({
   },
 });
 
-export const getAllDaftarKi = query({
+interface KiTypeCounts {
+  merek: number;
+  paten: number;
+  hakCipta: number;
+  indikasiGeografis: number;
+  dtsl: number;
+  rahasiaDagang: number;
+  kiKomunal: number;
+  total: number;
+}
+
+export const getKiTypeCounts = query({
   args: {},
-  handler: async (ctx) => {
-    return await ctx.db.query("daftar_ki").collect();
+  handler: async (ctx): Promise<KiTypeCounts> => {
+    const records = await ctx.db.query("daftar_ki").collect();
+
+    const counts: KiTypeCounts = {
+      merek: 0,
+      paten: 0,
+      hakCipta: 0,
+      indikasiGeografis: 0,
+      dtsl: 0,
+      rahasiaDagang: 0,
+      kiKomunal: 0,
+      total: 0,
+    };
+
+    records.forEach((record) => {
+      const recordType = record.type;
+
+      switch (recordType) {
+        case "Merek":
+          counts.merek += 1;
+          break;
+        case "Paten":
+          counts.paten += 1;
+          break;
+        case "Hak Cipta":
+          counts.hakCipta += 1;
+          break;
+        case "Indikasi Geografis":
+          counts.indikasiGeografis += 1;
+          break;
+        case "DTSL":
+          counts.dtsl += 1;
+          break;
+        case "Rahasia Dagang":
+          counts.rahasiaDagang += 1;
+          break;
+        case "KI Komunal":
+          counts.kiKomunal += 1;
+          break;
+      }
+
+      counts.total += 1;
+    });
+
+    return counts;
+  },
+});
+
+export const KI_TYPES = [
+  "Merek",
+  "Paten",
+  "Hak Cipta",
+  "Indikasi Geografis",
+  "DTSL",
+  "Rahasia Dagang",
+  "KI Komunal",
+] as const;
+
+export interface ChartDataByType {
+  month: string;
+  total: number;
+  [key: string]: number | string;
+}
+
+export const getChartDataByType = query({
+  args: {
+    year: v.number(),
+  },
+  handler: async (ctx, args): Promise<ChartDataByType[]> => {
+    const startDate = new Date(args.year, 0, 1).getTime();
+    const endDate = new Date(args.year, 11, 31, 23, 59, 59, 999).getTime();
+
+    const records = await ctx.db
+      .query("daftar_ki")
+      .filter((q) =>
+        q.and(
+          q.gte(q.field("_creationTime"), startDate),
+          q.lte(q.field("_creationTime"), endDate)
+        )
+      )
+      .collect();
+
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const monthlyData: ChartDataByType[] = monthNames.map((month) => {
+      const monthData: ChartDataByType = { month, total: 0 };
+
+      KI_TYPES.forEach((type) => {
+        monthData[type] = 0;
+      });
+
+      return monthData;
+    });
+
+    records.forEach((record) => {
+      const date = new Date(record._creationTime);
+      const monthIndex = date.getMonth();
+      const recordType = record.type;
+
+      monthlyData[monthIndex].total += 1;
+
+      if (KI_TYPES.includes(recordType as any)) {
+        monthlyData[monthIndex][recordType] =
+          (monthlyData[monthIndex][recordType] as number) + 1;
+      }
+    });
+
+    return monthlyData;
   },
 });
 
