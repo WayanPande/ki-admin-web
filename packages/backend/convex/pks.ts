@@ -1,6 +1,6 @@
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, MutationCtx, query } from "./_generated/server";
 
 export const getAllPksPaginated = query({
   args: { paginationOpts: paginationOptsValidator },
@@ -53,10 +53,37 @@ export const getAllPks = query({
   },
 });
 
+async function generateCustomId(
+  ctx: MutationCtx,
+  prefix: string
+): Promise<string> {
+  // Get the latest record to determine the next number
+  const latestRecord = await ctx.db
+    .query("pks")
+    .withIndex("by_custom_id") // You'll need to create this index
+    .order("desc")
+    .first();
+
+  let nextNumber = 1;
+
+  if (latestRecord && latestRecord.no) {
+    // Extract number from existing ID (e.g., "PKS-005" -> 5)
+    const match = latestRecord.no.match(new RegExp(`${prefix}-(\\d+)`));
+    if (match) {
+      nextNumber = parseInt(match[1]) + 1;
+    }
+  }
+
+  // Dynamic padding based on current highest number
+  const minDigits = Math.max(3, nextNumber.toString().length);
+  const formattedNumber = nextNumber.toString().padStart(minDigits, "0");
+
+  return `${prefix}-${formattedNumber}`;
+}
+
 export const createPks = mutation({
   args: {
     name: v.string(),
-    no: v.string(),
     description: v.optional(v.string()),
     document: v.optional(v.string()),
     expiry_date_from: v.string(),
@@ -69,7 +96,12 @@ export const createPks = mutation({
       throw new Error("Referenced sentra_ki does not exist");
     }
 
-    const pksId = await ctx.db.insert("pks", args);
+    const customId = await generateCustomId(ctx, "PKS");
+
+    const pksId = await ctx.db.insert("pks", {
+      ...args,
+      no: customId,
+    });
     return pksId;
   },
 });
@@ -79,7 +111,6 @@ export const updatePks = mutation({
     id: v.id("pks"),
     name_sentra_ki: v.optional(v.string()),
     name: v.optional(v.string()),
-    no: v.optional(v.string()),
     description: v.optional(v.string()),
     document: v.optional(v.string()),
     expiry_date_from: v.optional(v.string()),

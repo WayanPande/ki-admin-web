@@ -16,6 +16,7 @@ import { Route as DefaultLayoutTodosRouteImport } from './routes/_default/_layou
 import { Route as DefaultLayoutSignupRouteImport } from './routes/_default/_layout/signup'
 import { Route as DefaultLayoutLoginRouteImport } from './routes/_default/_layout/login'
 import { Route as AuthLayoutDashboardRouteImport } from './routes/_auth/_layout/dashboard'
+import { Route as AuthLayoutSentraKiIndexRouteImport } from './routes/_auth/_layout/sentra-ki/index'
 import { Route as AuthLayoutPksIndexRouteImport } from './routes/_auth/_layout/pks/index'
 import { Route as AuthLayoutMasterDataUserRouteImport } from './routes/_auth/_layout/master-data/user'
 import { Route as AuthLayoutMasterDataInstansiRouteImport } from './routes/_auth/_layout/master-data/instansi'
@@ -53,6 +54,11 @@ const AuthLayoutDashboardRoute = AuthLayoutDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const AuthLayoutSentraKiIndexRoute = AuthLayoutSentraKiIndexRouteImport.update({
+  id: '/sentra-ki/',
+  path: '/sentra-ki/',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
 const AuthLayoutPksIndexRoute = AuthLayoutPksIndexRouteImport.update({
   id: '/pks/',
   path: '/pks/',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
   '/master-data/user': typeof AuthLayoutMasterDataUserRoute
   '/pks': typeof AuthLayoutPksIndexRoute
+  '/sentra-ki': typeof AuthLayoutSentraKiIndexRoute
 }
 export interface FileRoutesByTo {
   '/dashboard': typeof AuthLayoutDashboardRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
   '/master-data/user': typeof AuthLayoutMasterDataUserRoute
   '/pks': typeof AuthLayoutPksIndexRoute
+  '/sentra-ki': typeof AuthLayoutSentraKiIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/_auth/_layout/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
   '/_auth/_layout/master-data/user': typeof AuthLayoutMasterDataUserRoute
   '/_auth/_layout/pks/': typeof AuthLayoutPksIndexRoute
+  '/_auth/_layout/sentra-ki/': typeof AuthLayoutSentraKiIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/master-data/instansi'
     | '/master-data/user'
     | '/pks'
+    | '/sentra-ki'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dashboard'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/master-data/instansi'
     | '/master-data/user'
     | '/pks'
+    | '/sentra-ki'
   id:
     | '__root__'
     | '/_auth/_layout'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/_auth/_layout/master-data/instansi'
     | '/_auth/_layout/master-data/user'
     | '/_auth/_layout/pks/'
+    | '/_auth/_layout/sentra-ki/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -195,6 +207,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutDashboardRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_auth/_layout/sentra-ki/': {
+      id: '/_auth/_layout/sentra-ki/'
+      path: '/sentra-ki'
+      fullPath: '/sentra-ki'
+      preLoaderRoute: typeof AuthLayoutSentraKiIndexRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
     '/_auth/_layout/pks/': {
       id: '/_auth/_layout/pks/'
       path: '/pks'
@@ -224,6 +243,7 @@ interface AuthLayoutRouteChildren {
   AuthLayoutMasterDataInstansiRoute: typeof AuthLayoutMasterDataInstansiRoute
   AuthLayoutMasterDataUserRoute: typeof AuthLayoutMasterDataUserRoute
   AuthLayoutPksIndexRoute: typeof AuthLayoutPksIndexRoute
+  AuthLayoutSentraKiIndexRoute: typeof AuthLayoutSentraKiIndexRoute
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
@@ -231,6 +251,7 @@ const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLayoutMasterDataInstansiRoute: AuthLayoutMasterDataInstansiRoute,
   AuthLayoutMasterDataUserRoute: AuthLayoutMasterDataUserRoute,
   AuthLayoutPksIndexRoute: AuthLayoutPksIndexRoute,
+  AuthLayoutSentraKiIndexRoute: AuthLayoutSentraKiIndexRoute,
 }
 
 const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(

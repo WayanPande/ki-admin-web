@@ -178,7 +178,6 @@ function RouteComponent() {
             id: value.id as Id<"pks">,
             sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
             name: value.name,
-            no: value.no,
             description: value.description,
             document: value.document,
             expiry_date_from: value.expiry_date_from,
@@ -194,13 +193,12 @@ function RouteComponent() {
           await createPks({
             sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
             name: value.name,
-            no: value.no,
             description: value.description,
             document: value.document,
             expiry_date_from: value.expiry_date_from,
             expiry_date_to: value.expiry_date_to,
           });
-          toast.success("PKS Berhasil Diubah");
+          toast.success("PKS Berhasil Ditambah");
         } catch (error) {
           toast.error("PKS Gagal Ditambah");
         }
@@ -212,7 +210,7 @@ function RouteComponent() {
       onSubmit: z.object({
         sentra_ki_id: z.string().min(2, "Name must be at least 2 characters"),
         name: z.string().min(2, "Name must be at least 2 characters"),
-        no: z.string().min(2, "Name must be at least 2 characters"),
+        no: z.any().and(z.any()),
         description: z.string().min(2, "Name must be at least 2 characters"),
         document: z.string().min(2, "Name must be at least 2 characters"),
         expiry_date_from: z
@@ -252,8 +250,13 @@ function RouteComponent() {
             }}
           >
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className="flex gap-3">
                 {formAdd.getFieldValue("id") ? "Ubah" : "Tambah"} PKS
+                {formAdd.getFieldValue("id") ? (
+                  <span className="text-muted-foreground text-sm">
+                    ({formAdd.getFieldValue("no")})
+                  </span>
+                ) : null}
               </DialogTitle>
             </DialogHeader>
             <div className="grid gap-4">
@@ -280,23 +283,6 @@ function RouteComponent() {
                         })}
                       </SelectContent>
                     </Select>
-                    <FieldInfo field={field} />
-                  </div>
-                )}
-              </formAdd.Field>
-
-              <formAdd.Field name="no">
-                {(field) => (
-                  <div className="grid gap-3">
-                    <Label htmlFor={field.name}>Nomor PKS</Label>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type="text"
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
                     <FieldInfo field={field} />
                   </div>
                 )}

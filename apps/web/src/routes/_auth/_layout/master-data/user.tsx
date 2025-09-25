@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { authClient } from "@/lib/auth-client";
-import { usersQueryOptions } from "@/lib/query/users";
+import { usersPaginatedQueryOptions } from "@/lib/query/users";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { useForm } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -74,7 +74,7 @@ export const Route = createFileRoute("/_auth/_layout/master-data/user")({
   loaderDeps: ({ search: { page, limit, query } }) => ({ page, limit, query }),
   loader: ({ context: { queryClient }, deps: { page, limit, query } }) =>
     queryClient.ensureQueryData(
-      usersQueryOptions({ pageSize: limit, currentPage: page, query })
+      usersPaginatedQueryOptions({ pageSize: limit, currentPage: page, query })
     ),
 });
 
@@ -91,7 +91,10 @@ function RouteComponent() {
   const search = Route.useSearch();
 
   const usersQuery = useSuspenseQuery(
-    usersQueryOptions({ pageSize: search.limit, currentPage: search.page })
+    usersPaginatedQueryOptions({
+      pageSize: search.limit,
+      currentPage: search.page,
+    })
   );
 
   const instansi = useQuery(api.instansi.getAllInstansi);

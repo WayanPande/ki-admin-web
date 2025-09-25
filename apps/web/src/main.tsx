@@ -1,14 +1,21 @@
+import { authClient } from "@/lib/auth-client";
+import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { ConvexReactClient } from "convex/react";
 import ReactDOM from "react-dom/client";
 import Loader from "./components/loader";
 import { routeTree } from "./routeTree.gen";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ConvexReactClient } from "convex/react";
-import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
-import { authClient } from "@/lib/auth-client";
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 30,
+    },
+  },
+});
 
 const router = createRouter({
   routeTree,

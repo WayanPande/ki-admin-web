@@ -1,7 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { authClient } from "../auth-client";
 
-export const usersQueryOptions = ({
+export const usersPaginatedQueryOptions = ({
   pageSize = 5,
   currentPage = 1,
   query,
@@ -11,7 +11,7 @@ export const usersQueryOptions = ({
   query?: string;
 }) =>
   queryOptions({
-    queryKey: ["users"],
+    queryKey: ["users", pageSize, currentPage, query],
     queryFn: async () => {
       const response = await authClient.admin.listUsers({
         query: {
@@ -19,6 +19,18 @@ export const usersQueryOptions = ({
           offset: (currentPage - 1) * pageSize,
           searchValue: query,
         },
+      });
+      return response;
+    },
+  });
+
+export const usersQueryOptions = ({ enabled = true }: { enabled?: boolean }) =>
+  queryOptions({
+    queryKey: ["users", "all"],
+    enabled,
+    queryFn: async () => {
+      const response = await authClient.admin.listUsers({
+        query: {},
       });
       return response;
     },

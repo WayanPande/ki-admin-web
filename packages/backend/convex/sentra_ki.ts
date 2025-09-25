@@ -1,6 +1,6 @@
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, MutationCtx, query } from "./_generated/server";
 
 export const getAllSentraKiPaginated = query({
   args: { paginationOpts: paginationOptsValidator },
@@ -15,7 +15,6 @@ export const getAllSentraKiPaginated = query({
 
         return {
           ...pks,
-
           instansi: instansi,
         };
       })
@@ -48,6 +47,34 @@ export const getAllSentraKi = query({
   },
 });
 
+async function generateCustomId(
+  ctx: MutationCtx,
+  prefix: string
+): Promise<string> {
+  // Get the latest record to determine the next number
+  const latestRecord = await ctx.db
+    .query("sentra_ki")
+    .withIndex("by_custom_id") // You'll need to create this index
+    .order("desc")
+    .first();
+
+  let nextNumber = 1;
+
+  if (latestRecord && latestRecord.custom_id) {
+    // Extract number from existing ID (e.g., "PKS-005" -> 5)
+    const match = latestRecord.custom_id.match(new RegExp(`${prefix}-(\\d+)`));
+    if (match) {
+      nextNumber = parseInt(match[1]) + 1;
+    }
+  }
+
+  // Dynamic padding based on current highest number
+  const minDigits = Math.max(3, nextNumber.toString().length);
+  const formattedNumber = nextNumber.toString().padStart(minDigits, "0");
+
+  return `${prefix}-${formattedNumber}`;
+}
+
 export const createSentraKi = mutation({
   args: {
     name: v.string(),
@@ -56,6 +83,10 @@ export const createSentraKi = mutation({
     city: v.string(),
     latitude: v.string(),
     longitude: v.string(),
+    pic_name: v.string(),
+    pic_phone: v.string(),
+    pic_email: v.string(),
+    pic_id: v.string(),
   },
   handler: async (ctx, args) => {
     const instansi = await ctx.db.get(args.instansi_id);
@@ -63,7 +94,12 @@ export const createSentraKi = mutation({
       throw new Error("Referenced instansi does not exist");
     }
 
-    const sentraKiId = await ctx.db.insert("sentra_ki", args);
+    const customId = await generateCustomId(ctx, "SKI");
+
+    const sentraKiId = await ctx.db.insert("sentra_ki", {
+      ...args,
+      custom_id: customId,
+    });
     return sentraKiId;
   },
 });
@@ -77,6 +113,10 @@ export const updateSentraKi = mutation({
     city: v.optional(v.string()),
     latitude: v.optional(v.string()),
     longitude: v.optional(v.string()),
+    pic_name: v.optional(v.string()),
+    pic_phone: v.optional(v.string()),
+    pic_email: v.optional(v.string()),
+    pic_id: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;

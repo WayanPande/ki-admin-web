@@ -30,7 +30,7 @@ const menuKanwil = [
   },
   {
     title: "Sentra KI",
-    url: "#",
+    url: "/sentra-ki",
     icon: IconListDetails,
   },
   {
