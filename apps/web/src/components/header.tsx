@@ -1,4 +1,7 @@
 import { Link } from "@tanstack/react-router";
+import { MenuIcon } from "lucide-react";
+import { ModeToggle } from "./mode-toggle";
+import { Button } from "./ui/button";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -6,7 +9,6 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
-import { Button } from "./ui/button";
 import {
   Sheet,
   SheetContent,
@@ -14,12 +16,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
-import { MenuIcon } from "lucide-react";
-import { ModeToggle } from "./mode-toggle";
 
 export default function Header() {
   return (
-    <section className="py-4">
+    <section className="py-4 px-4 xl:px-10">
       <div className="container mx-auto">
         <nav className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
@@ -31,7 +31,7 @@ export default function Header() {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuLink
-                  to="/dashboard"
+                  to="/"
                   className={navigationMenuTriggerStyle()}
                 >
                   Beranda
@@ -39,7 +39,7 @@ export default function Header() {
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuLink
-                  to="/"
+                  to="/sentra-ki"
                   className={navigationMenuTriggerStyle()}
                 >
                   Sentra KI
