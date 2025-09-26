@@ -1,4 +1,5 @@
 import {
+  IconBuilding,
   IconChartBar,
   IconDashboard,
   IconInnerShadowTop,
@@ -44,9 +45,9 @@ const menuKanwil = [
     icon: IconUsers,
   },
   {
-    title: "Master Data",
+    title: "Master Data Instansi",
     url: "/master-data/instansi",
-    icon: IconUsers,
+    icon: IconBuilding,
   },
 ];
 
