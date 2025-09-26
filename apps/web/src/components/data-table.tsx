@@ -48,7 +48,7 @@ export function DataTable<T>({ table }: DataTableProps<T>) {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
                 <IconLayoutColumns />
-                <span className="hidden lg:inline">Customize Columns</span>
+                <span className="hidden lg:inline">Kustomisasi Kolom</span>
                 <span className="lg:hidden">Columns</span>
                 <IconChevronDown />
               </Button>
