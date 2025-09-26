@@ -42,7 +42,7 @@ export default function Header() {
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuLink
-                  to="/sentra-ki"
+                  to="/sentra-ki-dashboard"
                   activeProps={{
                     className: "bg-accent text-accent-foreground",
                   }}

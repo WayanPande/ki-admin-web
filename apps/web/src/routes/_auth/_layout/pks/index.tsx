@@ -29,7 +29,7 @@ import { routeSearchSchema } from "@/lib/utils";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
 import { useForm } from "@tanstack/react-form";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   getCoreRowModel,
   useReactTable,
@@ -39,7 +39,7 @@ import {
 import { zodValidator } from "@tanstack/zod-adapter";
 import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import { ChevronDownIcon } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -57,11 +57,17 @@ function RouteComponent() {
 
   const search = Route.useSearch();
 
+  const navigate = useNavigate({ from: Route.fullPath });
+
+  const itemsToLoad = search.page * search.limit;
+
   const { results, status, loadMore } = usePaginatedQuery(
     api.pks.getAllPksPaginated,
     {},
-    { initialNumItems: search.limit }
+    { initialNumItems: itemsToLoad }
   );
+
+  const pksData = useQuery(api.pks.getAllPks);
 
   const sentraKiData = useQuery(api.sentra_ki.getAllSentraKi);
 
@@ -153,15 +159,79 @@ function RouteComponent() {
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
+  const pagination = useMemo(
+    () => ({
+      pageIndex: search.page - 1,
+      pageSize: search.limit,
+    }),
+    [search.page, search.limit]
+  );
+
+  const paginationInfo = useMemo(() => {
+    const totalLoadedItems = results?.length ?? 0;
+    const currentPageItems =
+      results?.slice(
+        (search.page - 1) * search.limit,
+        search.page * search.limit
+      ) ?? emptyArray;
+
+    const canLoadMoreFromConvex = status === "CanLoadMore";
+    const isLoadingFromConvex =
+      status === "LoadingMore" || status === "LoadingFirstPage";
+    const isExhausted = status === "Exhausted";
+
+    let rowCount: number | undefined;
+    let pageCount: number | undefined;
+
+    if (isExhausted) {
+      rowCount = totalLoadedItems;
+      pageCount = Math.max(1, Math.ceil(totalLoadedItems / search.limit));
+    } else {
+      pageCount = -1;
+    }
+
+    return {
+      currentPageItems,
+      canLoadMoreFromConvex,
+      isLoadingFromConvex,
+      isExhausted,
+      rowCount,
+      pageCount,
+      totalLoadedItems,
+    };
+  }, [results, search.page, search.limit, status]);
+
   const table = useReactTable({
-    data: results ?? emptyArray,
+    data: paginationInfo.currentPageItems,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     state: {
       columnVisibility,
+      pagination,
     },
     manualPagination: true,
+    rowCount: pksData?.length ?? 0,
+    onPaginationChange: (updater) => {
+      const newPaginationState =
+        typeof updater === "function" ? updater(pagination) : updater;
+
+      const newPage = newPaginationState.pageIndex + 1;
+      const newLimit = newPaginationState.pageSize;
+
+      navigate({
+        search: { ...search, page: newPage, limit: newLimit },
+      });
+
+      const requiredItems = newPage * newLimit;
+      if (
+        requiredItems > paginationInfo.totalLoadedItems &&
+        paginationInfo.canLoadMoreFromConvex
+      ) {
+        const itemsToLoad = requiredItems - paginationInfo.totalLoadedItems;
+        loadMore(itemsToLoad);
+      }
+    },
   });
 
   const formAdd = useForm({

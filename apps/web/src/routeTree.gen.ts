@@ -14,6 +14,7 @@ import { Route as AuthLayoutRouteImport } from './routes/_auth/_layout'
 import { Route as DefaultLayoutIndexRouteImport } from './routes/_default/_layout/index'
 import { Route as DefaultLayoutTodosRouteImport } from './routes/_default/_layout/todos'
 import { Route as DefaultLayoutSignupRouteImport } from './routes/_default/_layout/signup'
+import { Route as DefaultLayoutSentraKiDashboardRouteImport } from './routes/_default/_layout/sentra-ki-dashboard'
 import { Route as DefaultLayoutLoginRouteImport } from './routes/_default/_layout/login'
 import { Route as AuthLayoutDashboardRouteImport } from './routes/_auth/_layout/dashboard'
 import { Route as AuthLayoutSentraKiIndexRouteImport } from './routes/_auth/_layout/sentra-ki/index'
@@ -45,6 +46,12 @@ const DefaultLayoutSignupRoute = DefaultLayoutSignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => DefaultLayoutRoute,
 } as any)
+const DefaultLayoutSentraKiDashboardRoute =
+  DefaultLayoutSentraKiDashboardRouteImport.update({
+    id: '/sentra-ki-dashboard',
+    path: '/sentra-ki-dashboard',
+    getParentRoute: () => DefaultLayoutRoute,
+  } as any)
 const DefaultLayoutLoginRoute = DefaultLayoutLoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -87,6 +94,7 @@ const AuthLayoutAdminSentraDaftarKiRoute =
 export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthLayoutDashboardRoute
   '/login': typeof DefaultLayoutLoginRoute
+  '/sentra-ki-dashboard': typeof DefaultLayoutSentraKiDashboardRoute
   '/signup': typeof DefaultLayoutSignupRoute
   '/todos': typeof DefaultLayoutTodosRoute
   '/': typeof DefaultLayoutIndexRoute
@@ -99,6 +107,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/dashboard': typeof AuthLayoutDashboardRoute
   '/login': typeof DefaultLayoutLoginRoute
+  '/sentra-ki-dashboard': typeof DefaultLayoutSentraKiDashboardRoute
   '/signup': typeof DefaultLayoutSignupRoute
   '/todos': typeof DefaultLayoutTodosRoute
   '/': typeof DefaultLayoutIndexRoute
@@ -114,6 +123,7 @@ export interface FileRoutesById {
   '/_default/_layout': typeof DefaultLayoutRouteWithChildren
   '/_auth/_layout/dashboard': typeof AuthLayoutDashboardRoute
   '/_default/_layout/login': typeof DefaultLayoutLoginRoute
+  '/_default/_layout/sentra-ki-dashboard': typeof DefaultLayoutSentraKiDashboardRoute
   '/_default/_layout/signup': typeof DefaultLayoutSignupRoute
   '/_default/_layout/todos': typeof DefaultLayoutTodosRoute
   '/_default/_layout/': typeof DefaultLayoutIndexRoute
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/dashboard'
     | '/login'
+    | '/sentra-ki-dashboard'
     | '/signup'
     | '/todos'
     | '/'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
   to:
     | '/dashboard'
     | '/login'
+    | '/sentra-ki-dashboard'
     | '/signup'
     | '/todos'
     | '/'
@@ -154,6 +166,7 @@ export interface FileRouteTypes {
     | '/_default/_layout'
     | '/_auth/_layout/dashboard'
     | '/_default/_layout/login'
+    | '/_default/_layout/sentra-ki-dashboard'
     | '/_default/_layout/signup'
     | '/_default/_layout/todos'
     | '/_default/_layout/'
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof DefaultLayoutSignupRouteImport
+      parentRoute: typeof DefaultLayoutRoute
+    }
+    '/_default/_layout/sentra-ki-dashboard': {
+      id: '/_default/_layout/sentra-ki-dashboard'
+      path: '/sentra-ki-dashboard'
+      fullPath: '/sentra-ki-dashboard'
+      preLoaderRoute: typeof DefaultLayoutSentraKiDashboardRouteImport
       parentRoute: typeof DefaultLayoutRoute
     }
     '/_default/_layout/login': {
@@ -282,6 +302,7 @@ const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
 
 interface DefaultLayoutRouteChildren {
   DefaultLayoutLoginRoute: typeof DefaultLayoutLoginRoute
+  DefaultLayoutSentraKiDashboardRoute: typeof DefaultLayoutSentraKiDashboardRoute
   DefaultLayoutSignupRoute: typeof DefaultLayoutSignupRoute
   DefaultLayoutTodosRoute: typeof DefaultLayoutTodosRoute
   DefaultLayoutIndexRoute: typeof DefaultLayoutIndexRoute
@@ -289,6 +310,7 @@ interface DefaultLayoutRouteChildren {
 
 const DefaultLayoutRouteChildren: DefaultLayoutRouteChildren = {
   DefaultLayoutLoginRoute: DefaultLayoutLoginRoute,
+  DefaultLayoutSentraKiDashboardRoute: DefaultLayoutSentraKiDashboardRoute,
   DefaultLayoutSignupRoute: DefaultLayoutSignupRoute,
   DefaultLayoutTodosRoute: DefaultLayoutTodosRoute,
   DefaultLayoutIndexRoute: DefaultLayoutIndexRoute,
