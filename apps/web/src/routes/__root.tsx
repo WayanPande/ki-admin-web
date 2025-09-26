@@ -1,7 +1,7 @@
-import Header from "@/components/header";
 import Loader from "@/components/loader";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import type { QueryClient } from "@tanstack/react-query";
 import {
   HeadContent,
   Outlet,
@@ -10,7 +10,6 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import "../index.css";
-import type { QueryClient } from "@tanstack/react-query";
 
 export interface RouterAppContext {
   queryClient: QueryClient;
@@ -47,9 +46,9 @@ function RootComponent() {
       <HeadContent />
       <ThemeProvider
         attribute="class"
-        defaultTheme="dark"
+        defaultTheme="light"
         disableTransitionOnChange
-        storageKey="vite-ui-theme"
+        storageKey="ki-admin-web-theme"
       >
         <div className="grid grid-rows-[auto_1fr] h-svh">
           {isFetching ? <Loader /> : <Outlet />}
