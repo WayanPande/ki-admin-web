@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/data-table";
+import FieldInfo from "@/components/field-info";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -205,8 +206,8 @@ function RouteComponent() {
     },
     validators: {
       onSubmit: z.object({
-        name: z.string().min(2, "Name must be at least 2 characters"),
-        type: z.string().min(2, "Name must be at least 2 characters"),
+        name: z.string().min(2, "Silahkan Isi Nama Instansi"),
+        type: z.string().min(2, "Silahkan Isi Jenis Instansi"),
         id: z.any().and(z.any()),
       }),
     },
@@ -257,11 +258,7 @@ function RouteComponent() {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
-                    {field.state.meta.errors.map((error) => (
-                      <p key={error?.message} className="text-red-500">
-                        {error?.message}
-                      </p>
-                    ))}
+                    <FieldInfo field={field} />
                   </div>
                 )}
               </formAdd.Field>
@@ -278,11 +275,7 @@ function RouteComponent() {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
-                    {field.state.meta.errors.map((error) => (
-                      <p key={error?.message} className="text-red-500">
-                        {error?.message}
-                      </p>
-                    ))}
+                    <FieldInfo field={field} />
                   </div>
                 )}
               </formAdd.Field>

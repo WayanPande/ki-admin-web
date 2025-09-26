@@ -214,13 +214,13 @@ function RouteComponent() {
     },
     validators: {
       onSubmit: z.object({
-        username: z.string().min(2, "Name must be at least 2 characters"),
-        name: z.string().min(2, "Name must be at least 2 characters"),
-        password: z.string().min(8, "Password must be at least 8 characters"),
-        email: z.email("Invalid email address"),
-        phoneNumber: z.string().min(2, "Name must be at least 2 characters"),
+        username: z.string().min(2, "Silahkan Isi Username"),
+        name: z.string().min(2, "Silahkan Isi Nama"),
+        password: z.string().min(8, "Silahkan Isi Kata Sandi"),
+        email: z.email("Silahkan Isi Email"),
+        phoneNumber: z.string().min(2, "Silahkan Isi Nomor Telepon"),
         id: z.any().and(z.any()),
-        instansi: z.string().min(2, "Name must be at least 2 characters"),
+        instansi: z.string().min(2, "Silahkan Pilih Instansi"),
       }),
     },
   });

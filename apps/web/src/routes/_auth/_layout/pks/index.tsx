@@ -282,15 +282,13 @@ function RouteComponent() {
     },
     validators: {
       onSubmit: z.object({
-        sentra_ki_id: z.string().min(2, "Name must be at least 2 characters"),
-        name: z.string().min(2, "Name must be at least 2 characters"),
+        sentra_ki_id: z.string().min(2, "Silahkan Pilih Sentra KI"),
+        name: z.string().min(2, "Silahkan Isi Nama PKS"),
         no: z.any().and(z.any()),
-        description: z.string().min(2, "Name must be at least 2 characters"),
-        document: z.string().min(2, "Name must be at least 2 characters"),
-        expiry_date_from: z
-          .string()
-          .min(2, "Name must be at least 2 characters"),
-        expiry_date_to: z.string().min(2, "Name must be at least 2 characters"),
+        description: z.string().min(2, "Silahkan Isi Deskripsi PKS"),
+        document: z.string().min(2, "Silahkan Pilih Dokumen"),
+        expiry_date_from: z.string().min(2, "Silahkan Pilih Tanggal"),
+        expiry_date_to: z.string().min(2, "Silahkan Pilih Tanggal"),
         id: z.any().and(z.any()),
       }),
     },

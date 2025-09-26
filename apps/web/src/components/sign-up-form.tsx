@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,9 +8,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { useForm } from "@tanstack/react-form";
 import { authClient } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
+import { useForm } from "@tanstack/react-form";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -53,10 +53,10 @@ export function SignUpForm({
     },
     validators: {
       onSubmit: z.object({
-        name: z.string().min(2, "Name must be at least 2 characters"),
-        email: z.email("Invalid email address"),
-        password: z.string().min(8, "Password must be at least 8 characters"),
-        username: z.string().min(2, "Name must be at least 2 characters"),
+        name: z.string().min(2, "Silahkan Isi Nama"),
+        email: z.email("Email Tidak Valid"),
+        password: z.string().min(8, "Password Minimal 8 Karakter"),
+        username: z.string().min(2, "Silahkan Isi Username"),
       }),
     },
   });

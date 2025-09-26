@@ -259,20 +259,16 @@ function RouteComponent() {
     },
     validators: {
       onSubmit: z.object({
-        nomor_permohonan: z
-          .string()
-          .min(2, "Name must be at least 2 characters"),
-        name: z.string().min(2, "Name must be at least 2 characters"),
-        type: z.string().min(2, "Name must be at least 2 characters"),
-        sub_type: z.string().min(2, "Name must be at least 2 characters"),
-        name_pemilik: z.string().min(2, "Name must be at least 2 characters"),
-        address_pemilik: z
-          .string()
-          .min(2, "Name must be at least 2 characters"),
+        nomor_permohonan: z.string().min(2, "Silahkan Isi Nomor Permohonan"),
+        name: z.string().min(2, "Silahkan Isi Nama"),
+        type: z.string().min(2, "Silahkan Pilih Jenis KI"),
+        sub_type: z.string().min(2, "Silahkan Pilih Sub Jenis KI"),
+        name_pemilik: z.string().min(2, "Silahkan Isi Nama Pemilik"),
+        address_pemilik: z.string().min(2, "Silahkan Isi Alamat Pemilik"),
         pemberi_fasilitas: z
           .string()
-          .min(2, "Name must be at least 2 characters"),
-        document: z.string().min(2, "Name must be at least 2 characters"),
+          .min(2, "Silahkan Masukkan Pemberi Fasilitas"),
+        document: z.string().min(2, "Silahkan Masukkan Dokumen"),
         pic_name: z.any().and(z.any()),
         pic_phone: z.any().and(z.any()),
         pic_email: z.any().and(z.any()),
