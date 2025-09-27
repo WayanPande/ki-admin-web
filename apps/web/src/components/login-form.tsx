@@ -11,9 +11,10 @@ import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { useForm } from "@tanstack/react-form";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import z from "zod";
+import FieldInfo from "./field-info";
 
 export function LoginForm({
   className,
@@ -84,11 +85,7 @@ export function LoginForm({
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
-                    {field.state.meta.errors.map((error) => (
-                      <p key={error?.message} className="text-red-500">
-                        {error?.message}
-                      </p>
-                    ))}
+                    <FieldInfo field={field} />
                   </div>
                 )}
               </form.Field>
@@ -104,11 +101,7 @@ export function LoginForm({
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
-                    {field.state.meta.errors.map((error) => (
-                      <p key={error?.message} className="text-red-500">
-                        {error?.message}
-                      </p>
-                    ))}
+                    <FieldInfo field={field} />
                   </div>
                 )}
               </form.Field>
@@ -125,9 +118,6 @@ export function LoginForm({
                     </Button>
                   )}
                 </form.Subscribe>
-                <Button variant={"outline"}>
-                  <Link to="/signup">Daftar</Link>
-                </Button>
               </div>
             </div>
           </form>

@@ -65,9 +65,6 @@ export default function Header() {
             <Link to="/login">
               <Button variant="outline">Masuk</Button>
             </Link>
-            <Link to="/signup">
-              <Button variant="default">Daftar</Button>
-            </Link>
           </div>
           <div className="flex items-center gap-2">
             <ModeToggle />
@@ -104,9 +101,6 @@ export default function Header() {
                 <div className="mt-6 flex flex-col gap-4">
                   <Link to="/login">
                     <Button variant="outline">Masuk</Button>
-                  </Link>
-                  <Link to="/signup">
-                    <Button variant="default">Daftar</Button>
                   </Link>
                 </div>
               </div>
