@@ -32,7 +32,9 @@ export function StatikPencatatanKi() {
     <Card>
       <CardHeader>
         <CardTitle>Statistik Pencatatan/Pendaftaran KI di Bali</CardTitle>
-        <CardDescription>Januari - Desember 2025</CardDescription>
+        <CardDescription>
+          Januari - Desember {new Date().getFullYear()}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

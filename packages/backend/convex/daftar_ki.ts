@@ -91,18 +91,16 @@ export const getChartDataByType = query({
     year: v.number(),
   },
   handler: async (ctx, args): Promise<ChartDataByType[]> => {
-    const startDate = new Date(args.year, 0, 1).getTime();
-    const endDate = new Date(args.year, 11, 31, 23, 59, 59, 999).getTime();
+    const allRecords = await ctx.db.query("daftar_ki").collect();
 
-    const records = await ctx.db
-      .query("daftar_ki")
-      .filter((q) =>
-        q.and(
-          q.gte(q.field("_creationTime"), startDate),
-          q.lte(q.field("_creationTime"), endDate)
-        )
-      )
-      .collect();
+    const records = allRecords.filter((record) => {
+      if (!record.registration_date) return false;
+
+      const [month, day, year] = record.registration_date
+        .split("/")
+        .map(Number);
+      return year === args.year;
+    });
 
     const monthNames = [
       "January",
@@ -121,19 +119,19 @@ export const getChartDataByType = query({
 
     const monthlyData: ChartDataByType[] = monthNames.map((month) => {
       const monthData: ChartDataByType = { month, total: 0 };
-
       KI_TYPES.forEach((type) => {
         monthData[type] = 0;
       });
-
       return monthData;
     });
 
     records.forEach((record) => {
-      const date = new Date(record._creationTime);
-      const monthIndex = date.getMonth();
-      const recordType = record.type;
+      const [month, day, year] = record.registration_date
+        .split("/")
+        .map(Number);
+      const monthIndex = month - 1;
 
+      const recordType = record.type;
       monthlyData[monthIndex].total += 1;
 
       if (KI_TYPES.includes(recordType as any)) {
