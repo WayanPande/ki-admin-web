@@ -586,21 +586,31 @@ function RouteComponent() {
               </div>
             </div>
             <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline" type="button">
-                  Cancel
-                </Button>
-              </DialogClose>
-              <formAdd.Subscribe>
-                {(state) => (
-                  <Button
-                    type="submit"
-                    disabled={!state.canSubmit || state.isSubmitting}
-                  >
-                    {state.isSubmitting ? "Submitting..." : "Simpan"}
+              {isPreview ? (
+                <DialogClose asChild>
+                  <Button variant="outline" type="button">
+                    Close
                   </Button>
-                )}
-              </formAdd.Subscribe>
+                </DialogClose>
+              ) : (
+                <>
+                  <DialogClose asChild>
+                    <Button variant="outline" type="button">
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <formAdd.Subscribe>
+                    {(state) => (
+                      <Button
+                        type="submit"
+                        disabled={!state.canSubmit || state.isSubmitting}
+                      >
+                        {state.isSubmitting ? "Submitting..." : "Simpan"}
+                      </Button>
+                    )}
+                  </formAdd.Subscribe>
+                </>
+              )}
             </DialogFooter>
           </form>
         </DialogContent>
