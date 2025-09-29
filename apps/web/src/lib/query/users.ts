@@ -2,7 +2,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { authClient } from "../auth-client";
 
 export const usersPaginatedQueryOptions = ({
-  pageSize = 5,
+  pageSize = 10,
   currentPage = 1,
   query,
 }: {

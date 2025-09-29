@@ -25,7 +25,7 @@ import { routeSearchSchema } from "@/lib/utils";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { useForm } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   getCoreRowModel,
   useReactTable,
@@ -54,10 +54,13 @@ function RouteComponent() {
   const [open, setOpen] = useState(false);
   const search = Route.useSearch();
 
+  const navigate = useNavigate({ from: Route.fullPath });
+
   const usersQuery = useSuspenseQuery(
     usersPaginatedQueryOptions({
       pageSize: search.limit,
       currentPage: search.page,
+      query: search.query,
     })
   );
 
@@ -139,8 +142,16 @@ function RouteComponent() {
     onColumnVisibilityChange: setColumnVisibility,
     state: {
       columnVisibility,
+      globalFilter: search.query,
     },
     manualPagination: true,
+    onGlobalFilterChange: (value) => {
+      if (value !== search.query) {
+        navigate({
+          search: { ...search, query: value, page: 1 },
+        });
+      }
+    },
   });
 
   const formAdd = useForm({
@@ -239,7 +250,7 @@ function RouteComponent() {
             Add New
           </Button>
         </div>
-        <DataTable table={table} />
+        <DataTable table={table} searchPlaceHolder="Nama User..." />
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>

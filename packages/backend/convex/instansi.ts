@@ -3,9 +3,25 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 export const getAllInstansiPaginated = query({
-  args: { paginationOpts: paginationOptsValidator },
+  args: {
+    paginationOpts: paginationOptsValidator,
+    searchTerm: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
-    return await ctx.db.query("instansi").paginate(args.paginationOpts);
+    let result;
+
+    if (args.searchTerm && args.searchTerm.trim() !== "") {
+      const searchLower = args.searchTerm.toLowerCase();
+
+      result = await ctx.db
+        .query("instansi")
+        .withSearchIndex("instansi_name", (q) => q.search("name", searchLower))
+        .paginate(args.paginationOpts);
+    } else {
+      result = await ctx.db.query("instansi").paginate(args.paginationOpts);
+    }
+
+    return result;
   },
 });
 

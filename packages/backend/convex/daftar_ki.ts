@@ -3,9 +3,27 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 export const getAllDaftarKiPaginated = query({
-  args: { paginationOpts: paginationOptsValidator },
+  args: {
+    paginationOpts: paginationOptsValidator,
+    searchTerm: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
-    return await ctx.db.query("daftar_ki").paginate(args.paginationOpts);
+    let result;
+
+    if (args.searchTerm && args.searchTerm.trim() !== "") {
+      const searchLower = args.searchTerm.toLowerCase();
+
+      result = await ctx.db
+        .query("daftar_ki")
+        .withSearchIndex("no_permohonan", (q) =>
+          q.search("nomor_permohonan", searchLower)
+        )
+        .paginate(args.paginationOpts);
+    } else {
+      result = await ctx.db.query("daftar_ki").paginate(args.paginationOpts);
+    }
+
+    return result;
   },
 });
 

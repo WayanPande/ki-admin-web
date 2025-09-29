@@ -54,6 +54,7 @@ function RouteComponent() {
   const [open, setOpen] = useState(false);
   const [openFromCalendar, setOpenFromCalendar] = useState(false);
   const [openToCalendar, setOpenToCalendar] = useState(false);
+  const [isPreview, setIsPreview] = useState(false);
 
   const search = Route.useSearch();
 
@@ -63,7 +64,9 @@ function RouteComponent() {
 
   const { results, status, loadMore } = usePaginatedQuery(
     api.pks.getAllPksPaginated,
-    {},
+    {
+      searchTerm: search.query,
+    },
     { initialNumItems: itemsToLoad }
   );
 
@@ -116,6 +119,30 @@ function RouteComponent() {
 
         return (
           <div className="flex gap-2">
+            <Button
+              size={"sm"}
+              variant={"outline"}
+              onClick={() => {
+                formAdd.reset();
+
+                formAdd.setFieldValue("id", data._id);
+                formAdd.setFieldValue("sentra_ki_id", data.sentra_ki_id);
+                formAdd.setFieldValue("name", data.name);
+                formAdd.setFieldValue("no", data.no);
+                formAdd.setFieldValue("description", data.description ?? "");
+                formAdd.setFieldValue("document", data.document ?? "");
+                formAdd.setFieldValue(
+                  "expiry_date_from",
+                  data.expiry_date_from
+                );
+                formAdd.setFieldValue("expiry_date_to", data.expiry_date_to);
+
+                setIsPreview(true);
+                setOpen(true);
+              }}
+            >
+              Detail
+            </Button>
             <Button
               size={"sm"}
               onClick={() => {
@@ -209,9 +236,17 @@ function RouteComponent() {
     state: {
       columnVisibility,
       pagination,
+      globalFilter: search.query,
     },
     manualPagination: true,
     rowCount: pksData?.length ?? 0,
+    onGlobalFilterChange: (value) => {
+      if (value !== search.query) {
+        navigate({
+          search: { ...search, query: value, page: 1 },
+        });
+      }
+    },
     onPaginationChange: (updater) => {
       const newPaginationState =
         typeof updater === "function" ? updater(pagination) : updater;
@@ -308,10 +343,18 @@ function RouteComponent() {
             Add New
           </Button>
         </div>
-        <DataTable table={table} />
+        <DataTable table={table} searchPlaceHolder="No PKS..." />
       </div>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog
+        open={open}
+        onOpenChange={(open) => {
+          setOpen(open);
+          if (!open) {
+            setIsPreview(false);
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-[425px]" aria-describedby="dialog">
           <form
             className="space-y-6"
@@ -323,7 +366,11 @@ function RouteComponent() {
           >
             <DialogHeader>
               <DialogTitle className="flex gap-3">
-                {formAdd.getFieldValue("id") ? "Ubah" : "Tambah"} PKS
+                {isPreview ? (
+                  "Detail PKS"
+                ) : (
+                  <>{formAdd.getFieldValue("id") ? "Ubah" : "Tambah"} PKS</>
+                )}
                 {formAdd.getFieldValue("id") ? (
                   <span className="text-muted-foreground text-sm">
                     ({formAdd.getFieldValue("no")})
@@ -341,6 +388,7 @@ function RouteComponent() {
                         field.handleChange(data);
                       }}
                       defaultValue={field.state.value}
+                      disabled={isPreview}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Pilih Sentra Ki" />
@@ -370,6 +418,7 @@ function RouteComponent() {
                       type="text"
                       value={field.state.value}
                       onBlur={field.handleBlur}
+                      disabled={isPreview}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
                     <FieldInfo field={field} />
@@ -387,6 +436,7 @@ function RouteComponent() {
                       type="text"
                       value={field.state.value}
                       onBlur={field.handleBlur}
+                      disabled={isPreview}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
                     <FieldInfo field={field} />
@@ -408,6 +458,7 @@ function RouteComponent() {
                             variant="outline"
                             id="date"
                             className="w-full justify-between font-normal"
+                            disabled={isPreview}
                           >
                             {field.state.value
                               ? field.state.value
@@ -449,6 +500,7 @@ function RouteComponent() {
                             variant="outline"
                             id="date"
                             className="w-full justify-between font-normal"
+                            disabled={isPreview}
                           >
                             {field.state.value
                               ? field.state.value
@@ -489,6 +541,7 @@ function RouteComponent() {
                       type="file"
                       accept=".pdf"
                       onBlur={field.handleBlur}
+                      disabled={isPreview}
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
@@ -502,21 +555,31 @@ function RouteComponent() {
               </formAdd.Field>
             </div>
             <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline" type="button">
-                  Cancel
-                </Button>
-              </DialogClose>
-              <formAdd.Subscribe>
-                {(state) => (
-                  <Button
-                    type="submit"
-                    disabled={!state.canSubmit || state.isSubmitting}
-                  >
-                    {state.isSubmitting ? "Submitting..." : "Simpan"}
+              {isPreview ? (
+                <DialogClose asChild>
+                  <Button variant="outline" type="button">
+                    Close
                   </Button>
-                )}
-              </formAdd.Subscribe>
+                </DialogClose>
+              ) : (
+                <>
+                  <DialogClose asChild>
+                    <Button variant="outline" type="button">
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <formAdd.Subscribe>
+                    {(state) => (
+                      <Button
+                        type="submit"
+                        disabled={!state.canSubmit || state.isSubmitting}
+                      >
+                        {state.isSubmitting ? "Submitting..." : "Simpan"}
+                      </Button>
+                    )}
+                  </formAdd.Subscribe>
+                </>
+              )}
             </DialogFooter>
           </form>
         </DialogContent>

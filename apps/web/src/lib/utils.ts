@@ -18,11 +18,11 @@ export const routeSearchSchema = z.object({
     .refine((val) => val > 0, { message: "Page must be greater than 0" }),
   limit: z
     .union([z.string(), z.number(), z.undefined()])
-    .default(5)
+    .default(10)
     .transform((val) => {
-      if (val === undefined) return 5;
+      if (val === undefined) return 10;
       const num = typeof val === "string" ? Number(val) : val;
-      return isNaN(num) ? 5 : num;
+      return isNaN(num) ? 10 : num;
     })
     .refine((val) => val > 0 && val <= 100, {
       message: "Limit must be between 1 and 100",

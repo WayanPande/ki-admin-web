@@ -30,7 +30,7 @@ import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
 
 import { useForm, useStore } from "@tanstack/react-form";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   getCoreRowModel,
   useReactTable,
@@ -72,9 +72,13 @@ function RouteComponent() {
   const search = Route.useSearch();
   const [openCalendar, setOpenCalendar] = useState(false);
 
+  const navigate = useNavigate({ from: Route.fullPath });
+
   const { results, status, loadMore } = usePaginatedQuery(
     api.daftar_ki.getAllDaftarKiPaginated,
-    {},
+    {
+      searchTerm: search.query,
+    },
     { initialNumItems: search.limit }
   );
 
@@ -220,8 +224,16 @@ function RouteComponent() {
     onColumnVisibilityChange: setColumnVisibility,
     state: {
       columnVisibility,
+      globalFilter: search.query,
     },
     manualPagination: true,
+    onGlobalFilterChange: (value) => {
+      if (value !== search.query) {
+        navigate({
+          search: { ...search, query: value, page: 1 },
+        });
+      }
+    },
   });
 
   const formAdd = useForm({
@@ -328,7 +340,7 @@ function RouteComponent() {
             Add New
           </Button>
         </div>
-        <DataTable table={table} />
+        <DataTable table={table} searchPlaceHolder="Nomor Permohonan..." />
       </div>
 
       <Dialog

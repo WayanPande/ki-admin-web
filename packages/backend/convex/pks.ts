@@ -3,9 +3,23 @@ import { v } from "convex/values";
 import { mutation, MutationCtx, query } from "./_generated/server";
 
 export const getAllPksPaginated = query({
-  args: { paginationOpts: paginationOptsValidator },
+  args: {
+    paginationOpts: paginationOptsValidator,
+    searchTerm: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
-    const result = await ctx.db.query("pks").paginate(args.paginationOpts);
+    let result;
+
+    if (args.searchTerm && args.searchTerm.trim() !== "") {
+      const searchLower = args.searchTerm.toLowerCase();
+
+      result = await ctx.db
+        .query("pks")
+        .withSearchIndex("pks_number", (q) => q.search("no", searchLower))
+        .paginate(args.paginationOpts);
+    } else {
+      result = await ctx.db.query("pks").paginate(args.paginationOpts);
+    }
 
     const pksWithFullData = await Promise.all(
       result.page.map(async (pks) => {

@@ -45,7 +45,9 @@ function RouteComponent() {
 
   const { results, status, loadMore } = usePaginatedQuery(
     api.instansi.getAllInstansiPaginated,
-    {},
+    {
+      searchTerm: search.query,
+    },
     { initialNumItems: itemsToLoad }
   );
 
@@ -160,9 +162,17 @@ function RouteComponent() {
     state: {
       columnVisibility,
       pagination,
+      globalFilter: search.query,
     },
     manualPagination: true,
     rowCount: instansiData?.length ?? 0,
+    onGlobalFilterChange: (value) => {
+      if (value !== search.query) {
+        navigate({
+          search: { ...search, query: value, page: 1 },
+        });
+      }
+    },
     onPaginationChange: (updater) => {
       const newPaginationState =
         typeof updater === "function" ? updater(pagination) : updater;
@@ -227,7 +237,7 @@ function RouteComponent() {
             Add New
           </Button>
         </div>
-        <DataTable table={table} />
+        <DataTable table={table} searchPlaceHolder="Nama Instansi..." />
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>

@@ -28,12 +28,19 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import type { Table as TableType } from "@tanstack/react-table";
+import DebouncedInput from "./debounced-input";
 
 interface DataTableProps<T> {
   table: TableType<T>;
+  searchPlaceHolder?: string;
+  showSearchField?: boolean;
 }
 
-export function DataTable<T>({ table }: DataTableProps<T>) {
+export function DataTable<T>({
+  table,
+  searchPlaceHolder = "Cari",
+  showSearchField = true,
+}: DataTableProps<T>) {
   return (
     <Tabs
       defaultValue="outline"
@@ -44,6 +51,17 @@ export function DataTable<T>({ table }: DataTableProps<T>) {
           View
         </Label>
         <div className="flex items-center gap-2">
+          {showSearchField ? (
+            <div className="flex items-center w-full">
+              <DebouncedInput
+                value={table.getState().globalFilter ?? ""}
+                placeholder={searchPlaceHolder}
+                onChange={(event) => table.setGlobalFilter(String(event))}
+                className="max-w-sm"
+                type="search"
+              />
+            </div>
+          ) : null}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">

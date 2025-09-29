@@ -191,7 +191,7 @@ function RouteComponent() {
             </Card>
           </div>
           <div className="px-4 lg:px-6">
-            <DataTable table={table} />
+            <DataTable table={table} showSearchField={false} />
           </div>
         </div>
       </div>

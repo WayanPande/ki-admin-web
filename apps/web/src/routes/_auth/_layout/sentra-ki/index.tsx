@@ -56,7 +56,9 @@ function RouteComponent() {
 
   const { results, status, loadMore } = usePaginatedQuery(
     api.sentra_ki.getAllSentraKiPaginated,
-    {},
+    {
+      searchTerm: search.query,
+    },
     { initialNumItems: itemsToLoad }
   );
 
@@ -232,9 +234,17 @@ function RouteComponent() {
     state: {
       columnVisibility,
       pagination,
+      globalFilter: search.query,
     },
     manualPagination: true,
     rowCount: sentraKiData?.length ?? 0,
+    onGlobalFilterChange: (value) => {
+      if (value !== search.query) {
+        navigate({
+          search: { ...search, query: value, page: 1 },
+        });
+      }
+    },
     onPaginationChange: (updater) => {
       const newPaginationState =
         typeof updater === "function" ? updater(pagination) : updater;
@@ -346,7 +356,7 @@ function RouteComponent() {
             Add New
           </Button>
         </div>
-        <DataTable table={table} />
+        <DataTable table={table} searchPlaceHolder="Nama Sentra..." />
       </div>
 
       <Dialog

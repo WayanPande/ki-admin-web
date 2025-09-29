@@ -5,6 +5,8 @@ export default defineSchema({
   instansi: defineTable({
     name: v.string(),
     type: v.string(),
+  }).searchIndex("instansi_name", {
+    searchField: "name",
   }),
   pks: defineTable({
     name: v.string(),
@@ -14,7 +16,11 @@ export default defineSchema({
     expiry_date_from: v.string(),
     expiry_date_to: v.string(),
     sentra_ki_id: v.id("sentra_ki"),
-  }).index("by_custom_id", ["no"]),
+  })
+    .index("by_custom_id", ["no"])
+    .searchIndex("pks_number", {
+      searchField: "no",
+    }),
   sentra_ki: defineTable({
     name: v.string(),
     instansi_id: v.id("instansi"),
@@ -27,7 +33,11 @@ export default defineSchema({
     pic_email: v.string(),
     pic_id: v.string(),
     custom_id: v.string(),
-  }).index("by_custom_id", ["custom_id"]),
+  })
+    .index("by_custom_id", ["custom_id"])
+    .searchIndex("search_name", {
+      searchField: "name",
+    }),
   daftar_ki: defineTable({
     nomor_permohonan: v.string(),
     name: v.string(),
@@ -42,5 +52,7 @@ export default defineSchema({
     pic_email: v.string(),
     pic_id: v.string(),
     registration_date: v.string(),
+  }).searchIndex("no_permohonan", {
+    searchField: "nomor_permohonan",
   }),
 });
