@@ -2,7 +2,6 @@ import {
   IconBuilding,
   IconChartBar,
   IconDashboard,
-  IconInnerShadowTop,
   IconListDetails,
   IconUsers,
 } from "@tabler/icons-react";
@@ -19,6 +18,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import icon from "@/icon.png";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
@@ -77,8 +77,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link to="/">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">KI</span>
+                <img
+                  src={icon}
+                  alt="Lambang Kementerian Hukum dan HAM"
+                  className="size-6 shrink-0 rounded"
+                />
+                <span className="text-base font-semibold">KI Dashboard</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { MenuIcon } from "lucide-react";
-import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
 import {
   NavigationMenu,
@@ -21,13 +20,13 @@ export default function Header() {
   return (
     <section className="py-4 px-4 xl:px-10">
       <div className="container mx-auto">
-        <nav className="flex items-center justify-between">
+        <nav className="grid grid-cols-3 justify-center">
           <Link to="/" className="flex items-center gap-2">
             <span className="text-lg font-semibold tracking-tighter">
               Sistem Informasi Monitoring Sentra KI Bali
             </span>
           </Link>
-          <NavigationMenu className="hidden lg:block">
+          <NavigationMenu className="hidden lg:block mx-auto">
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuLink
@@ -61,14 +60,14 @@ export default function Header() {
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
-          <div className="hidden items-center gap-4 lg:flex">
+          <div className="hidden items-end gap-4 lg:flex w-fit ml-auto mr-0">
             <Link to="/login">
               <Button variant="outline">Masuk</Button>
             </Link>
           </div>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <ModeToggle />
-          </div>
+          </div> */}
 
           <Sheet>
             <SheetTrigger asChild className="lg:hidden">
