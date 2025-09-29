@@ -557,7 +557,7 @@ function RouteComponent() {
                         id={field.name}
                         name={field.name}
                         type="text"
-                        disabled={isPreview}
+                        disabled
                         value={field.state.value}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -574,7 +574,7 @@ function RouteComponent() {
                         id={field.name}
                         name={field.name}
                         type="text"
-                        disabled={isPreview}
+                        disabled
                         value={field.state.value}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
