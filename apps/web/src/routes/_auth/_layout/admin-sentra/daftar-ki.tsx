@@ -2,6 +2,7 @@ import { DataTable } from "@/components/data-table";
 import FieldInfo from "@/components/field-info";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
   DialogClose,
@@ -13,6 +14,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -23,7 +29,7 @@ import { KI_TYPES, routeSearchSchema } from "@/lib/utils";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
 
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   getCoreRowModel,
@@ -33,6 +39,7 @@ import {
 } from "@tanstack/react-table";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
+import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
@@ -44,12 +51,26 @@ export const Route = createFileRoute("/_auth/_layout/admin-sentra/daftar-ki")({
 
 const emptyArray: any[] = [];
 
-const subJenisKi = ["Kelompok", "Rumah", "Ruang", "Tempat"];
+const subJenisKiMerek = ["Merek Individu", "Merek Kolektif"];
+const subJenisKiHakCipta = [
+  "Buku, program komputer, pamflet, perwajahan (layout) karya tulis yang diterbitkan, dan semua hasil karya tulis lain",
+  "Ceramah, kuliah, pidato, dan ciptaan lain yang sejenis dengan itu",
+  "Alat peraga yang dibuat untuk kepentingan pendidikan dan ilmu pengetahuan",
+  "Lagu atau musik dengan atau tanpa teks",
+  "Drama atau drama musikal, tari, koreografi, pewayangan, dan pantomim",
+  "Seni rupa dalam segala bentuk seperti seni lukis, gambar, seni ukir, seni kaligrafi, seni pahat, seni patung, kolase, dan seni terapan",
+  "Arsitektur",
+  "Peta",
+  "Seni Batik",
+  "Fotografi",
+  "Terjemahan, tafsir, saduran, bunga rampai, dan karya lain dari hasil pengalihwujudan",
+];
 
 function RouteComponent() {
   const [open, setOpen] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
   const search = Route.useSearch();
+  const [openCalendar, setOpenCalendar] = useState(false);
 
   const { results, status, loadMore } = usePaginatedQuery(
     api.daftar_ki.getAllDaftarKiPaginated,
@@ -87,6 +108,10 @@ function RouteComponent() {
       accessorKey: "sub_type",
       id: "Sub Jenis KI",
       header: "Sub Jenis KI",
+      cell: ({ row }) => {
+        const data = row.original;
+        return data.sub_type === "" ? "-" : data.sub_type;
+      },
     },
     {
       accessorKey: "name_pemilik",
@@ -113,7 +138,7 @@ function RouteComponent() {
                 );
                 formAdd.setFieldValue("name", data.name);
                 formAdd.setFieldValue("type", data.type);
-                formAdd.setFieldValue("sub_type", data.sub_type);
+                formAdd.setFieldValue("sub_type", data.sub_type ?? "");
                 formAdd.setFieldValue("name_pemilik", data.name_pemilik);
                 formAdd.setFieldValue("address_pemilik", data.address_pemilik);
                 formAdd.setFieldValue(
@@ -125,6 +150,11 @@ function RouteComponent() {
                 formAdd.setFieldValue("pic_phone", data.pic_phone);
                 formAdd.setFieldValue("pic_email", data.pic_email);
                 formAdd.setFieldValue("pic_id", data.pic_id as any);
+
+                formAdd.setFieldValue(
+                  "registration_date",
+                  data.registration_date
+                );
 
                 setIsPreview(true);
                 setOpen(true);
@@ -144,7 +174,7 @@ function RouteComponent() {
                 );
                 formAdd.setFieldValue("name", data.name);
                 formAdd.setFieldValue("type", data.type);
-                formAdd.setFieldValue("sub_type", data.sub_type);
+                formAdd.setFieldValue("sub_type", data.sub_type ?? "");
                 formAdd.setFieldValue("name_pemilik", data.name_pemilik);
                 formAdd.setFieldValue("address_pemilik", data.address_pemilik);
                 formAdd.setFieldValue(
@@ -208,6 +238,7 @@ function RouteComponent() {
       pic_phone: currentUser?.phoneNumber,
       pic_email: currentUser?.email,
       pic_id: currentUser?._id,
+      registration_date: new Date().toLocaleDateString(),
       id: "",
     },
     onSubmit: async ({ value }) => {
@@ -223,10 +254,11 @@ function RouteComponent() {
             address_pemilik: value.address_pemilik,
             pemberi_fasilitas: value.pemberi_fasilitas,
             document: value.document,
-            pic_id: value.pic_id!,
+            pic_id: value.pic_id,
             pic_name: value.pic_name!,
             pic_phone: value.pic_phone!,
             pic_email: value.pic_email!,
+            registration_date: value.registration_date,
           });
           toast.success("KI Berhasil Diubah");
         } catch (error) {
@@ -248,6 +280,7 @@ function RouteComponent() {
             pic_phone: value.pic_phone!,
             pic_email: value.pic_email!,
             pic_id: value.pic_id!,
+            registration_date: value.registration_date,
           });
           toast.success("KI Berhasil Ditambah");
         } catch (error) {
@@ -262,7 +295,7 @@ function RouteComponent() {
         nomor_permohonan: z.string().min(2, "Silahkan Isi Nomor Permohonan"),
         name: z.string().min(2, "Silahkan Isi Nama"),
         type: z.string().min(2, "Silahkan Pilih Jenis KI"),
-        sub_type: z.string().min(2, "Silahkan Pilih Sub Jenis KI"),
+        sub_type: z.optional(z.string()).and(z.string()),
         name_pemilik: z.string().min(2, "Silahkan Isi Nama Pemilik"),
         address_pemilik: z.string().min(2, "Silahkan Isi Alamat Pemilik"),
         pemberi_fasilitas: z
@@ -273,10 +306,13 @@ function RouteComponent() {
         pic_phone: z.any().and(z.any()),
         pic_email: z.any().and(z.any()),
         pic_id: z.any().and(z.any()),
+        registration_date: z.string().min(2, "Silahkan Isi Tanggal Pencatatan"),
         id: z.any().and(z.any()),
       }),
     },
   });
+
+  const selectedType = useStore(formAdd.store, (state) => state.values.type);
 
   return (
     <>
@@ -368,12 +404,13 @@ function RouteComponent() {
                         <Select
                           onValueChange={(data) => {
                             field.handleChange(data);
+                            formAdd.setFieldValue("sub_type", "");
                           }}
                           defaultValue={field.state.value}
                           disabled={isPreview}
                         >
                           <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Pilih Instansi" />
+                            <SelectValue placeholder="Pilih Jenis KI" />
                           </SelectTrigger>
                           <SelectContent>
                             {KI_TYPES.map((data) => {
@@ -398,13 +435,21 @@ function RouteComponent() {
                             field.handleChange(data);
                           }}
                           defaultValue={field.state.value}
-                          disabled={isPreview}
+                          disabled={
+                            isPreview ||
+                            !["Merek", "Hak Cipta"].includes(selectedType)
+                          }
                         >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Pilih Instansi" />
+                          <SelectTrigger className="w-full max-w-[9.4rem] wrap-break-word">
+                            <SelectValue placeholder="Pilih Sub Jenis KI" />
                           </SelectTrigger>
-                          <SelectContent>
-                            {subJenisKi.map((data) => {
+                          <SelectContent className="max-w-md wrap-break-word">
+                            {(selectedType === "Merek"
+                              ? [...subJenisKiMerek]
+                              : selectedType === "Hak Cipta"
+                              ? [...subJenisKiHakCipta]
+                              : []
+                            ).map((data) => {
                               return (
                                 <SelectItem value={data} key={data}>
                                   {data}
@@ -450,6 +495,51 @@ function RouteComponent() {
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
                       />
+                      <FieldInfo field={field} />
+                    </div>
+                  )}
+                </formAdd.Field>
+
+                <formAdd.Field name="registration_date">
+                  {(field) => (
+                    <div className="grid gap-3">
+                      <Label htmlFor={field.name}>
+                        Tanggal Pencatatan/Pendaftaran
+                      </Label>
+                      <Popover
+                        open={openCalendar}
+                        onOpenChange={setOpenCalendar}
+                      >
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            id="date"
+                            className="w-full justify-between font-normal"
+                            disabled={isPreview}
+                          >
+                            {field.state.value
+                              ? field.state.value
+                              : "Select date"}
+                            <ChevronDownIcon />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-auto overflow-hidden p-0"
+                          align="start"
+                        >
+                          <Calendar
+                            mode="single"
+                            selected={new Date(field.state.value)}
+                            captionLayout="dropdown"
+                            onSelect={(date) => {
+                              field.handleChange(
+                                date?.toLocaleDateString() ?? ""
+                              );
+                              setOpenCalendar(false);
+                            }}
+                          />
+                        </PopoverContent>
+                      </Popover>
                       <FieldInfo field={field} />
                     </div>
                   )}
@@ -549,21 +639,31 @@ function RouteComponent() {
               </div>
             </div>
             <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline" type="button">
-                  Cancel
-                </Button>
-              </DialogClose>
-              <formAdd.Subscribe>
-                {(state) => (
-                  <Button
-                    type="submit"
-                    disabled={!state.canSubmit || state.isSubmitting}
-                  >
-                    {state.isSubmitting ? "Submitting..." : "Simpan"}
+              {isPreview ? (
+                <DialogClose asChild>
+                  <Button variant="outline" type="button">
+                    Close
                   </Button>
-                )}
-              </formAdd.Subscribe>
+                </DialogClose>
+              ) : (
+                <>
+                  <DialogClose asChild>
+                    <Button variant="outline" type="button">
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <formAdd.Subscribe>
+                    {(state) => (
+                      <Button
+                        type="submit"
+                        disabled={!state.canSubmit || state.isSubmitting}
+                      >
+                        {state.isSubmitting ? "Submitting..." : "Simpan"}
+                      </Button>
+                    )}
+                  </formAdd.Subscribe>
+                </>
+              )}
             </DialogFooter>
           </form>
         </DialogContent>

@@ -151,7 +151,7 @@ export const createDaftarKi = mutation({
     nomor_permohonan: v.string(),
     name: v.string(),
     type: v.string(),
-    sub_type: v.string(),
+    sub_type: v.optional(v.string()),
     name_pemilik: v.string(),
     address_pemilik: v.string(),
     pemberi_fasilitas: v.string(),
@@ -160,6 +160,7 @@ export const createDaftarKi = mutation({
     pic_phone: v.string(),
     pic_email: v.string(),
     pic_id: v.string(),
+    registration_date: v.string(),
   },
   handler: async (ctx, args) => {
     const daftar_kiId = await ctx.db.insert("daftar_ki", args);
@@ -170,18 +171,19 @@ export const createDaftarKi = mutation({
 export const updateDaftarKi = mutation({
   args: {
     id: v.id("daftar_ki"),
-    nomor_permohonan: v.string(),
-    name: v.string(),
-    type: v.string(),
-    sub_type: v.string(),
-    name_pemilik: v.string(),
-    address_pemilik: v.string(),
-    pemberi_fasilitas: v.string(),
-    document: v.string(),
-    pic_name: v.string(),
-    pic_phone: v.string(),
-    pic_email: v.string(),
-    pic_id: v.string(),
+    nomor_permohonan: v.optional(v.string()),
+    name: v.optional(v.string()),
+    type: v.optional(v.string()),
+    sub_type: v.optional(v.string()),
+    name_pemilik: v.optional(v.string()),
+    address_pemilik: v.optional(v.string()),
+    pemberi_fasilitas: v.optional(v.string()),
+    document: v.optional(v.string()),
+    pic_name: v.optional(v.string()),
+    pic_phone: v.optional(v.string()),
+    pic_email: v.optional(v.string()),
+    pic_id: v.optional(v.string()),
+    registration_date: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;

@@ -32,7 +32,7 @@ export default defineSchema({
     nomor_permohonan: v.string(),
     name: v.string(),
     type: v.string(),
-    sub_type: v.string(),
+    sub_type: v.optional(v.string()),
     name_pemilik: v.string(),
     address_pemilik: v.string(),
     pemberi_fasilitas: v.string(),
@@ -41,5 +41,6 @@ export default defineSchema({
     pic_phone: v.string(),
     pic_email: v.string(),
     pic_id: v.string(),
+    registration_date: v.string(),
   }),
 });
