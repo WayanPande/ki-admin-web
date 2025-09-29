@@ -531,6 +531,9 @@ function RouteComponent() {
                             mode="single"
                             selected={new Date(field.state.value)}
                             captionLayout="dropdown"
+                            startMonth={
+                              new Date(new Date().getFullYear() - 25, 11, 31)
+                            }
                             onSelect={(date) => {
                               field.handleChange(
                                 date?.toLocaleDateString() ?? ""
