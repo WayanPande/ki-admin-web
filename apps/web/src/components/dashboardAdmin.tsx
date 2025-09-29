@@ -8,7 +8,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import { usePaginatedQuery, useQuery } from "convex/react";
-import { addWeeks, isBefore, isFuture } from "date-fns";
+import { addDays, isBefore, isFuture } from "date-fns";
 import { useMemo, useState } from "react";
 import { DataTable } from "./data-table";
 import { SectionCards } from "./section-cards";
@@ -78,7 +78,7 @@ const DashboardAdmin = ({ search }: DashboardProps) => {
 
         const date = new Date(item.expiry_date_to);
         const activeDate = isFuture(date);
-        const almostExpiredDate = isBefore(date, addWeeks(new Date(), 1));
+        const almostExpiredDate = isBefore(date, addDays(new Date(), 30));
 
         if (almostExpiredDate) {
           status = "Akan Habis";

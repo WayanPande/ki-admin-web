@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/card";
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { useQuery } from "convex/react";
-import { addWeeks, isBefore, isFuture } from "date-fns";
+import { addDays, isBefore, isFuture } from "date-fns";
 import { useMemo } from "react";
 
 export function SectionCards() {
@@ -22,16 +22,16 @@ export function SectionCards() {
       pksData?.forEach((item) => {
         const date = new Date(item.expiry_date_to);
         const activeDate = isFuture(date);
-        const almostExpiredDate = isBefore(date, addWeeks(new Date(), 1));
+        const almostExpiredDate = isBefore(date, addDays(new Date(), 30));
 
         if (almostExpiredDate) {
           totalAlmostExpired += 1;
-        }
-
-        if (activeDate) {
-          totalActive += 1;
         } else {
-          totalExpired += 1;
+          if (activeDate) {
+            totalActive += 1;
+          } else {
+            totalExpired += 1;
+          }
         }
       });
 
