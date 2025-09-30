@@ -15,9 +15,7 @@ export const getAllDaftarKiPaginated = query({
 
       result = await ctx.db
         .query("daftar_ki")
-        .withSearchIndex("no_permohonan", (q) =>
-          q.search("nomor_permohonan", searchLower)
-        )
+        .withSearchIndex("name_ki", (q) => q.search("name", searchLower))
         .paginate(args.paginationOpts);
     } else {
       result = await ctx.db.query("daftar_ki").paginate(args.paginationOpts);
@@ -39,9 +37,20 @@ interface KiTypeCounts {
 }
 
 export const getKiTypeCounts = query({
-  args: {},
-  handler: async (ctx): Promise<KiTypeCounts> => {
-    const records = await ctx.db.query("daftar_ki").collect();
+  args: {
+    year: v.optional(v.number()),
+  },
+  handler: async (ctx, args): Promise<KiTypeCounts> => {
+    const allRecords = await ctx.db.query("daftar_ki").collect();
+
+    const records = allRecords.filter((record) => {
+      if (!record.registration_date) return false;
+
+      const [month, day, year] = record.registration_date
+        .split("/")
+        .map(Number);
+      return year === args.year;
+    });
 
     const counts: KiTypeCounts = {
       merek: 0,
@@ -106,7 +115,7 @@ interface ChartDataByType {
 
 export const getChartDataByType = query({
   args: {
-    year: v.number(),
+    year: v.optional(v.number()),
   },
   handler: async (ctx, args): Promise<ChartDataByType[]> => {
     const allRecords = await ctx.db.query("daftar_ki").collect();

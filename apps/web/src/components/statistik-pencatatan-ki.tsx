@@ -23,18 +23,22 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function StatikPencatatanKi() {
+interface DashboardProps {
+  search: {
+    year: number;
+  };
+}
+
+export function StatikPencatatanKi({ search }: DashboardProps) {
   const chartDataByType = useQuery(api.daftar_ki.getChartDataByType, {
-    year: new Date().getFullYear(),
+    year: search?.year ?? new Date().getFullYear(),
   });
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Statistik Pencatatan/Pendaftaran KI di Bali</CardTitle>
-        <CardDescription>
-          Januari - Desember {new Date().getFullYear()}
-        </CardDescription>
+        <CardDescription>Januari - Desember {search?.year}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

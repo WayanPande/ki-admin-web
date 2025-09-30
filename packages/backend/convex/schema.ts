@@ -52,7 +52,7 @@ export default defineSchema({
     pic_email: v.string(),
     pic_id: v.string(),
     registration_date: v.string(),
-  }).searchIndex("no_permohonan", {
-    searchField: "nomor_permohonan",
+  }).searchIndex("name_ki", {
+    searchField: "name",
   }),
 });

@@ -337,7 +337,7 @@ function RouteComponent() {
             Add New
           </Button>
         </div>
-        <DataTable table={table} searchPlaceHolder="Nomor Permohonan..." />
+        <DataTable table={table} searchPlaceHolder="Nama KI..." />
       </div>
 
       <Dialog

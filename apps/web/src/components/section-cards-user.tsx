@@ -8,8 +8,16 @@ import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { useQuery } from "convex/react";
 import Loader from "./loader";
 
-export function SectionCardsUser() {
-  const allCounts = useQuery(api.daftar_ki.getKiTypeCounts);
+interface DashboardProps {
+  search: {
+    year: number;
+  };
+}
+
+export function SectionCardsUser({ search }: DashboardProps) {
+  const allCounts = useQuery(api.daftar_ki.getKiTypeCounts, {
+    year: search?.year ?? new Date().getFullYear(),
+  });
 
   if (!allCounts) return <Loader />;
 
