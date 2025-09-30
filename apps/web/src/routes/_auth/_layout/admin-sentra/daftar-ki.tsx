@@ -53,17 +53,14 @@ const emptyArray: any[] = [];
 
 const subJenisKiMerek = ["Merek Individu", "Merek Kolektif"];
 const subJenisKiHakCipta = [
-  "Buku, program komputer, pamflet, perwajahan (layout) karya tulis yang diterbitkan, dan semua hasil karya tulis lain",
-  "Ceramah, kuliah, pidato, dan ciptaan lain yang sejenis dengan itu",
-  "Alat peraga yang dibuat untuk kepentingan pendidikan dan ilmu pengetahuan",
-  "Lagu atau musik dengan atau tanpa teks",
-  "Drama atau drama musikal, tari, koreografi, pewayangan, dan pantomim",
-  "Seni rupa dalam segala bentuk seperti seni lukis, gambar, seni ukir, seni kaligrafi, seni pahat, seni patung, kolase, dan seni terapan",
-  "Arsitektur",
-  "Peta",
-  "Seni Batik",
-  "Fotografi",
-  "Terjemahan, tafsir, saduran, bunga rampai, dan karya lain dari hasil pengalihwujudan",
+  "Karya Tulis",
+  "Karya Seni",
+  "Komposisi Musik",
+  "Karya Audio Visual",
+  "Karya Fotografi",
+  "Karya Drama & Koreografi",
+  "Karya Rekaman",
+  "Karya Lainnya",
 ];
 
 function RouteComponent() {
