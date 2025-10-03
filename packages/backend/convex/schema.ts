@@ -18,6 +18,7 @@ export default defineSchema({
     sentra_ki_id: v.id("sentra_ki"),
   })
     .index("by_custom_id", ["no"])
+    .index("by_sentra_ki_id", ["sentra_ki_id"])
     .searchIndex("pks_number", {
       searchField: "no",
     }),

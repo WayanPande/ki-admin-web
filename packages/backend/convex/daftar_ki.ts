@@ -188,6 +188,11 @@ export const createDaftarKi = mutation({
     registration_date: v.string(),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     const daftar_kiId = await ctx.db.insert("daftar_ki", args);
     return daftar_kiId;
   },
@@ -211,6 +216,11 @@ export const updateDaftarKi = mutation({
     registration_date: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     const { id, ...updates } = args;
 
     const cleanUpdates = Object.fromEntries(
@@ -227,6 +237,11 @@ export const deleteDaftarKi = mutation({
     id: v.id("daftar_ki"),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     await ctx.db.delete(args.id);
     return args.id;
   },

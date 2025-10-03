@@ -8,6 +8,11 @@ export const getAllInstansiPaginated = query({
     searchTerm: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     let result;
 
     if (args.searchTerm && args.searchTerm.trim() !== "") {
@@ -28,6 +33,11 @@ export const getAllInstansiPaginated = query({
 export const getAllInstansi = query({
   args: {},
   handler: async (ctx) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     return await ctx.db.query("instansi").collect();
   },
 });
@@ -38,6 +48,11 @@ export const createInstansi = mutation({
     type: v.string(),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     const instansiId = await ctx.db.insert("instansi", {
       name: args.name,
       type: args.type,
@@ -53,6 +68,11 @@ export const updateInstansi = mutation({
     type: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     const { id, ...updates } = args;
 
     const cleanUpdates = Object.fromEntries(
@@ -69,6 +89,11 @@ export const deleteInstansi = mutation({
     id: v.id("instansi"),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     const referencingSentraKi = await ctx.db
       .query("sentra_ki")
       .filter((q) => q.eq(q.field("instansi_id"), args.id))

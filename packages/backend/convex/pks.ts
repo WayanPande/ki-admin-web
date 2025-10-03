@@ -71,6 +71,11 @@ async function generateCustomId(
   ctx: MutationCtx,
   prefix: string
 ): Promise<string> {
+  const user = await ctx.auth.getUserIdentity();
+  if (user === null) {
+    throw new Error("Unauthorized");
+  }
+
   // Get the latest record to determine the next number
   const latestRecord = await ctx.db
     .query("pks")
@@ -105,6 +110,11 @@ export const createPks = mutation({
     sentra_ki_id: v.id("sentra_ki"),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     const sentraKi = await ctx.db.get(args.sentra_ki_id);
     if (!sentraKi) {
       throw new Error("Referenced sentra_ki does not exist");
@@ -132,6 +142,11 @@ export const updatePks = mutation({
     sentra_ki_id: v.optional(v.id("sentra_ki")),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     const { id, ...updates } = args;
 
     if (updates.sentra_ki_id) {
@@ -155,6 +170,11 @@ export const deletePks = mutation({
     id: v.id("pks"),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     await ctx.db.delete(args.id);
     return { success: true };
   },

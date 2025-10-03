@@ -196,11 +196,15 @@ function RouteComponent() {
             <Button
               size={"sm"}
               variant={"destructive"}
-              onClick={() =>
-                deleteDaftarKi({
-                  id: data._id,
-                })
-              }
+              onClick={async () => {
+                const promise = deleteDaftarKi({ id: data._id });
+
+                toast.promise(promise, {
+                  loading: "Loading...",
+                  success: "KI Berhasil Dihapus",
+                  error: "Terjadi Kesalahan",
+                });
+              }}
             >
               Hapus
             </Button>
@@ -251,51 +255,47 @@ function RouteComponent() {
       id: "",
     },
     onSubmit: async ({ value }) => {
+      let promise;
       if (value.id) {
-        try {
-          await updateDaftarKi({
-            id: value.id as Id<"daftar_ki">,
-            nomor_permohonan: value.nomor_permohonan,
-            name: value.name,
-            type: value.type,
-            sub_type: value.sub_type,
-            name_pemilik: value.name_pemilik,
-            address_pemilik: value.address_pemilik,
-            pemberi_fasilitas: value.pemberi_fasilitas,
-            document: value.document,
-            pic_id: value.pic_id,
-            pic_name: value.pic_name!,
-            pic_phone: value.pic_phone!,
-            pic_email: value.pic_email!,
-            registration_date: value.registration_date,
-          });
-          toast.success("KI Berhasil Diubah");
-        } catch (error) {
-          console.log(error);
-          toast.error("KI Gagal Diubah");
-        }
+        promise = updateDaftarKi({
+          id: value.id as Id<"daftar_ki">,
+          nomor_permohonan: value.nomor_permohonan,
+          name: value.name,
+          type: value.type,
+          sub_type: value.sub_type,
+          name_pemilik: value.name_pemilik,
+          address_pemilik: value.address_pemilik,
+          pemberi_fasilitas: value.pemberi_fasilitas,
+          document: value.document,
+          pic_id: value.pic_id,
+          pic_name: value.pic_name!,
+          pic_phone: value.pic_phone!,
+          pic_email: value.pic_email!,
+          registration_date: value.registration_date,
+        });
       } else {
-        try {
-          await createDaftarKi({
-            nomor_permohonan: value.nomor_permohonan,
-            name: value.name,
-            type: value.type,
-            sub_type: value.sub_type,
-            name_pemilik: value.name_pemilik,
-            address_pemilik: value.address_pemilik,
-            pemberi_fasilitas: value.pemberi_fasilitas,
-            document: value.document,
-            pic_name: value.pic_name!,
-            pic_phone: value.pic_phone!,
-            pic_email: value.pic_email!,
-            pic_id: value.pic_id!,
-            registration_date: value.registration_date,
-          });
-          toast.success("KI Berhasil Ditambah");
-        } catch (error) {
-          toast.error("KI Gagal Ditambah");
-        }
+        promise = createDaftarKi({
+          nomor_permohonan: value.nomor_permohonan,
+          name: value.name,
+          type: value.type,
+          sub_type: value.sub_type,
+          name_pemilik: value.name_pemilik,
+          address_pemilik: value.address_pemilik,
+          pemberi_fasilitas: value.pemberi_fasilitas,
+          document: value.document,
+          pic_name: value.pic_name!,
+          pic_phone: value.pic_phone!,
+          pic_email: value.pic_email!,
+          pic_id: value.pic_id!,
+          registration_date: value.registration_date,
+        });
       }
+
+      toast.promise(promise, {
+        loading: "Loading...",
+        success: `KI Berhasil ${value.id ? "Diubah" : "Ditambah"}`,
+        error: "Terjadi Kesalahan",
+      });
 
       setOpen(false);
     },

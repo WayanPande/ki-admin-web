@@ -166,11 +166,15 @@ function RouteComponent() {
             <Button
               size={"sm"}
               variant={"destructive"}
-              onClick={() =>
-                deleteSentraKi({
-                  id: data._id,
-                })
-              }
+              onClick={async () => {
+                const promise = deleteSentraKi({ id: data._id });
+
+                toast.promise(promise, {
+                  loading: "Loading...",
+                  success: "Sentra KI Berhasil Dihapus",
+                  error: "Terjadi Kesalahan",
+                });
+              }}
             >
               Hapus
             </Button>
@@ -283,44 +287,40 @@ function RouteComponent() {
       custom_id: "",
     },
     onSubmit: async ({ value }) => {
+      let promise;
       if (value.id) {
-        try {
-          await updateSentraKi({
-            id: value.id as Id<"sentra_ki">,
-            instansi_id: value.instansi_id as Id<"instansi">,
-            name: value.name,
-            address: value.address,
-            city: value.city,
-            latitude: value.latitude,
-            longitude: value.longitude,
-            pic_name: value.pic_name,
-            pic_phone: value.pic_phone,
-            pic_email: value.pic_email,
-          });
-          toast.success("Sentra KI Berhasil Diubah");
-        } catch (error) {
-          console.log(error);
-          toast.error("Sentra KI Gagal Diubah");
-        }
+        promise = updateSentraKi({
+          id: value.id as Id<"sentra_ki">,
+          instansi_id: value.instansi_id as Id<"instansi">,
+          name: value.name,
+          address: value.address,
+          city: value.city,
+          latitude: value.latitude,
+          longitude: value.longitude,
+          pic_name: value.pic_name,
+          pic_phone: value.pic_phone,
+          pic_email: value.pic_email,
+        });
       } else {
-        try {
-          await createSentraKi({
-            instansi_id: value.instansi_id as Id<"instansi">,
-            name: value.name,
-            address: value.address,
-            city: value.city,
-            latitude: value.latitude,
-            longitude: value.longitude,
-            pic_name: value.pic_name,
-            pic_phone: value.pic_phone,
-            pic_email: value.pic_email,
-            pic_id: value.pic_id,
-          });
-          toast.success("Sentra KI Berhasil Ditambah");
-        } catch (error) {
-          toast.error("Sentra KI Gagal Ditambah");
-        }
+        promise = createSentraKi({
+          instansi_id: value.instansi_id as Id<"instansi">,
+          name: value.name,
+          address: value.address,
+          city: value.city,
+          latitude: value.latitude,
+          longitude: value.longitude,
+          pic_name: value.pic_name,
+          pic_phone: value.pic_phone,
+          pic_email: value.pic_email,
+          pic_id: value.pic_id,
+        });
       }
+
+      toast.promise(promise, {
+        loading: "Loading...",
+        success: `Sentra KI Berhasil ${value.id ? "Diubah" : "Ditambah"}`,
+        error: "Terjadi Kesalahan",
+      });
 
       setOpen(false);
     },

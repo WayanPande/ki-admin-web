@@ -168,11 +168,15 @@ function RouteComponent() {
             <Button
               size={"sm"}
               variant={"destructive"}
-              onClick={() =>
-                deletePks({
-                  id: data._id,
-                })
-              }
+              onClick={async () => {
+                const promise = deletePks({ id: data._id });
+
+                toast.promise(promise, {
+                  loading: "Loading...",
+                  success: "PKS Berhasil Dihapus",
+                  error: "Terjadi Kesalahan",
+                });
+              }}
             >
               Remove
             </Button>
@@ -281,37 +285,33 @@ function RouteComponent() {
       id: "",
     },
     onSubmit: async ({ value }) => {
+      let promise;
       if (value.id) {
-        try {
-          await updatePks({
-            id: value.id as Id<"pks">,
-            sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
-            name: value.name,
-            description: value.description,
-            document: value.document,
-            expiry_date_from: value.expiry_date_from,
-            expiry_date_to: value.expiry_date_to,
-          });
-          toast.success("PKS Berhasil Diubah");
-        } catch (error) {
-          console.log(error);
-          toast.error("PKS Gagal Diubah");
-        }
+        promise = updatePks({
+          id: value.id as Id<"pks">,
+          sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
+          name: value.name,
+          description: value.description,
+          document: value.document,
+          expiry_date_from: value.expiry_date_from,
+          expiry_date_to: value.expiry_date_to,
+        });
       } else {
-        try {
-          await createPks({
-            sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
-            name: value.name,
-            description: value.description,
-            document: value.document,
-            expiry_date_from: value.expiry_date_from,
-            expiry_date_to: value.expiry_date_to,
-          });
-          toast.success("PKS Berhasil Ditambah");
-        } catch (error) {
-          toast.error("PKS Gagal Ditambah");
-        }
+        promise = createPks({
+          sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
+          name: value.name,
+          description: value.description,
+          document: value.document,
+          expiry_date_from: value.expiry_date_from,
+          expiry_date_to: value.expiry_date_to,
+        });
       }
+
+      toast.promise(promise, {
+        loading: "Loading...",
+        success: `PKS Berhasil ${value.id ? "Diubah" : "Ditambah"}`,
+        error: "Terjadi Kesalahan",
+      });
 
       setOpen(false);
     },

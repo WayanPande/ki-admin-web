@@ -26,6 +26,7 @@ import {
 import { zodValidator } from "@tanstack/zod-adapter";
 import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import z from "zod";
 
 export const Route = createFileRoute("/_auth/_layout/master-data/instansi")({
@@ -94,11 +95,17 @@ function RouteComponent() {
             <Button
               size={"sm"}
               variant={"destructive"}
-              onClick={() =>
-                deleteInstansi({
+              onClick={async () => {
+                const promise = deleteInstansi({
                   id: data._id,
-                })
-              }
+                });
+
+                toast.promise(promise, {
+                  loading: "Loading...",
+                  success: "Data Berhasil Dihapus",
+                  error: "Terjadi Kesalahan",
+                });
+              }}
             >
               Remove
             </Button>
@@ -202,15 +209,23 @@ function RouteComponent() {
       id: "",
     },
     onSubmit: async ({ value }) => {
+      let promise;
+
       if (value.id) {
-        await updateInstansi({
+        promise = updateInstansi({
           id: value.id as Id<"instansi">,
           name: value.name,
           type: value.type,
         });
       } else {
-        await createInstansi({ name: value.name, type: value.type });
+        promise = createInstansi({ name: value.name, type: value.type });
       }
+
+      toast.promise(promise, {
+        loading: "Loading...",
+        success: `Data Berhasil ${value.id ? "Diubah" : "Ditambah"}`,
+        error: "Terjadi Kesalahan",
+      });
 
       setOpen(false);
     },

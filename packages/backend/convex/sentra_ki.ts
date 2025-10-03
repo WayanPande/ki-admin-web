@@ -62,6 +62,11 @@ async function generateCustomId(
   ctx: MutationCtx,
   prefix: string
 ): Promise<string> {
+  const user = await ctx.auth.getUserIdentity();
+  if (user === null) {
+    throw new Error("Unauthorized");
+  }
+
   // Get the latest record to determine the next number
   const latestRecord = await ctx.db
     .query("sentra_ki")
@@ -100,6 +105,11 @@ export const createSentraKi = mutation({
     pic_id: v.string(),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     const instansi = await ctx.db.get(args.instansi_id);
     if (!instansi) {
       throw new Error("Referenced instansi does not exist");
@@ -130,6 +140,11 @@ export const updateSentraKi = mutation({
     pic_id: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     const { id, ...updates } = args;
 
     if (updates.instansi_id) {
@@ -153,9 +168,14 @@ export const deleteSentraKi = mutation({
     id: v.id("sentra_ki"),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     const referencingPks = await ctx.db
       .query("pks")
-      .filter((q) => q.eq(q.field("sentra_ki_id"), args.id))
+      .withIndex("by_sentra_ki_id", (q) => q.eq("sentra_ki_id", args.id))
       .first();
 
     if (referencingPks) {
