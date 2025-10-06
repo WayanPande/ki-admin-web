@@ -10,7 +10,7 @@ import { addDays, isBefore, isFuture } from "date-fns";
 import { useMemo } from "react";
 
 export function SectionCards() {
-  const pksData = useQuery(api.pks.getAllPks);
+  const pksData = useQuery(api.pks.getAllPks, {});
 
   const { totalActive, totalExpired, totalAlmostExpired, totalData } =
     useMemo(() => {

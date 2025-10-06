@@ -37,7 +37,7 @@ const DashboardAdmin = ({ search }: DashboardProps) => {
     { initialNumItems: itemsToLoad }
   );
 
-  const pksData = useQuery(api.pks.getAllPks);
+  const pksData = useQuery(api.pks.getAllPks, {});
 
   const columns: ColumnDef<(typeof results)[number]>[] = [
     {

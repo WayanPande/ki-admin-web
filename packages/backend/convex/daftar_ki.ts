@@ -41,6 +41,28 @@ export const getAllDaftarKiPaginated = query({
   },
 });
 
+export const getAllDaftarKi = query({
+  args: {
+    searchTerm: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    let result;
+
+    if (args.searchTerm && args.searchTerm.trim() !== "") {
+      const searchLower = args.searchTerm.toLowerCase();
+
+      result = await ctx.db
+        .query("daftar_ki")
+        .withSearchIndex("name_ki", (q) => q.search("name", searchLower))
+        .collect();
+    } else {
+      result = await ctx.db.query("daftar_ki").collect();
+    }
+
+    return result;
+  },
+});
+
 interface KiTypeCounts {
   merek: number;
   paten: number;

@@ -66,24 +66,7 @@ export const getAllPks = query({
       result = await ctx.db.query("pks").collect();
     }
 
-    const pksRecords = await ctx.db.query("pks").collect();
-
-    const pksWithFullData = await Promise.all(
-      result.map(async (pks) => {
-        const sentraKi = await ctx.db.get(pks.sentra_ki_id);
-        const instansi = sentraKi
-          ? await ctx.db.get(sentraKi.instansi_id)
-          : null;
-
-        return {
-          ...pks,
-          sentra_ki: sentraKi,
-          instansi: instansi,
-        };
-      })
-    );
-
-    return pksWithFullData;
+    return result;
   },
 });
 

@@ -81,7 +81,7 @@ function RouteComponent() {
 
   const currentUser = useQuery(api.auth.getCurrentUser);
 
-  // const daftarKi = useQuery(api.daftar_ki.g);
+  const daftarKi = useQuery(api.daftar_ki.getAllDaftarKi, {});
 
   const createDaftarKi = useMutation(api.daftar_ki.createDaftarKi);
   const updateDaftarKi = useMutation(api.daftar_ki.updateDaftarKi);
@@ -274,7 +274,7 @@ function RouteComponent() {
       pagination,
     },
     manualPagination: true,
-    //  rowCount: pksData?.length ?? 0,
+    rowCount: daftarKi?.length ?? 0,
     onPaginationChange: (updater) => {
       const newPaginationState =
         typeof updater === "function" ? updater(pagination) : updater;
