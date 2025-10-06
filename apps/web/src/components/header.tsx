@@ -50,14 +50,6 @@ export default function Header() {
                   Sentra KI
                 </NavigationMenuLink>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  to="/"
-                  className={navigationMenuTriggerStyle()}
-                >
-                  Kontak Kami
-                </NavigationMenuLink>
-              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
           <div className="hidden items-end gap-4 lg:flex w-fit ml-auto mr-0">
@@ -92,9 +84,6 @@ export default function Header() {
                   </Link>
                   <Link to="/" className="font-medium">
                     Sentra KI
-                  </Link>
-                  <Link to="/" className="font-medium">
-                    Kontak Kami
                   </Link>
                 </div>
                 <div className="mt-6 flex flex-col gap-4">
