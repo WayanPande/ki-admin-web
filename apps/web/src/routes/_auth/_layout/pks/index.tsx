@@ -70,9 +70,11 @@ function RouteComponent() {
     { initialNumItems: itemsToLoad }
   );
 
-  const pksData = useQuery(api.pks.getAllPks);
+  const pksData = useQuery(api.pks.getAllPks, {
+    searchTerm: search.query,
+  });
 
-  const sentraKiData = useQuery(api.sentra_ki.getAllSentraKi);
+  const sentraKiData = useQuery(api.sentra_ki.getAllSentraKi, {});
 
   const createPks = useMutation(api.pks.createPks);
   const updatePks = useMutation(api.pks.updatePks);

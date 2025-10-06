@@ -19,7 +19,6 @@ import type * as healthCheck from "../healthCheck.js";
 import type * as http from "../http.js";
 import type * as instansi from "../instansi.js";
 import type * as pks from "../pks.js";
-import type * as privateData from "../privateData.js";
 import type * as sentra_ki from "../sentra_ki.js";
 import type * as upload from "../upload.js";
 
@@ -49,7 +48,6 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   instansi: typeof instansi;
   pks: typeof pks;
-  privateData: typeof privateData;
   sentra_ki: typeof sentra_ki;
   upload: typeof upload;
 }>;

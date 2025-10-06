@@ -52,7 +52,9 @@ function RouteComponent() {
     { initialNumItems: itemsToLoad }
   );
 
-  const instansiData = useQuery(api.instansi.getAllInstansi);
+  const instansiData = useQuery(api.instansi.getAllInstansi, {
+    searchTerm: search.query,
+  });
 
   const createInstansi = useMutation(api.instansi.createInstansi);
   const updateInstansi = useMutation(api.instansi.updateInstansi);

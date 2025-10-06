@@ -49,12 +49,27 @@ export const getAllPksPaginated = query({
 });
 
 export const getAllPks = query({
-  args: {},
-  handler: async (ctx) => {
+  args: {
+    searchTerm: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    let result;
+
+    if (args.searchTerm && args.searchTerm.trim() !== "") {
+      const searchTerm = args.searchTerm;
+
+      result = await ctx.db
+        .query("pks")
+        .withSearchIndex("pks_number", (q) => q.search("no", searchTerm))
+        .collect();
+    } else {
+      result = await ctx.db.query("pks").collect();
+    }
+
     const pksRecords = await ctx.db.query("pks").collect();
 
     const pksWithFullData = await Promise.all(
-      pksRecords.map(async (pks) => {
+      result.map(async (pks) => {
         const sentraKi = await ctx.db.get(pks.sentra_ki_id);
         const instansi = sentraKi
           ? await ctx.db.get(sentraKi.instansi_id)

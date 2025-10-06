@@ -64,7 +64,7 @@ function RouteComponent() {
     })
   );
 
-  const instansi = useQuery(api.instansi.getAllInstansi);
+  const instansi = useQuery(api.instansi.getAllInstansi, {});
 
   const columns: ColumnDef<any>[] = [
     {

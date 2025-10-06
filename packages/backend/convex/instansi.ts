@@ -31,14 +31,25 @@ export const getAllInstansiPaginated = query({
 });
 
 export const getAllInstansi = query({
-  args: {},
-  handler: async (ctx) => {
+  args: {
+    searchTerm: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity();
     if (user === null) {
       throw new Error("Unauthorized");
     }
 
-    return await ctx.db.query("instansi").collect();
+    if (args.searchTerm && args.searchTerm.trim() !== "") {
+      const searchTerm = args.searchTerm;
+
+      return await ctx.db
+        .query("instansi")
+        .withSearchIndex("instansi_name", (q) => q.search("name", searchTerm))
+        .collect();
+    } else {
+      return await ctx.db.query("instansi").collect();
+    }
   },
 });
 

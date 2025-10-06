@@ -35,11 +35,15 @@ function RouteComponent() {
 
   const { results, status, loadMore, isLoading } = usePaginatedQuery(
     api.pks.getAllPksPaginated,
-    {},
+    {
+      searchTerm: search.query,
+    },
     { initialNumItems: itemsToLoad }
   );
 
-  const pksData = useQuery(api.pks.getAllPks);
+  const pksData = useQuery(api.pks.getAllPks, {
+    searchTerm: search.query,
+  });
 
   const columns: ColumnDef<(typeof results)[number]>[] = [
     {

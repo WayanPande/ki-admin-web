@@ -39,12 +39,25 @@ export const getAllSentraKiPaginated = query({
 });
 
 export const getAllSentraKi = query({
-  args: {},
-  handler: async (ctx) => {
-    const pksRecords = await ctx.db.query("sentra_ki").collect();
+  args: {
+    searchTerm: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    let result;
+
+    if (args.searchTerm && args.searchTerm.trim() !== "") {
+      const searchTerm = args.searchTerm;
+
+      result = await ctx.db
+        .query("sentra_ki")
+        .withSearchIndex("search_name", (q) => q.search("name", searchTerm))
+        .collect();
+    } else {
+      result = await ctx.db.query("sentra_ki").collect();
+    }
 
     const sentraKiWithFullData = await Promise.all(
-      pksRecords.map(async (pks) => {
+      result.map(async (pks) => {
         const instansi = await ctx.db.get(pks.instansi_id);
 
         return {

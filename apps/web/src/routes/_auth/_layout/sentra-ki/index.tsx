@@ -62,8 +62,10 @@ function RouteComponent() {
     { initialNumItems: itemsToLoad }
   );
 
-  const instansiData = useQuery(api.instansi.getAllInstansi);
-  const sentraKiData = useQuery(api.sentra_ki.getAllSentraKi);
+  const instansiData = useQuery(api.instansi.getAllInstansi, {});
+  const sentraKiData = useQuery(api.sentra_ki.getAllSentraKi, {
+    searchTerm: search.query,
+  });
 
   const createSentraKi = useMutation(api.sentra_ki.createSentraKi);
   const updateSentraKi = useMutation(api.sentra_ki.updateSentraKi);
