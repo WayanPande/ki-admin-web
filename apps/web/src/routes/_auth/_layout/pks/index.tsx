@@ -78,6 +78,8 @@ function RouteComponent() {
   const updatePks = useMutation(api.pks.updatePks);
   const deletePks = useMutation(api.pks.deletePks);
 
+  const generateUploadUrl = useMutation(api.upload.generateUploadUrl);
+
   const columns: ColumnDef<(typeof results)[number]>[] = [
     {
       id: "#",
@@ -130,7 +132,7 @@ function RouteComponent() {
                 formAdd.setFieldValue("name", data.name);
                 formAdd.setFieldValue("no", data.no);
                 formAdd.setFieldValue("description", data.description ?? "");
-                formAdd.setFieldValue("document", data.document ?? "");
+                formAdd.setFieldValue("document_url", data.document_url ?? "");
                 formAdd.setFieldValue(
                   "expiry_date_from",
                   data.expiry_date_from
@@ -153,7 +155,7 @@ function RouteComponent() {
                 formAdd.setFieldValue("name", data.name);
                 formAdd.setFieldValue("no", data.no);
                 formAdd.setFieldValue("description", data.description ?? "");
-                formAdd.setFieldValue("document", data.document ?? "");
+                formAdd.setFieldValue("document_url", data.document_url ?? "");
                 formAdd.setFieldValue(
                   "expiry_date_from",
                   data.expiry_date_from
@@ -279,20 +281,48 @@ function RouteComponent() {
       name: "",
       no: "",
       description: "",
-      document: "",
+      document: null as File | null,
       expiry_date_from: new Date().toLocaleDateString(),
       expiry_date_to: "",
       id: "",
+      document_url: "",
     },
     onSubmit: async ({ value }) => {
       let promise;
+
+      let documentId: Id<"_storage"> | null;
+
+      if (value.document instanceof File) {
+        try {
+          const formData = new FormData();
+          formData.append("file", value.document);
+
+          const postUrl = await generateUploadUrl();
+
+          const res = await fetch(postUrl, {
+            method: "POST",
+            headers: { "Content-Type": value.document.type },
+            body: formData,
+          });
+
+          const { storageId } = await res.json();
+          documentId = storageId;
+        } catch (error) {
+          toast.error(
+            "Terjadi Kesalahan Saat Upload Dokumen, Silahkan Coba Lagi"
+          );
+          setOpen(false);
+          return;
+        }
+      }
+
       if (value.id) {
         promise = updatePks({
           id: value.id as Id<"pks">,
           sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
           name: value.name,
           description: value.description,
-          document: value.document,
+          document: documentId!,
           expiry_date_from: value.expiry_date_from,
           expiry_date_to: value.expiry_date_to,
         });
@@ -301,7 +331,7 @@ function RouteComponent() {
           sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
           name: value.name,
           description: value.description,
-          document: value.document,
+          document: documentId!,
           expiry_date_from: value.expiry_date_from,
           expiry_date_to: value.expiry_date_to,
         });
@@ -321,10 +351,13 @@ function RouteComponent() {
         name: z.string().min(2, "Silahkan Isi Nama PKS"),
         no: z.any().and(z.any()),
         description: z.string().min(2, "Silahkan Isi Deskripsi PKS"),
-        document: z.string().min(2, "Silahkan Pilih Dokumen"),
+        document: z.any().refine((file) => file instanceof File, {
+          message: "Silahkan Pilih Dokumen",
+        }),
         expiry_date_from: z.string().min(2, "Silahkan Pilih Tanggal"),
         expiry_date_to: z.string().min(2, "Silahkan Pilih Tanggal"),
         id: z.any().and(z.any()),
+        document_url: z.any().and(z.string()),
       }),
     },
   });
@@ -534,21 +567,35 @@ function RouteComponent() {
               <formAdd.Field name="document">
                 {(field) => (
                   <div className="grid gap-3">
-                    <Label htmlFor={field.name}>Unggah Dokumen (.pdf)</Label>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type="file"
-                      accept=".pdf"
-                      onBlur={field.handleBlur}
-                      disabled={isPreview}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          field.handleChange(file.name);
-                        }
-                      }}
-                    />
+                    <Label htmlFor={field.name}>
+                      {isPreview ? "Dokumen PKS" : "Unggah Dokumen (.pdf)"}
+                    </Label>
+                    {isPreview ? (
+                      <Button className="w-fit">
+                        <a
+                          href={formAdd.getFieldValue("document_url")}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Lihat Dokumen
+                        </a>
+                      </Button>
+                    ) : (
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        type="file"
+                        accept=".pdf"
+                        onBlur={field.handleBlur}
+                        disabled={isPreview}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            field.handleChange(file);
+                          }
+                        }}
+                      />
+                    )}
                     <FieldInfo field={field} />
                   </div>
                 )}

@@ -28,10 +28,15 @@ export const getAllPksPaginated = query({
           ? await ctx.db.get(sentraKi.instansi_id)
           : null;
 
+        const document_url = pks.document
+          ? await ctx.storage.getUrl(pks.document)
+          : null;
+
         return {
           ...pks,
           sentra_ki: sentraKi,
           instansi: instansi,
+          document_url,
         };
       })
     );
@@ -104,7 +109,7 @@ export const createPks = mutation({
   args: {
     name: v.string(),
     description: v.optional(v.string()),
-    document: v.optional(v.string()),
+    document: v.optional(v.id("_storage")),
     expiry_date_from: v.string(),
     expiry_date_to: v.string(),
     sentra_ki_id: v.id("sentra_ki"),
@@ -136,7 +141,7 @@ export const updatePks = mutation({
     name_sentra_ki: v.optional(v.string()),
     name: v.optional(v.string()),
     description: v.optional(v.string()),
-    document: v.optional(v.string()),
+    document: v.optional(v.id("_storage")),
     expiry_date_from: v.optional(v.string()),
     expiry_date_to: v.optional(v.string()),
     sentra_ki_id: v.optional(v.id("sentra_ki")),
@@ -160,6 +165,14 @@ export const updatePks = mutation({
       Object.entries(updates).filter(([_, value]) => value !== undefined)
     );
 
+    if (updates.document) {
+      const pks = await ctx.db.get(id);
+
+      if (pks?.document) {
+        await ctx.storage.delete(pks.document);
+      }
+    }
+
     await ctx.db.patch(id, cleanUpdates);
     return id;
   },
@@ -175,6 +188,10 @@ export const deletePks = mutation({
       throw new Error("Unauthorized");
     }
 
+    const pks = await ctx.db.get(args.id);
+    if (pks?.document) {
+      await ctx.storage.delete(pks.document);
+    }
     await ctx.db.delete(args.id);
     return { success: true };
   },

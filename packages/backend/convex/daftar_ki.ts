@@ -21,7 +21,23 @@ export const getAllDaftarKiPaginated = query({
       result = await ctx.db.query("daftar_ki").paginate(args.paginationOpts);
     }
 
-    return result;
+    const daftarKiWithFullData = await Promise.all(
+      result.page.map(async (daftarKi) => {
+        const document_url = daftarKi.document
+          ? await ctx.storage.getUrl(daftarKi.document)
+          : null;
+
+        return {
+          ...daftarKi,
+          document_url,
+        };
+      })
+    );
+
+    return {
+      ...result,
+      page: daftarKiWithFullData,
+    };
   },
 });
 
@@ -180,7 +196,7 @@ export const createDaftarKi = mutation({
     name_pemilik: v.string(),
     address_pemilik: v.string(),
     pemberi_fasilitas: v.string(),
-    document: v.string(),
+    document: v.optional(v.id("_storage")),
     pic_name: v.string(),
     pic_phone: v.string(),
     pic_email: v.string(),
@@ -208,7 +224,7 @@ export const updateDaftarKi = mutation({
     name_pemilik: v.optional(v.string()),
     address_pemilik: v.optional(v.string()),
     pemberi_fasilitas: v.optional(v.string()),
-    document: v.optional(v.string()),
+    document: v.optional(v.id("_storage")),
     pic_name: v.optional(v.string()),
     pic_phone: v.optional(v.string()),
     pic_email: v.optional(v.string()),
@@ -227,6 +243,14 @@ export const updateDaftarKi = mutation({
       Object.entries(updates).filter(([_, value]) => value !== undefined)
     );
 
+    if (updates.document) {
+      const daftarKi = await ctx.db.get(id);
+
+      if (daftarKi?.document) {
+        await ctx.storage.delete(daftarKi.document);
+      }
+    }
+
     await ctx.db.patch(id, cleanUpdates);
     return id;
   },
@@ -240,6 +264,11 @@ export const deleteDaftarKi = mutation({
     const user = await ctx.auth.getUserIdentity();
     if (user === null) {
       throw new Error("Unauthorized");
+    }
+
+    const daftarKi = await ctx.db.get(args.id);
+    if (daftarKi?.document) {
+      await ctx.storage.delete(daftarKi.document);
     }
 
     await ctx.db.delete(args.id);
