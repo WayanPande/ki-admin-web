@@ -73,7 +73,7 @@ function RouteComponent() {
       header: "Status",
       cell: ({ row }) => {
         const item = row.original;
-        let status: "Aktif" | "Kedaluarsa" | "Akan Habis" | "-" = "-";
+        let status: "Aktif" | "Kedaluwarsa" | "Akan Habis" | "-" = "-";
 
         const date = new Date(item.expiry_date_to);
         const activeDate = isFuture(date);
@@ -85,7 +85,7 @@ function RouteComponent() {
           if (activeDate) {
             status = "Aktif";
           } else {
-            status = "Kedaluarsa";
+            status = "Kedaluwarsa";
           }
         }
 
@@ -93,7 +93,7 @@ function RouteComponent() {
           <Badge
             className={cn("bg-orange-500", {
               "bg-green-500": status === "Aktif",
-              "bg-yellow-500": status === "Kedaluarsa",
+              "bg-yellow-500": status === "Kedaluwarsa",
             })}
           >
             {status}

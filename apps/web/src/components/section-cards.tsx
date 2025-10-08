@@ -71,7 +71,7 @@ export function SectionCards() {
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>PKS Kedaluarsa</CardDescription>
+          <CardDescription>PKS Kedaluwarsa</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {totalExpired}
           </CardTitle>

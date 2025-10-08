@@ -114,7 +114,7 @@ function RouteComponent() {
     },
     {
       accessorKey: "expiry_date_to",
-      header: "Tanggal Kedaluarsa",
+      header: "Tanggal Kedaluwarsa",
     },
     {
       id: "action",
