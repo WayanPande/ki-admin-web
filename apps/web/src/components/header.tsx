@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { MenuIcon } from "lucide-react";
+import icon from "@/icon.png";
 import { Button } from "./ui/button";
 import {
   NavigationMenu,
@@ -22,7 +23,12 @@ export default function Header() {
       <div className="container mx-auto">
         <nav className="grid grid-cols-3 justify-center">
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-lg font-semibold tracking-tighter">
+            <img
+              src={icon}
+              alt="Lambang Kementerian Hukum dan HAM"
+              className="size-6 shrink-0 rounded"
+            />
+            <span className="text-md font-semibold tracking-tighter">
               Sistem Informasi Monitoring Sentra KI Bali
             </span>
           </Link>
