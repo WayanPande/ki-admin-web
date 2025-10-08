@@ -1,3 +1,18 @@
+import { api } from "@ki-admin-web/backend/convex/_generated/api";
+import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
+import { useForm } from "@tanstack/react-form";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  type ColumnDef,
+  getCoreRowModel,
+  useReactTable,
+  type VisibilityState,
+} from "@tanstack/react-table";
+import { zodValidator } from "@tanstack/zod-adapter";
+import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+import z from "zod";
 import { DataTable } from "@/components/data-table";
 import FieldInfo from "@/components/field-info";
 import { SiteHeader } from "@/components/site-header";
@@ -13,21 +28,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { routeSearchSchema } from "@/lib/utils";
-import { api } from "@ki-admin-web/backend/convex/_generated/api";
-import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
-import { useForm } from "@tanstack/react-form";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import {
-  getCoreRowModel,
-  useReactTable,
-  type ColumnDef,
-  type VisibilityState,
-} from "@tanstack/react-table";
-import { zodValidator } from "@tanstack/zod-adapter";
-import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
-import z from "zod";
 
 export const Route = createFileRoute("/_auth/_layout/master-data/instansi")({
   component: RouteComponent,
@@ -211,7 +211,11 @@ function RouteComponent() {
       id: "",
     },
     onSubmit: async ({ value }) => {
-      let promise;
+      let promise: Promise<
+        string & {
+          __tableName: "instansi";
+        }
+      >;
 
       if (value.id) {
         promise = updateInstansi({

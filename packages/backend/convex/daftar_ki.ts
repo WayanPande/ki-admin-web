@@ -1,5 +1,6 @@
-import { paginationOptsValidator } from "convex/server";
+import { type PaginationResult, paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import type { Doc } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
 
 export const getAllDaftarKiPaginated = query({
@@ -8,7 +9,7 @@ export const getAllDaftarKiPaginated = query({
     searchTerm: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    let result;
+    let result: PaginationResult<Doc<"daftar_ki">>;
 
     if (args.searchTerm && args.searchTerm.trim() !== "") {
       const searchLower = args.searchTerm.toLowerCase();
@@ -46,7 +47,7 @@ export const getAllDaftarKi = query({
     searchTerm: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    let result;
+    let result: Doc<"daftar_ki">[];
 
     if (args.searchTerm && args.searchTerm.trim() !== "") {
       const searchLower = args.searchTerm.toLowerCase();
@@ -84,9 +85,7 @@ export const getKiTypeCounts = query({
     const records = allRecords.filter((record) => {
       if (!record.registration_date) return false;
 
-      const [month, day, year] = record.registration_date
-        .split("/")
-        .map(Number);
+      const [_, __, year] = record.registration_date.split("/").map(Number);
       return year === args.year;
     });
 
@@ -161,9 +160,7 @@ export const getChartDataByType = query({
     const records = allRecords.filter((record) => {
       if (!record.registration_date) return false;
 
-      const [month, day, year] = record.registration_date
-        .split("/")
-        .map(Number);
+      const [_, __, year] = record.registration_date.split("/").map(Number);
       return year === args.year;
     });
 
@@ -191,9 +188,7 @@ export const getChartDataByType = query({
     });
 
     records.forEach((record) => {
-      const [month, day, year] = record.registration_date
-        .split("/")
-        .map(Number);
+      const [month, _, __] = record.registration_date.split("/").map(Number);
       const monthIndex = month - 1;
 
       const recordType = record.type;
@@ -267,8 +262,7 @@ export const updateDaftarKi = mutation({
 
     const daftarKi = await ctx.db.get(id);
     if (
-      daftarKi &&
-      daftarKi.document &&
+      daftarKi?.document &&
       updates.document &&
       updates.document !== daftarKi.document
     ) {

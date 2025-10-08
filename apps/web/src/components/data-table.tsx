@@ -6,8 +6,8 @@ import {
   IconChevronsRight,
   IconLayoutColumns,
 } from "@tabler/icons-react";
+import type { Table as TableType } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,9 +15,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 import { Label } from "@/components/ui/label";
-
 import {
   Table,
   TableBody,
@@ -27,7 +25,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import type { Table as TableType } from "@tanstack/react-table";
 import DebouncedInput from "./debounced-input";
 
 interface DataTableProps<T> {

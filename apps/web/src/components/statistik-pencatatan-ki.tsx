@@ -1,5 +1,6 @@
+import { api } from "@ki-admin-web/backend/convex/_generated/api";
+import { useQuery } from "convex/react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-
 import {
   Card,
   CardContent,
@@ -13,8 +14,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { api } from "@ki-admin-web/backend/convex/_generated/api";
-import { useQuery } from "convex/react";
 
 const chartConfig = {
   total: {

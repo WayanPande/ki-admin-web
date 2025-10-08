@@ -1,10 +1,11 @@
+import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { IconDotsVertical, IconLogout } from "@tabler/icons-react";
-
+import { useRouter } from "@tanstack/react-router";
+import { useQuery } from "convex/react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -14,10 +15,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useQuery } from "convex/react";
-import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "@tanstack/react-router";
 
 export function NavUser() {
   const { isMobile } = useSidebar();

@@ -1,3 +1,5 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { zodValidator } from "@tanstack/zod-adapter";
 import { SectionCards } from "@/components/section-cards";
 import { SectionCardsUser } from "@/components/section-cards-user";
 import { StatikPencatatanKi } from "@/components/statistik-pencatatan-ki";
@@ -9,8 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { dashboardSchema, years } from "@/lib/utils";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { zodValidator } from "@tanstack/zod-adapter";
 
 export const Route = createFileRoute("/_default/_layout/")({
   component: HomeComponent,
