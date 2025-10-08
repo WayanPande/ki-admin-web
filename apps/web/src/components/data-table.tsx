@@ -6,8 +6,18 @@ import {
   IconChevronsRight,
   IconLayoutColumns,
 } from "@tabler/icons-react";
-import type { Table as TableType } from "@tanstack/react-table";
-import { flexRender } from "@tanstack/react-table";
+import type { UseNavigateResult } from "@tanstack/react-router";
+import type {
+  ColumnDef,
+  OnChangeFn,
+  PaginationState,
+  VisibilityState,
+} from "@tanstack/react-table";
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -27,17 +37,92 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import DebouncedInput from "./debounced-input";
 
-interface DataTableProps<T> {
-  table: TableType<T>;
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data?: TData[];
   searchPlaceHolder?: string;
   showSearchField?: boolean;
+  onColumnVisibilityChange?: OnChangeFn<VisibilityState>;
+  columnVisibility?: VisibilityState;
+  pagination: PaginationState;
+  navigate: UseNavigateResult<"/dashboard">;
+  search: {
+    page: number;
+    limit: number;
+    query: string;
+  };
+  loadMore: (numItems: number) => void;
+  paginationInfo?: {
+    currentPageItems: TData[];
+    canLoadMoreFromConvex: boolean;
+    isLoadingFromConvex: boolean;
+    isExhausted: boolean;
+    rowCount: number | undefined;
+    pageCount: number;
+    totalLoadedItems: number;
+  };
 }
 
-export function DataTable<T>({
-  table,
+const emptyArray: any[] = [];
+
+export function DataTable<TData, TValue>({
+  columns,
   searchPlaceHolder = "Cari",
   showSearchField = true,
-}: DataTableProps<T>) {
+  onColumnVisibilityChange,
+  columnVisibility,
+  pagination,
+  navigate,
+  search,
+  loadMore,
+  paginationInfo,
+  data,
+}: DataTableProps<TData, TValue>) {
+  "use no memo";
+
+  const table = useReactTable({
+    data: paginationInfo?.currentPageItems || data || emptyArray,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    onColumnVisibilityChange,
+    state: {
+      columnVisibility,
+      pagination,
+      globalFilter: search.query,
+    },
+    manualPagination: true,
+    rowCount: paginationInfo?.rowCount,
+    onGlobalFilterChange: (value) => {
+      if (value !== search.query) {
+        navigate({
+          search: { ...search, query: value, page: 1 },
+        });
+      }
+    },
+    onPaginationChange: (updater) => {
+      const newPaginationState =
+        typeof updater === "function" ? updater(pagination) : updater;
+
+      const newPage = newPaginationState.pageIndex + 1;
+      const newLimit = newPaginationState.pageSize
+        ? newPaginationState.pageSize
+        : search.limit;
+
+      navigate({
+        search: { ...search, page: newPage, limit: newLimit },
+      });
+
+      const requiredItems = newPage * newLimit;
+      if (
+        requiredItems > (paginationInfo?.totalLoadedItems || 0) &&
+        paginationInfo?.canLoadMoreFromConvex
+      ) {
+        const itemsToLoad = requiredItems - paginationInfo?.totalLoadedItems;
+        loadMore(itemsToLoad);
+      }
+    },
+  });
+
   return (
     <Tabs
       defaultValue="outline"

@@ -1,21 +1,14 @@
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { useNavigate } from "@tanstack/react-router";
-import {
-  type ColumnDef,
-  getCoreRowModel,
-  useReactTable,
-  type VisibilityState,
-} from "@tanstack/react-table";
+import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
 import { usePaginatedQuery, useQuery } from "convex/react";
 import { addDays, isBefore, isFuture } from "date-fns";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { DataTable } from "./data-table";
 import { SectionCards } from "./section-cards";
 import { SiteHeader } from "./site-header";
 import { Badge } from "./ui/badge";
-
-const emptyArray: any[] = [];
 
 interface DashboardProps {
   search: {
@@ -107,32 +100,27 @@ const DashboardAdmin = ({ search }: DashboardProps) => {
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  const pagination = useMemo(
-    () => ({
-      pageIndex: search.page - 1,
-      pageSize: search.limit,
-    }),
-    [search.page, search.limit]
-  );
+  const pagination = {
+    pageIndex: search.page - 1,
+    pageSize: search.limit,
+  };
 
-  const paginationInfo = useMemo(() => {
-    const totalLoadedItems = results?.length ?? 0;
-    const currentPageItems =
-      results?.slice(
-        (search.page - 1) * search.limit,
-        search.page * search.limit
-      ) ?? emptyArray;
+  const paginationInfo = () => {
+    const totalLoadedItems = pksData?.length ?? 0;
+    const currentPageItems = results?.slice(
+      (search.page - 1) * search.limit,
+      search.page * search.limit
+    );
 
     const canLoadMoreFromConvex = status === "CanLoadMore";
     const isLoadingFromConvex =
       status === "LoadingMore" || status === "LoadingFirstPage";
     const isExhausted = status === "Exhausted";
 
-    let rowCount: number | undefined;
+    const rowCount = totalLoadedItems;
     let pageCount: number | undefined;
 
     if (isExhausted) {
-      rowCount = totalLoadedItems;
       pageCount = Math.max(1, Math.ceil(totalLoadedItems / search.limit));
     } else {
       pageCount = -1;
@@ -147,40 +135,7 @@ const DashboardAdmin = ({ search }: DashboardProps) => {
       pageCount,
       totalLoadedItems,
     };
-  }, [results, search.page, search.limit, status]);
-
-  const table = useReactTable({
-    data: paginationInfo.currentPageItems,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    state: {
-      columnVisibility,
-      pagination,
-    },
-    manualPagination: true,
-    rowCount: pksData?.length ?? 0,
-    onPaginationChange: (updater) => {
-      const newPaginationState =
-        typeof updater === "function" ? updater(pagination) : updater;
-
-      const newPage = newPaginationState.pageIndex + 1;
-      const newLimit = newPaginationState.pageSize;
-
-      navigate({
-        search: { ...search, page: newPage, limit: newLimit },
-      });
-
-      const requiredItems = newPage * newLimit;
-      if (
-        requiredItems > paginationInfo.totalLoadedItems &&
-        paginationInfo.canLoadMoreFromConvex
-      ) {
-        const itemsToLoad = requiredItems - paginationInfo.totalLoadedItems;
-        loadMore(itemsToLoad);
-      }
-    },
-  });
+  };
 
   return (
     <>
@@ -190,7 +145,16 @@ const DashboardAdmin = ({ search }: DashboardProps) => {
           <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
             <SectionCards />
             <div className="px-4 lg:px-6">
-              <DataTable table={table} />
+              <DataTable
+                columns={columns}
+                loadMore={loadMore}
+                paginationInfo={paginationInfo()}
+                pagination={pagination}
+                navigate={navigate}
+                search={search}
+                columnVisibility={columnVisibility}
+                onColumnVisibilityChange={setColumnVisibility}
+              />
             </div>
           </div>
         </div>

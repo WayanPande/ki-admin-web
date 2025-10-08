@@ -2,12 +2,7 @@ import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { useForm } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import {
-  type ColumnDef,
-  getCoreRowModel,
-  useReactTable,
-  type VisibilityState,
-} from "@tanstack/react-table";
+import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { useQuery } from "convex/react";
 import { useState } from "react";
@@ -135,25 +130,6 @@ function RouteComponent() {
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  const table = useReactTable({
-    data: usersQuery.data.data?.users ?? emptyArray,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    state: {
-      columnVisibility,
-      globalFilter: search.query,
-    },
-    manualPagination: true,
-    onGlobalFilterChange: (value) => {
-      if (value !== search.query) {
-        navigate({
-          search: { ...search, query: value, page: 1 },
-        });
-      }
-    },
-  });
-
   const formAdd = useForm({
     defaultValues: {
       email: "",
@@ -250,7 +226,20 @@ function RouteComponent() {
             Add New
           </Button>
         </div>
-        <DataTable table={table} searchPlaceHolder="Nama User..." />
+        <DataTable
+          data={usersQuery.data.data?.users}
+          searchPlaceHolder="Nama User..."
+          columns={columns}
+          navigate={navigate}
+          search={search}
+          columnVisibility={columnVisibility}
+          onColumnVisibilityChange={setColumnVisibility}
+          loadMore={() => {}}
+          pagination={{
+            pageIndex: search.page - 1,
+            pageSize: search.limit,
+          }}
+        />
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>

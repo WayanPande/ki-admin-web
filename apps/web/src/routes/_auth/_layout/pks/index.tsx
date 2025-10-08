@@ -2,16 +2,11 @@ import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import {
-  type ColumnDef,
-  getCoreRowModel,
-  useReactTable,
-  type VisibilityState,
-} from "@tanstack/react-table";
+import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import { ChevronDownIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
 import { DataTable } from "@/components/data-table";
@@ -47,8 +42,6 @@ export const Route = createFileRoute("/_auth/_layout/pks/")({
   component: RouteComponent,
   validateSearch: zodValidator(routeSearchSchema),
 });
-
-const emptyArray: any[] = [];
 
 function RouteComponent() {
   const [open, setOpen] = useState(false);
@@ -196,32 +189,27 @@ function RouteComponent() {
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  const pagination = useMemo(
-    () => ({
-      pageIndex: search.page - 1,
-      pageSize: search.limit,
-    }),
-    [search.page, search.limit]
-  );
+  const pagination = {
+    pageIndex: search.page - 1,
+    pageSize: search.limit,
+  };
 
-  const paginationInfo = useMemo(() => {
-    const totalLoadedItems = results?.length ?? 0;
-    const currentPageItems =
-      results?.slice(
-        (search.page - 1) * search.limit,
-        search.page * search.limit
-      ) ?? emptyArray;
+  const paginationInfo = () => {
+    const totalLoadedItems = pksData?.length ?? 0;
+    const currentPageItems = results?.slice(
+      (search.page - 1) * search.limit,
+      search.page * search.limit
+    );
 
     const canLoadMoreFromConvex = status === "CanLoadMore";
     const isLoadingFromConvex =
       status === "LoadingMore" || status === "LoadingFirstPage";
     const isExhausted = status === "Exhausted";
 
-    let rowCount: number | undefined;
+    const rowCount = totalLoadedItems;
     let pageCount: number | undefined;
 
     if (isExhausted) {
-      rowCount = totalLoadedItems;
       pageCount = Math.max(1, Math.ceil(totalLoadedItems / search.limit));
     } else {
       pageCount = -1;
@@ -236,48 +224,7 @@ function RouteComponent() {
       pageCount,
       totalLoadedItems,
     };
-  }, [results, search.page, search.limit, status]);
-
-  const table = useReactTable({
-    data: paginationInfo.currentPageItems,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    state: {
-      columnVisibility,
-      pagination,
-      globalFilter: search.query,
-    },
-    manualPagination: true,
-    rowCount: pksData?.length ?? 0,
-    onGlobalFilterChange: (value) => {
-      if (value !== search.query) {
-        navigate({
-          search: { ...search, query: value, page: 1 },
-        });
-      }
-    },
-    onPaginationChange: (updater) => {
-      const newPaginationState =
-        typeof updater === "function" ? updater(pagination) : updater;
-
-      const newPage = newPaginationState.pageIndex + 1;
-      const newLimit = newPaginationState.pageSize;
-
-      navigate({
-        search: { ...search, page: newPage, limit: newLimit },
-      });
-
-      const requiredItems = newPage * newLimit;
-      if (
-        requiredItems > paginationInfo.totalLoadedItems &&
-        paginationInfo.canLoadMoreFromConvex
-      ) {
-        const itemsToLoad = requiredItems - paginationInfo.totalLoadedItems;
-        loadMore(itemsToLoad);
-      }
-    },
-  });
+  };
 
   const formAdd = useForm({
     defaultValues: {
@@ -403,7 +350,17 @@ function RouteComponent() {
             Add New
           </Button>
         </div>
-        <DataTable table={table} searchPlaceHolder="No PKS..." />
+        <DataTable
+          columns={columns}
+          searchPlaceHolder="Nama PKS..."
+          loadMore={loadMore}
+          pagination={pagination}
+          navigate={navigate}
+          search={search}
+          columnVisibility={columnVisibility}
+          onColumnVisibilityChange={setColumnVisibility}
+          paginationInfo={paginationInfo()}
+        />
       </div>
 
       <Dialog
