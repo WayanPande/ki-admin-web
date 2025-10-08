@@ -265,12 +265,14 @@ export const updateDaftarKi = mutation({
       Object.entries(updates).filter(([_, value]) => value !== undefined)
     );
 
-    if (updates.document) {
-      const daftarKi = await ctx.db.get(id);
-
-      if (daftarKi?.document) {
-        await ctx.storage.delete(daftarKi.document);
-      }
+    const daftarKi = await ctx.db.get(id);
+    if (
+      daftarKi &&
+      daftarKi.document &&
+      updates.document &&
+      updates.document !== daftarKi.document
+    ) {
+      await ctx.storage.delete(daftarKi.document);
     }
 
     await ctx.db.patch(id, cleanUpdates);

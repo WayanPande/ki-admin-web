@@ -140,6 +140,7 @@ function RouteComponent() {
                   data.expiry_date_from
                 );
                 formAdd.setFieldValue("expiry_date_to", data.expiry_date_to);
+                formAdd.setFieldValue("document_id", data.document as string);
 
                 setIsPreview(true);
                 setOpen(true);
@@ -163,6 +164,7 @@ function RouteComponent() {
                   data.expiry_date_from
                 );
                 formAdd.setFieldValue("expiry_date_to", data.expiry_date_to);
+                formAdd.setFieldValue("document_id", data.document as string);
 
                 setOpen(true);
               }}
@@ -288,11 +290,12 @@ function RouteComponent() {
       expiry_date_to: "",
       id: "",
       document_url: "",
+      document_id: "",
     },
     onSubmit: async ({ value }) => {
       let promise;
 
-      let documentId: Id<"_storage"> | null;
+      let documentId: Id<"_storage"> | null = null;
 
       if (value.document instanceof File) {
         try {
@@ -324,11 +327,16 @@ function RouteComponent() {
           sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
           name: value.name,
           description: value.description,
-          document: documentId!,
+          document: documentId ?? (value.document_id as Id<"_storage">),
           expiry_date_from: value.expiry_date_from,
           expiry_date_to: value.expiry_date_to,
         });
       } else {
+        if (!documentId) {
+          toast.error("Dokumen wajib diupload saat membuat data baru");
+          return;
+        }
+
         promise = createPks({
           sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
           name: value.name,
@@ -348,19 +356,32 @@ function RouteComponent() {
       setOpen(false);
     },
     validators: {
-      onSubmit: z.object({
-        sentra_ki_id: z.string().min(2, "Silahkan Pilih Sentra KI"),
-        name: z.string().min(2, "Silahkan Isi Nama PKS"),
-        no: z.any().and(z.any()),
-        description: z.string().min(2, "Silahkan Isi Deskripsi PKS"),
-        document: z.any().refine((file) => file instanceof File, {
-          message: "Silahkan Pilih Dokumen",
-        }),
-        expiry_date_from: z.string().min(2, "Silahkan Pilih Tanggal"),
-        expiry_date_to: z.string().min(2, "Silahkan Pilih Tanggal"),
-        id: z.any().and(z.any()),
-        document_url: z.any().and(z.string()),
-      }),
+      onSubmit: z
+        .object({
+          sentra_ki_id: z.string().min(2, "Silahkan Pilih Sentra KI"),
+          name: z.string().min(2, "Silahkan Isi Nama PKS"),
+          no: z.any().and(z.any()),
+          description: z.string().min(2, "Silahkan Isi Deskripsi PKS"),
+          document: z.any(),
+          expiry_date_from: z.string().min(2, "Silahkan Pilih Tanggal"),
+          expiry_date_to: z.string().min(2, "Silahkan Pilih Tanggal"),
+          id: z.any().and(z.any()),
+          document_url: z.any().and(z.string()),
+          document_id: z.any().and(z.string()),
+        })
+        .refine(
+          (data) => {
+            if (!data.id) {
+              return data.document instanceof File;
+            }
+
+            return true;
+          },
+          {
+            message: "Silahkan Pilih Dokumen",
+            path: ["document"],
+          }
+        ),
     },
   });
 

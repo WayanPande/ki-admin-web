@@ -156,6 +156,8 @@ function RouteComponent() {
                 formAdd.setFieldValue("pic_email", data.pic_email);
                 formAdd.setFieldValue("pic_id", data.pic_id as any);
 
+                formAdd.setFieldValue("document_id", data.document as string);
+
                 formAdd.setFieldValue(
                   "registration_date",
                   data.registration_date
@@ -191,6 +193,7 @@ function RouteComponent() {
                 formAdd.setFieldValue("pic_phone", data.pic_phone);
                 formAdd.setFieldValue("pic_email", data.pic_email);
                 formAdd.setFieldValue("pic_id", data.pic_id as any);
+                formAdd.setFieldValue("document_id", data.document as string);
 
                 setOpen(true);
               }}
@@ -314,11 +317,12 @@ function RouteComponent() {
       registration_date: new Date().toLocaleDateString(),
       id: "",
       document_url: "",
+      document_id: "",
     },
     onSubmit: async ({ value }) => {
       let promise;
 
-      let documentId: Id<"_storage"> | null;
+      let documentId: Id<"_storage"> | null = null;
 
       if (value.document instanceof File) {
         try {
@@ -354,7 +358,7 @@ function RouteComponent() {
           name_pemilik: value.name_pemilik,
           address_pemilik: value.address_pemilik,
           pemberi_fasilitas: value.pemberi_fasilitas,
-          document: documentId!,
+          document: documentId ?? (value.document_id as Id<"_storage">),
           pic_id: value.pic_id,
           pic_name: value.pic_name!,
           pic_phone: value.pic_phone!,
@@ -362,6 +366,11 @@ function RouteComponent() {
           registration_date: value.registration_date,
         });
       } else {
+        if (!documentId) {
+          toast.error("Dokumen wajib diupload saat membuat data baru");
+          return;
+        }
+
         promise = createDaftarKi({
           nomor_permohonan: value.nomor_permohonan,
           name: value.name,
@@ -388,27 +397,42 @@ function RouteComponent() {
       setOpen(false);
     },
     validators: {
-      onSubmit: z.object({
-        nomor_permohonan: z.string().min(2, "Silahkan Isi Nomor Permohonan"),
-        name: z.string().min(2, "Silahkan Isi Nama"),
-        type: z.string().min(2, "Silahkan Pilih Jenis KI"),
-        sub_type: z.optional(z.string()).and(z.string()),
-        name_pemilik: z.string().min(2, "Silahkan Isi Nama Pemilik"),
-        address_pemilik: z.string().min(2, "Silahkan Isi Alamat Pemilik"),
-        pemberi_fasilitas: z
-          .string()
-          .min(2, "Silahkan Masukkan Pemberi Fasilitas"),
-        document: z.any().refine((file) => file instanceof File, {
-          message: "Silahkan Pilih Dokumen",
-        }),
-        pic_name: z.any().and(z.any()),
-        pic_phone: z.any().and(z.any()),
-        pic_email: z.any().and(z.any()),
-        pic_id: z.any().and(z.any()),
-        registration_date: z.string().min(2, "Silahkan Isi Tanggal Pencatatan"),
-        id: z.any().and(z.any()),
-        document_url: z.any().and(z.string()),
-      }),
+      onSubmit: z
+        .object({
+          nomor_permohonan: z.string().min(2, "Silahkan Isi Nomor Permohonan"),
+          name: z.string().min(2, "Silahkan Isi Nama"),
+          type: z.string().min(2, "Silahkan Pilih Jenis KI"),
+          sub_type: z.optional(z.string()).and(z.string()),
+          name_pemilik: z.string().min(2, "Silahkan Isi Nama Pemilik"),
+          address_pemilik: z.string().min(2, "Silahkan Isi Alamat Pemilik"),
+          pemberi_fasilitas: z
+            .string()
+            .min(2, "Silahkan Masukkan Pemberi Fasilitas"),
+          document: z.any(),
+          pic_name: z.any().and(z.any()),
+          pic_phone: z.any().and(z.any()),
+          pic_email: z.any().and(z.any()),
+          pic_id: z.any().and(z.any()),
+          registration_date: z
+            .string()
+            .min(2, "Silahkan Isi Tanggal Pencatatan"),
+          id: z.any().and(z.any()),
+          document_url: z.any().and(z.string()),
+          document_id: z.any().and(z.string()),
+        })
+        .refine(
+          (data) => {
+            if (!data.id) {
+              return data.document instanceof File;
+            }
+
+            return true;
+          },
+          {
+            message: "Silahkan Pilih Dokumen",
+            path: ["document"],
+          }
+        ),
     },
   });
 

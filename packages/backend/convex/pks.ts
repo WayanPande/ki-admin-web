@@ -163,12 +163,14 @@ export const updatePks = mutation({
       Object.entries(updates).filter(([_, value]) => value !== undefined)
     );
 
-    if (updates.document) {
-      const pks = await ctx.db.get(id);
-
-      if (pks?.document) {
-        await ctx.storage.delete(pks.document);
-      }
+    const pks = await ctx.db.get(id);
+    if (
+      pks &&
+      pks.document &&
+      updates.document &&
+      updates.document !== pks.document
+    ) {
+      await ctx.storage.delete(pks.document);
     }
 
     await ctx.db.patch(id, cleanUpdates);
