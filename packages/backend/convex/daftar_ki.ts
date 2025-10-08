@@ -68,7 +68,7 @@ interface KiTypeCounts {
   paten: number;
   hakCipta: number;
   indikasiGeografis: number;
-  dtsl: number;
+  dtlst: number;
   rahasiaDagang: number;
   kiKomunal: number;
   total: number;
@@ -95,7 +95,7 @@ export const getKiTypeCounts = query({
       paten: 0,
       hakCipta: 0,
       indikasiGeografis: 0,
-      dtsl: 0,
+      dtlst: 0,
       rahasiaDagang: 0,
       kiKomunal: 0,
       total: 0,
@@ -117,8 +117,8 @@ export const getKiTypeCounts = query({
         case "Indikasi Geografis":
           counts.indikasiGeografis += 1;
           break;
-        case "DTSL":
-          counts.dtsl += 1;
+        case "DTLST":
+          counts.dtlst += 1;
           break;
         case "Rahasia Dagang":
           counts.rahasiaDagang += 1;
@@ -140,7 +140,7 @@ export const KI_TYPES = [
   "Paten",
   "Hak Cipta",
   "Indikasi Geografis",
-  "DTSL",
+  "DTLST",
   "Rahasia Dagang",
   "KI Komunal",
 ] as const;

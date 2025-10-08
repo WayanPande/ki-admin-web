@@ -346,7 +346,7 @@ function RouteComponent() {
 
   return (
     <>
-      <SiteHeader title="Daftar PKS Dengan Sentra KI" />
+      <SiteHeader title="Daftar Sentra KI di Provinsi Bali" />
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
         <div className="mx-4 lg:mx-6 flex justify-end">
           <Button

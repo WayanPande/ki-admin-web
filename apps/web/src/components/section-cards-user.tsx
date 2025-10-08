@@ -26,7 +26,7 @@ export function SectionCardsUser({ search }: DashboardProps) {
     merek,
     paten,
     hakCipta,
-    dtsl,
+    dtlst,
     rahasiaDagang,
     kiKomunal,
     total,
@@ -76,9 +76,9 @@ export function SectionCardsUser({ search }: DashboardProps) {
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>DTSL</CardDescription>
+          <CardDescription>DTLST</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {dtsl}
+            {dtlst}
           </CardTitle>
         </CardHeader>
       </Card>

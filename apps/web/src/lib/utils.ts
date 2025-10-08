@@ -75,7 +75,7 @@ export const KI_TYPES = [
   "Paten",
   "Hak Cipta",
   "Indikasi Geografis",
-  "DTSL",
+  "DTLST",
   "Rahasia Dagang",
   "KI Komunal",
 ] as const;
