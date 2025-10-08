@@ -1,6 +1,7 @@
-import { paginationOptsValidator } from "convex/server";
+import { type PaginationResult, paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
-import { mutation, MutationCtx, query } from "./_generated/server";
+import type { Doc } from "./_generated/dataModel";
+import { type MutationCtx, mutation, query } from "./_generated/server";
 
 export const getAllSentraKiPaginated = query({
   args: {
@@ -8,7 +9,7 @@ export const getAllSentraKiPaginated = query({
     searchTerm: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    let result;
+    let result: PaginationResult<Doc<"sentra_ki">>;
 
     if (args.searchTerm && args.searchTerm.trim() !== "") {
       const searchTerm = args.searchTerm;
@@ -43,7 +44,7 @@ export const getAllSentraKi = query({
     searchTerm: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    let result;
+    let result: Doc<"sentra_ki">[];
 
     if (args.searchTerm && args.searchTerm.trim() !== "") {
       const searchTerm = args.searchTerm;
@@ -78,7 +79,7 @@ async function generateCustomId(
 
   let nextNumber = 1;
 
-  if (latestRecord && latestRecord.custom_id) {
+  if (latestRecord?.custom_id) {
     // Extract number from existing ID (e.g., "PKS-005" -> 5)
     const match = latestRecord.custom_id.match(new RegExp(`${prefix}-(\\d+)`));
     if (match) {

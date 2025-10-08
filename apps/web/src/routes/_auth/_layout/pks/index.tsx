@@ -1,3 +1,19 @@
+import { api } from "@ki-admin-web/backend/convex/_generated/api";
+import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
+import { useForm } from "@tanstack/react-form";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  type ColumnDef,
+  getCoreRowModel,
+  useReactTable,
+  type VisibilityState,
+} from "@tanstack/react-table";
+import { zodValidator } from "@tanstack/zod-adapter";
+import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
+import { ChevronDownIcon } from "lucide-react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+import z from "zod";
 import { DataTable } from "@/components/data-table";
 import FieldInfo from "@/components/field-info";
 import { SiteHeader } from "@/components/site-header";
@@ -26,22 +42,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { routeSearchSchema } from "@/lib/utils";
-import { api } from "@ki-admin-web/backend/convex/_generated/api";
-import type { Id } from "@ki-admin-web/backend/convex/_generated/dataModel";
-import { useForm } from "@tanstack/react-form";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import {
-  getCoreRowModel,
-  useReactTable,
-  type ColumnDef,
-  type VisibilityState,
-} from "@tanstack/react-table";
-import { zodValidator } from "@tanstack/zod-adapter";
-import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
-import { ChevronDownIcon } from "lucide-react";
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
-import z from "zod";
 
 export const Route = createFileRoute("/_auth/_layout/pks/")({
   component: RouteComponent,
@@ -293,7 +293,11 @@ function RouteComponent() {
       document_id: "",
     },
     onSubmit: async ({ value }) => {
-      let promise;
+      let promise: Promise<
+        string & {
+          __tableName: "pks";
+        }
+      >;
 
       let documentId: Id<"_storage"> | null = null;
 
@@ -312,7 +316,7 @@ function RouteComponent() {
 
           const { storageId } = await res.json();
           documentId = storageId;
-        } catch (error) {
+        } catch {
           toast.error(
             "Terjadi Kesalahan Saat Upload Dokumen, Silahkan Coba Lagi"
           );

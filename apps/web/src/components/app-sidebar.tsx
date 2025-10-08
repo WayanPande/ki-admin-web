@@ -1,3 +1,4 @@
+import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import {
   IconBuilding,
   IconChartBar,
@@ -5,8 +6,9 @@ import {
   IconListDetails,
   IconUsers,
 } from "@tabler/icons-react";
-import * as React from "react";
-
+import { Link } from "@tanstack/react-router";
+import { useQuery } from "convex/react";
+import type * as React from "react";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import {
@@ -19,9 +21,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import icon from "@/icon.png";
-import { api } from "@ki-admin-web/backend/convex/_generated/api";
-import { Link } from "@tanstack/react-router";
-import { useQuery } from "convex/react";
 
 const menuKanwil = [
   {

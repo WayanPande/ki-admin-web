@@ -1,6 +1,6 @@
-import icon from "@/icon.png";
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import icon from "@/icon.png";
 
 const Footer = () => {
   return (

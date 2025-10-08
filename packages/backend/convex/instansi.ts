@@ -1,5 +1,6 @@
-import { paginationOptsValidator } from "convex/server";
+import { type PaginationResult, paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import type { Doc } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
 
 export const getAllInstansiPaginated = query({
@@ -13,7 +14,7 @@ export const getAllInstansiPaginated = query({
       throw new Error("Unauthorized");
     }
 
-    let result;
+    let result: PaginationResult<Doc<"instansi">>;
 
     if (args.searchTerm && args.searchTerm.trim() !== "") {
       const searchLower = args.searchTerm.toLowerCase();

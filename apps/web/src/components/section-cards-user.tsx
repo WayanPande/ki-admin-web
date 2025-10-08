@@ -1,11 +1,11 @@
+import { api } from "@ki-admin-web/backend/convex/_generated/api";
+import { useQuery } from "convex/react";
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { api } from "@ki-admin-web/backend/convex/_generated/api";
-import { useQuery } from "convex/react";
 import Loader from "./loader";
 
 interface DashboardProps {

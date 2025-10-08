@@ -1,9 +1,9 @@
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
 import { AppSidebar } from "@/components/app-sidebar";
 import Loader from "@/components/loader";
 import { LoginForm } from "@/components/login-form";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
 
 export const Route = createFileRoute("/_auth/_layout")({
   component: RouteComponent,

@@ -1,6 +1,7 @@
-import { paginationOptsValidator } from "convex/server";
+import { type PaginationResult, paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
-import { mutation, MutationCtx, query } from "./_generated/server";
+import type { Doc } from "./_generated/dataModel";
+import { type MutationCtx, mutation, query } from "./_generated/server";
 
 export const getAllPksPaginated = query({
   args: {
@@ -8,7 +9,7 @@ export const getAllPksPaginated = query({
     searchTerm: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    let result;
+    let result: PaginationResult<Doc<"pks">>;
 
     if (args.searchTerm && args.searchTerm.trim() !== "") {
       const searchLower = args.searchTerm.toLowerCase();
@@ -53,7 +54,7 @@ export const getAllPks = query({
     searchTerm: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    let result;
+    let result: Doc<"pks">[];
 
     if (args.searchTerm && args.searchTerm.trim() !== "") {
       const searchTerm = args.searchTerm;
@@ -88,7 +89,7 @@ async function generateCustomId(
 
   let nextNumber = 1;
 
-  if (latestRecord && latestRecord.no) {
+  if (latestRecord?.no) {
     // Extract number from existing ID (e.g., "PKS-005" -> 5)
     const match = latestRecord.no.match(new RegExp(`${prefix}-(\\d+)`));
     if (match) {
@@ -165,8 +166,7 @@ export const updatePks = mutation({
 
     const pks = await ctx.db.get(id);
     if (
-      pks &&
-      pks.document &&
+      pks?.document &&
       updates.document &&
       updates.document !== pks.document
     ) {
