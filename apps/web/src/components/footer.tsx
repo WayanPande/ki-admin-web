@@ -27,7 +27,7 @@ const Footer = () => {
             Denpasar, Bali 80234
           </address>
 
-          <p className="text-md md:text-sm">(0361) 224856</p>
+          <p className="text-md md:text-sm">0811 3888 770</p>
         </div>
 
         <div className="md:col-span-3">
