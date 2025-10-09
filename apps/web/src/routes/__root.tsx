@@ -3,13 +3,12 @@ import {
   createRootRouteWithContext,
   HeadContent,
   Outlet,
-  useRouterState,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import Loader from "@/components/loader";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import "../index.css";
+import logo from "@/icon.png";
 
 export interface RouterAppContext {
   queryClient: QueryClient;
@@ -20,27 +19,23 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
   head: () => ({
     meta: [
       {
-        title: "ki-admin-web",
+        title: "Sistem Informasi Monitoring Sentra KI Bali",
       },
       {
         name: "description",
-        content: "ki-admin-web is a web application",
+        content: "Sistem Informasi Monitoring Sentra KI Bali",
       },
     ],
     links: [
       {
         rel: "icon",
-        href: "/favicon.ico",
+        href: logo,
       },
     ],
   }),
 });
 
 function RootComponent() {
-  const isFetching = useRouterState({
-    select: (s) => s.isLoading,
-  });
-
   return (
     <>
       <HeadContent />
@@ -51,7 +46,7 @@ function RootComponent() {
         storageKey="ki-admin-web-theme"
       >
         <div className="grid grid-rows-[auto_1fr] h-svh">
-          {isFetching ? <Loader /> : <Outlet />}
+          <Outlet />
         </div>
         <Toaster richColors />
       </ThemeProvider>

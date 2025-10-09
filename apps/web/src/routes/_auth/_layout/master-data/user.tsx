@@ -43,8 +43,6 @@ export const Route = createFileRoute("/_auth/_layout/master-data/user")({
     ),
 });
 
-const emptyArray: any[] = [];
-
 function RouteComponent() {
   const [open, setOpen] = useState(false);
   const search = Route.useSearch();
