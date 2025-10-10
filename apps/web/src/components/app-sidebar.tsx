@@ -61,6 +61,11 @@ const menuKi = [
     url: "/admin-sentra/daftar-ki",
     icon: IconListDetails,
   },
+  {
+    title: "Penginputan Jumlah Permohonan KI",
+    url: "/admin-sentra/permohonan-ki",
+    icon: IconChartBar,
+  },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

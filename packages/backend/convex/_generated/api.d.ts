@@ -18,6 +18,7 @@ import type * as daftar_ki from "../daftar_ki.js";
 import type * as healthCheck from "../healthCheck.js";
 import type * as http from "../http.js";
 import type * as instansi from "../instansi.js";
+import type * as permohonan_ki from "../permohonan_ki.js";
 import type * as pks from "../pks.js";
 import type * as sentra_ki from "../sentra_ki.js";
 import type * as upload from "../upload.js";
@@ -47,6 +48,7 @@ declare const fullApi: ApiFromModules<{
   healthCheck: typeof healthCheck;
   http: typeof http;
   instansi: typeof instansi;
+  permohonan_ki: typeof permohonan_ki;
   pks: typeof pks;
   sentra_ki: typeof sentra_ki;
   upload: typeof upload;
