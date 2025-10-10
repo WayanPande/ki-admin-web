@@ -69,4 +69,11 @@ export default defineSchema({
   }).searchIndex("search_date", {
     searchField: "date",
   }),
+  informasi_ki: defineTable({
+    name: v.string(),
+    date: v.string(),
+    description: v.string(),
+  }).searchIndex("informasi_ki_name", {
+    searchField: "name",
+  }),
 });

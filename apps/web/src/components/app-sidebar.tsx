@@ -66,6 +66,11 @@ const menuKi = [
     url: "/admin-sentra/permohonan-ki",
     icon: IconChartBar,
   },
+  {
+    title: "Penyebarluasan Informasi KI",
+    url: "/admin-sentra/informasi-ki",
+    icon: IconListDetails,
+  },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

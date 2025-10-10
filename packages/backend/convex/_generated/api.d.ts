@@ -17,6 +17,7 @@ import type * as betterAuth_user from "../betterAuth/user.js";
 import type * as daftar_ki from "../daftar_ki.js";
 import type * as healthCheck from "../healthCheck.js";
 import type * as http from "../http.js";
+import type * as informasi_ki from "../informasi_ki.js";
 import type * as instansi from "../instansi.js";
 import type * as permohonan_ki from "../permohonan_ki.js";
 import type * as pks from "../pks.js";
@@ -47,6 +48,7 @@ declare const fullApi: ApiFromModules<{
   daftar_ki: typeof daftar_ki;
   healthCheck: typeof healthCheck;
   http: typeof http;
+  informasi_ki: typeof informasi_ki;
   instansi: typeof instansi;
   permohonan_ki: typeof permohonan_ki;
   pks: typeof pks;
