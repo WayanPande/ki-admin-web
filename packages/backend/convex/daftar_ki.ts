@@ -142,6 +142,7 @@ export const KI_TYPES = [
   "DTLST",
   "Rahasia Dagang",
   "KI Komunal",
+  "Desain Industri",
 ] as const;
 
 interface ChartDataByType {

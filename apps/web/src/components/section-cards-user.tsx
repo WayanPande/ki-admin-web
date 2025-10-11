@@ -10,13 +10,14 @@ import Loader from "./loader";
 
 interface DashboardProps {
   search: {
-    year: number;
+    year_from: number;
+    year_to: number;
   };
 }
 
 export function SectionCardsUser({ search }: DashboardProps) {
-  const allCounts = useQuery(api.daftar_ki.getKiTypeCounts, {
-    year: search?.year ?? new Date().getFullYear(),
+  const allCounts = useQuery(api.permohonan_ki.getPermohonanKiTypeCounts, {
+    year: search?.year_from ?? new Date().getFullYear(),
   });
 
   if (!allCounts) return <Loader />;
@@ -28,16 +29,17 @@ export function SectionCardsUser({ search }: DashboardProps) {
     hakCipta,
     dtlst,
     rahasiaDagang,
+    desainIndustri,
     kiKomunal,
     total,
   } = allCounts;
 
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-4 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-4 @5xl/main:grid-cols-8">
-      <Card className="@container/card">
+    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-4 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-5 @5xl/main:grid-cols-8">
+      <Card className="@container/card col-span-2">
         <CardHeader>
           <CardDescription>Total</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl p-1">
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {total}
           </CardTitle>
         </CardHeader>
@@ -55,6 +57,14 @@ export function SectionCardsUser({ search }: DashboardProps) {
           <CardDescription>Paten</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {paten}
+          </CardTitle>
+        </CardHeader>
+      </Card>
+      <Card className="@container/card">
+        <CardHeader>
+          <CardDescription>Desain Industri</CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            {desainIndustri}
           </CardTitle>
         </CardHeader>
       </Card>

@@ -38,11 +38,6 @@ export const getAllInformasiKi = query({
     searchTerm: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.auth.getUserIdentity();
-    if (user === null) {
-      throw new Error("Unauthorized");
-    }
-
     if (args.searchTerm && args.searchTerm.trim() !== "") {
       const searchLower = args.searchTerm.toLowerCase();
 

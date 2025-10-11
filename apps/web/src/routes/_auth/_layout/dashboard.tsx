@@ -26,6 +26,7 @@ const routeUser = () => {
 };
 
 function RouteComponent() {
+  "use no memo";
   return (
     <>
       <Authenticated>{routeUser()}</Authenticated>

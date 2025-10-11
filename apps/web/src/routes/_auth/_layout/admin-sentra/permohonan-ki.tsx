@@ -263,8 +263,6 @@ function RouteComponent() {
         }
       >;
 
-      console.log(value);
-
       if (value.id) {
         promise = updatePermohonanKi({
           id: value.id as Id<"permohonan_ki">,
