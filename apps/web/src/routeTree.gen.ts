@@ -16,6 +16,7 @@ import { Route as DefaultLayoutSignupRouteImport } from './routes/_default/_layo
 import { Route as DefaultLayoutSentraKiDashboardRouteImport } from './routes/_default/_layout/sentra-ki-dashboard'
 import { Route as DefaultLayoutLoginRouteImport } from './routes/_default/_layout/login'
 import { Route as AuthLayoutDashboardRouteImport } from './routes/_auth/_layout/dashboard'
+import { Route as AuthLayoutChangePasswordRouteImport } from './routes/_auth/_layout/change-password'
 import { Route as AuthLayoutSentraKiIndexRouteImport } from './routes/_auth/_layout/sentra-ki/index'
 import { Route as AuthLayoutPksIndexRouteImport } from './routes/_auth/_layout/pks/index'
 import { Route as AuthLayoutMasterDataUserRouteImport } from './routes/_auth/_layout/master-data/user'
@@ -58,6 +59,12 @@ const AuthLayoutDashboardRoute = AuthLayoutDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const AuthLayoutChangePasswordRoute =
+  AuthLayoutChangePasswordRouteImport.update({
+    id: '/change-password',
+    path: '/change-password',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
 const AuthLayoutSentraKiIndexRoute = AuthLayoutSentraKiIndexRouteImport.update({
   id: '/sentra-ki/',
   path: '/sentra-ki/',
@@ -100,6 +107,7 @@ const AuthLayoutAdminSentraDaftarKiRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/change-password': typeof AuthLayoutChangePasswordRoute
   '/dashboard': typeof AuthLayoutDashboardRoute
   '/login': typeof DefaultLayoutLoginRoute
   '/sentra-ki-dashboard': typeof DefaultLayoutSentraKiDashboardRoute
@@ -114,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/sentra-ki': typeof AuthLayoutSentraKiIndexRoute
 }
 export interface FileRoutesByTo {
+  '/change-password': typeof AuthLayoutChangePasswordRoute
   '/dashboard': typeof AuthLayoutDashboardRoute
   '/login': typeof DefaultLayoutLoginRoute
   '/sentra-ki-dashboard': typeof DefaultLayoutSentraKiDashboardRoute
@@ -131,6 +140,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth/_layout': typeof AuthLayoutRouteWithChildren
   '/_default/_layout': typeof DefaultLayoutRouteWithChildren
+  '/_auth/_layout/change-password': typeof AuthLayoutChangePasswordRoute
   '/_auth/_layout/dashboard': typeof AuthLayoutDashboardRoute
   '/_default/_layout/login': typeof DefaultLayoutLoginRoute
   '/_default/_layout/sentra-ki-dashboard': typeof DefaultLayoutSentraKiDashboardRoute
@@ -147,6 +157,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/change-password'
     | '/dashboard'
     | '/login'
     | '/sentra-ki-dashboard'
@@ -161,6 +172,7 @@ export interface FileRouteTypes {
     | '/sentra-ki'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/change-password'
     | '/dashboard'
     | '/login'
     | '/sentra-ki-dashboard'
@@ -177,6 +189,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth/_layout'
     | '/_default/_layout'
+    | '/_auth/_layout/change-password'
     | '/_auth/_layout/dashboard'
     | '/_default/_layout/login'
     | '/_default/_layout/sentra-ki-dashboard'
@@ -247,6 +260,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutDashboardRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_auth/_layout/change-password': {
+      id: '/_auth/_layout/change-password'
+      path: '/change-password'
+      fullPath: '/change-password'
+      preLoaderRoute: typeof AuthLayoutChangePasswordRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
     '/_auth/_layout/sentra-ki/': {
       id: '/_auth/_layout/sentra-ki/'
       path: '/sentra-ki'
@@ -300,6 +320,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthLayoutRouteChildren {
+  AuthLayoutChangePasswordRoute: typeof AuthLayoutChangePasswordRoute
   AuthLayoutDashboardRoute: typeof AuthLayoutDashboardRoute
   AuthLayoutAdminSentraDaftarKiRoute: typeof AuthLayoutAdminSentraDaftarKiRoute
   AuthLayoutAdminSentraInformasiKiRoute: typeof AuthLayoutAdminSentraInformasiKiRoute
@@ -311,6 +332,7 @@ interface AuthLayoutRouteChildren {
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
+  AuthLayoutChangePasswordRoute: AuthLayoutChangePasswordRoute,
   AuthLayoutDashboardRoute: AuthLayoutDashboardRoute,
   AuthLayoutAdminSentraDaftarKiRoute: AuthLayoutAdminSentraDaftarKiRoute,
   AuthLayoutAdminSentraInformasiKiRoute: AuthLayoutAdminSentraInformasiKiRoute,
