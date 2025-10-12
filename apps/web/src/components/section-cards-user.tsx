@@ -35,7 +35,7 @@ export function SectionCardsUser({ search }: DashboardProps) {
   } = allCounts;
 
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-4 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-5 @5xl/main:grid-cols-8">
+    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-4 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-5 @5xl/main:grid-cols-5">
       <Card className="@container/card col-span-2">
         <CardHeader>
           <CardDescription>Total</CardDescription>
