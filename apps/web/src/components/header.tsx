@@ -19,7 +19,7 @@ import {
 
 export default function Header() {
   return (
-    <section className="py-4 px-4 xl:px-10">
+    <section className="py-4 px-4 xl:px-10 sticky top-0 z-10 bg-white shadow-sm">
       <div className="container mx-auto">
         <nav className="grid grid-cols-3 justify-center">
           <Link to="/" className="flex items-center gap-2">
