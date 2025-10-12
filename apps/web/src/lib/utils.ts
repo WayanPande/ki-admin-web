@@ -59,7 +59,7 @@ export const dashboardSchema = z.object({
     .union([z.string(), z.undefined(), z.null()])
     .default("")
     .transform((val) => val ?? ""),
-  year: z
+  year_from: z
     .union([z.string(), z.number(), z.undefined()])
     .default(new Date().getFullYear())
     .transform((val) => {
@@ -67,7 +67,15 @@ export const dashboardSchema = z.object({
       const num = typeof val === "string" ? Number(val) : val;
       return isNaN(num) ? new Date().getFullYear() : num;
     })
-    .refine((val) => val > 0, { message: "year must be greater than 0" }),
+    .refine((val) => val > 0, { message: "year_from must be greater than 0" }),
+  year_to: z
+    .union([z.string(), z.number(), z.undefined()])
+    .default(new Date().getFullYear() + 1)
+    .transform((val) => {
+      if (val === undefined) return new Date().getFullYear();
+      const num = typeof val === "string" ? Number(val) : val;
+      return isNaN(num) ? new Date().getFullYear() : num;
+    }),
 });
 
 export const KI_TYPES = [

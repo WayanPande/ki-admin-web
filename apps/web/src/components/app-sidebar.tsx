@@ -57,8 +57,13 @@ const menuKi = [
     icon: IconDashboard,
   },
   {
-    title: "Pencatatan KI",
-    url: "/admin-sentra/daftar-ki",
+    title: "Penginputan Jumlah Permohonan KI",
+    url: "/admin-sentra/permohonan-ki",
+    icon: IconChartBar,
+  },
+  {
+    title: "Penyebarluasan Informasi KI",
+    url: "/admin-sentra/informasi-ki",
     icon: IconListDetails,
   },
 ];

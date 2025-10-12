@@ -1,6 +1,10 @@
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
-import { IconDotsVertical, IconLogout } from "@tabler/icons-react";
-import { useRouter } from "@tanstack/react-router";
+import {
+  IconDotsVertical,
+  IconLogout,
+  IconPassword,
+} from "@tabler/icons-react";
+import { Link, useRouter } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -53,6 +57,12 @@ export function NavUser() {
             align="end"
             sideOffset={4}
           >
+            <DropdownMenuItem asChild>
+              <Link to="/change-password">
+                <IconPassword />
+                Ubah Password
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 authClient.signOut({

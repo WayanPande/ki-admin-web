@@ -56,4 +56,26 @@ export default defineSchema({
   }).searchIndex("name_ki", {
     searchField: "name",
   }),
+  permohonan_ki: defineTable({
+    date: v.string(),
+    merek: v.number(),
+    paten: v.number(),
+    hak_cipta: v.number(),
+    indikasi_geografis: v.number(),
+    dtlst: v.number(),
+    rahasia_dagang: v.number(),
+    desain_industri: v.number(),
+    ki_komunal: v.number(),
+  })
+    .searchIndex("search_date", {
+      searchField: "date",
+    })
+    .index("by_date", ["date"]),
+  informasi_ki: defineTable({
+    name: v.string(),
+    date: v.string(),
+    description: v.string(),
+  }).searchIndex("informasi_ki_name", {
+    searchField: "name",
+  }),
 });

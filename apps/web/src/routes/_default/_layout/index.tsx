@@ -26,36 +26,66 @@ function HomeComponent() {
   return (
     <div className="container mx-auto max-w-5xl px-4 py-2 grid gap-10 mb-20">
       <SectionCards />
-      <div className="px-4 lg:px-6 space-y-10">
+      <div className=" space-y-10">
         <div className="space-y-3">
-          <Select
-            onValueChange={(data) => {
-              navigate({
-                search: { ...search, year: data },
-              });
-            }}
-            defaultValue={search.year.toString()}
-          >
-            <SelectTrigger className="ml-auto mr-0">
-              <SelectValue placeholder="Pilih Tahun" />
-            </SelectTrigger>
-            <SelectContent>
-              {years?.map((data) => {
-                return (
-                  <SelectItem value={data} key={data}>
-                    {data}
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
-          <StatikPencatatanKi search={search} />
+          <SectionCardsUser search={search} />
+          <div className="flex items-center ml-auto mr-0 w-fit gap-2 px-4 lg:px-6 mt-10">
+            <Select
+              onValueChange={(data) => {
+                navigate({
+                  search: { ...search, year_from: data, year_to: data },
+                });
+              }}
+              defaultValue={search.year_from.toString()}
+              value={search.year_from.toString()}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Pilih Tahun" />
+              </SelectTrigger>
+              <SelectContent>
+                {years?.map((data) => {
+                  return (
+                    <SelectItem value={data} key={data}>
+                      {data}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+            <span>&</span>
+            <Select
+              onValueChange={(data) => {
+                navigate({
+                  search: { ...search, year_to: data },
+                });
+              }}
+              defaultValue={search.year_to.toString()}
+              value={search.year_to.toString()}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Pilih Tahun" />
+              </SelectTrigger>
+              <SelectContent>
+                {years?.map((data) => {
+                  const year = parseInt(data);
+                  return (
+                    <SelectItem
+                      value={data}
+                      disabled={year <= search.year_from}
+                      key={data}
+                    >
+                      {data}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="px-4 lg:px-6">
+            <StatikPencatatanKi search={search} />
+          </div>
         </div>
-        <h1 className="font-semibold">
-          Statistik Pencatatan dan/atau Pendaftaran KI oleh Sentra KI
-        </h1>
       </div>
-      <SectionCardsUser search={search} />
     </div>
   );
 }

@@ -16,10 +16,13 @@ import { Route as DefaultLayoutSignupRouteImport } from './routes/_default/_layo
 import { Route as DefaultLayoutSentraKiDashboardRouteImport } from './routes/_default/_layout/sentra-ki-dashboard'
 import { Route as DefaultLayoutLoginRouteImport } from './routes/_default/_layout/login'
 import { Route as AuthLayoutDashboardRouteImport } from './routes/_auth/_layout/dashboard'
+import { Route as AuthLayoutChangePasswordRouteImport } from './routes/_auth/_layout/change-password'
 import { Route as AuthLayoutSentraKiIndexRouteImport } from './routes/_auth/_layout/sentra-ki/index'
 import { Route as AuthLayoutPksIndexRouteImport } from './routes/_auth/_layout/pks/index'
 import { Route as AuthLayoutMasterDataUserRouteImport } from './routes/_auth/_layout/master-data/user'
 import { Route as AuthLayoutMasterDataInstansiRouteImport } from './routes/_auth/_layout/master-data/instansi'
+import { Route as AuthLayoutAdminSentraPermohonanKiRouteImport } from './routes/_auth/_layout/admin-sentra/permohonan-ki'
+import { Route as AuthLayoutAdminSentraInformasiKiRouteImport } from './routes/_auth/_layout/admin-sentra/informasi-ki'
 import { Route as AuthLayoutAdminSentraDaftarKiRouteImport } from './routes/_auth/_layout/admin-sentra/daftar-ki'
 
 const DefaultLayoutRoute = DefaultLayoutRouteImport.update({
@@ -56,6 +59,12 @@ const AuthLayoutDashboardRoute = AuthLayoutDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const AuthLayoutChangePasswordRoute =
+  AuthLayoutChangePasswordRouteImport.update({
+    id: '/change-password',
+    path: '/change-password',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
 const AuthLayoutSentraKiIndexRoute = AuthLayoutSentraKiIndexRouteImport.update({
   id: '/sentra-ki/',
   path: '/sentra-ki/',
@@ -78,6 +87,18 @@ const AuthLayoutMasterDataInstansiRoute =
     path: '/master-data/instansi',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const AuthLayoutAdminSentraPermohonanKiRoute =
+  AuthLayoutAdminSentraPermohonanKiRouteImport.update({
+    id: '/admin-sentra/permohonan-ki',
+    path: '/admin-sentra/permohonan-ki',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
+const AuthLayoutAdminSentraInformasiKiRoute =
+  AuthLayoutAdminSentraInformasiKiRouteImport.update({
+    id: '/admin-sentra/informasi-ki',
+    path: '/admin-sentra/informasi-ki',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
 const AuthLayoutAdminSentraDaftarKiRoute =
   AuthLayoutAdminSentraDaftarKiRouteImport.update({
     id: '/admin-sentra/daftar-ki',
@@ -86,24 +107,30 @@ const AuthLayoutAdminSentraDaftarKiRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/change-password': typeof AuthLayoutChangePasswordRoute
   '/dashboard': typeof AuthLayoutDashboardRoute
   '/login': typeof DefaultLayoutLoginRoute
   '/sentra-ki-dashboard': typeof DefaultLayoutSentraKiDashboardRoute
   '/signup': typeof DefaultLayoutSignupRoute
   '/': typeof DefaultLayoutIndexRoute
   '/admin-sentra/daftar-ki': typeof AuthLayoutAdminSentraDaftarKiRoute
+  '/admin-sentra/informasi-ki': typeof AuthLayoutAdminSentraInformasiKiRoute
+  '/admin-sentra/permohonan-ki': typeof AuthLayoutAdminSentraPermohonanKiRoute
   '/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
   '/master-data/user': typeof AuthLayoutMasterDataUserRoute
   '/pks': typeof AuthLayoutPksIndexRoute
   '/sentra-ki': typeof AuthLayoutSentraKiIndexRoute
 }
 export interface FileRoutesByTo {
+  '/change-password': typeof AuthLayoutChangePasswordRoute
   '/dashboard': typeof AuthLayoutDashboardRoute
   '/login': typeof DefaultLayoutLoginRoute
   '/sentra-ki-dashboard': typeof DefaultLayoutSentraKiDashboardRoute
   '/signup': typeof DefaultLayoutSignupRoute
   '/': typeof DefaultLayoutIndexRoute
   '/admin-sentra/daftar-ki': typeof AuthLayoutAdminSentraDaftarKiRoute
+  '/admin-sentra/informasi-ki': typeof AuthLayoutAdminSentraInformasiKiRoute
+  '/admin-sentra/permohonan-ki': typeof AuthLayoutAdminSentraPermohonanKiRoute
   '/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
   '/master-data/user': typeof AuthLayoutMasterDataUserRoute
   '/pks': typeof AuthLayoutPksIndexRoute
@@ -113,12 +140,15 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth/_layout': typeof AuthLayoutRouteWithChildren
   '/_default/_layout': typeof DefaultLayoutRouteWithChildren
+  '/_auth/_layout/change-password': typeof AuthLayoutChangePasswordRoute
   '/_auth/_layout/dashboard': typeof AuthLayoutDashboardRoute
   '/_default/_layout/login': typeof DefaultLayoutLoginRoute
   '/_default/_layout/sentra-ki-dashboard': typeof DefaultLayoutSentraKiDashboardRoute
   '/_default/_layout/signup': typeof DefaultLayoutSignupRoute
   '/_default/_layout/': typeof DefaultLayoutIndexRoute
   '/_auth/_layout/admin-sentra/daftar-ki': typeof AuthLayoutAdminSentraDaftarKiRoute
+  '/_auth/_layout/admin-sentra/informasi-ki': typeof AuthLayoutAdminSentraInformasiKiRoute
+  '/_auth/_layout/admin-sentra/permohonan-ki': typeof AuthLayoutAdminSentraPermohonanKiRoute
   '/_auth/_layout/master-data/instansi': typeof AuthLayoutMasterDataInstansiRoute
   '/_auth/_layout/master-data/user': typeof AuthLayoutMasterDataUserRoute
   '/_auth/_layout/pks/': typeof AuthLayoutPksIndexRoute
@@ -127,24 +157,30 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/change-password'
     | '/dashboard'
     | '/login'
     | '/sentra-ki-dashboard'
     | '/signup'
     | '/'
     | '/admin-sentra/daftar-ki'
+    | '/admin-sentra/informasi-ki'
+    | '/admin-sentra/permohonan-ki'
     | '/master-data/instansi'
     | '/master-data/user'
     | '/pks'
     | '/sentra-ki'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/change-password'
     | '/dashboard'
     | '/login'
     | '/sentra-ki-dashboard'
     | '/signup'
     | '/'
     | '/admin-sentra/daftar-ki'
+    | '/admin-sentra/informasi-ki'
+    | '/admin-sentra/permohonan-ki'
     | '/master-data/instansi'
     | '/master-data/user'
     | '/pks'
@@ -153,12 +189,15 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth/_layout'
     | '/_default/_layout'
+    | '/_auth/_layout/change-password'
     | '/_auth/_layout/dashboard'
     | '/_default/_layout/login'
     | '/_default/_layout/sentra-ki-dashboard'
     | '/_default/_layout/signup'
     | '/_default/_layout/'
     | '/_auth/_layout/admin-sentra/daftar-ki'
+    | '/_auth/_layout/admin-sentra/informasi-ki'
+    | '/_auth/_layout/admin-sentra/permohonan-ki'
     | '/_auth/_layout/master-data/instansi'
     | '/_auth/_layout/master-data/user'
     | '/_auth/_layout/pks/'
@@ -221,6 +260,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutDashboardRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_auth/_layout/change-password': {
+      id: '/_auth/_layout/change-password'
+      path: '/change-password'
+      fullPath: '/change-password'
+      preLoaderRoute: typeof AuthLayoutChangePasswordRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
     '/_auth/_layout/sentra-ki/': {
       id: '/_auth/_layout/sentra-ki/'
       path: '/sentra-ki'
@@ -249,6 +295,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutMasterDataInstansiRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_auth/_layout/admin-sentra/permohonan-ki': {
+      id: '/_auth/_layout/admin-sentra/permohonan-ki'
+      path: '/admin-sentra/permohonan-ki'
+      fullPath: '/admin-sentra/permohonan-ki'
+      preLoaderRoute: typeof AuthLayoutAdminSentraPermohonanKiRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_auth/_layout/admin-sentra/informasi-ki': {
+      id: '/_auth/_layout/admin-sentra/informasi-ki'
+      path: '/admin-sentra/informasi-ki'
+      fullPath: '/admin-sentra/informasi-ki'
+      preLoaderRoute: typeof AuthLayoutAdminSentraInformasiKiRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
     '/_auth/_layout/admin-sentra/daftar-ki': {
       id: '/_auth/_layout/admin-sentra/daftar-ki'
       path: '/admin-sentra/daftar-ki'
@@ -260,8 +320,11 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthLayoutRouteChildren {
+  AuthLayoutChangePasswordRoute: typeof AuthLayoutChangePasswordRoute
   AuthLayoutDashboardRoute: typeof AuthLayoutDashboardRoute
   AuthLayoutAdminSentraDaftarKiRoute: typeof AuthLayoutAdminSentraDaftarKiRoute
+  AuthLayoutAdminSentraInformasiKiRoute: typeof AuthLayoutAdminSentraInformasiKiRoute
+  AuthLayoutAdminSentraPermohonanKiRoute: typeof AuthLayoutAdminSentraPermohonanKiRoute
   AuthLayoutMasterDataInstansiRoute: typeof AuthLayoutMasterDataInstansiRoute
   AuthLayoutMasterDataUserRoute: typeof AuthLayoutMasterDataUserRoute
   AuthLayoutPksIndexRoute: typeof AuthLayoutPksIndexRoute
@@ -269,8 +332,12 @@ interface AuthLayoutRouteChildren {
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
+  AuthLayoutChangePasswordRoute: AuthLayoutChangePasswordRoute,
   AuthLayoutDashboardRoute: AuthLayoutDashboardRoute,
   AuthLayoutAdminSentraDaftarKiRoute: AuthLayoutAdminSentraDaftarKiRoute,
+  AuthLayoutAdminSentraInformasiKiRoute: AuthLayoutAdminSentraInformasiKiRoute,
+  AuthLayoutAdminSentraPermohonanKiRoute:
+    AuthLayoutAdminSentraPermohonanKiRoute,
   AuthLayoutMasterDataInstansiRoute: AuthLayoutMasterDataInstansiRoute,
   AuthLayoutMasterDataUserRoute: AuthLayoutMasterDataUserRoute,
   AuthLayoutPksIndexRoute: AuthLayoutPksIndexRoute,

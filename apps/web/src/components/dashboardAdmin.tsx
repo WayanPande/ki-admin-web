@@ -15,7 +15,8 @@ interface DashboardProps {
     limit: number;
     page: number;
     query: string;
-    year: number;
+    year_from: number;
+    year_to: number;
   };
 }
 
