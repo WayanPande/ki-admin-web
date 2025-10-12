@@ -300,18 +300,18 @@ function RouteComponent() {
     },
     validators: {
       onSubmit: z.object({
-        merek: z.number().min(1, "Silahkan Isi Jenis Merek"),
-        paten: z.number().min(1, "Silahkan Isi Jenis Paten"),
-        hak_cipta: z.number().min(1, "Silahkan Isi Jenis Hak Cipta"),
+        merek: z.number().min(0, "Silahkan Isi Jenis Merek"),
+        paten: z.number().min(0, "Silahkan Isi Jenis Paten"),
+        hak_cipta: z.number().min(0, "Silahkan Isi Jenis Hak Cipta"),
         indikasi_geografis: z
           .number()
-          .min(1, "Silahkan Isi Jenis Indikasi Geografis"),
-        dtlst: z.number().min(1, "Silahkan Isi Jenis DTLST"),
-        rahasia_dagang: z.number().min(1, "Silahkan Isi Jenis Rahasia Dagang"),
+          .min(0, "Silahkan Isi Jenis Indikasi Geografis"),
+        dtlst: z.number().min(0, "Silahkan Isi Jenis DTLST"),
+        rahasia_dagang: z.number().min(0, "Silahkan Isi Jenis Rahasia Dagang"),
         desain_industri: z
           .number()
-          .min(1, "Silahkan Isi Jenis Desain Industri"),
-        ki_komunal: z.number().min(1, "Silahkan Isi Jenis KI Komunal"),
+          .min(0, "Silahkan Isi Jenis Desain Industri"),
+        ki_komunal: z.number().min(0, "Silahkan Isi Jenis KI Komunal"),
         id: z.any().and(z.any()),
         date: z.string().min(2, "Silahkan Pilih Periode"),
       }),
