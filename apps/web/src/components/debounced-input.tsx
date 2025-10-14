@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import { Input } from "./ui/input";
 
 export default function DebouncedInput({
@@ -17,13 +17,15 @@ export default function DebouncedInput({
     setValue(initialValue);
   }, [initialValue]);
 
+  const handleChange = useEffectEvent(onChange);
+
   useEffect(() => {
     const timeout = setTimeout(() => {
-      onChange(value);
+      handleChange(value);
     }, debounce);
 
     return () => clearTimeout(timeout);
-  }, [value]);
+  }, [value, debounce]);
 
   return (
     <Input
