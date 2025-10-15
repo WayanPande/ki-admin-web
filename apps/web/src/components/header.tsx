@@ -29,7 +29,7 @@ export default function Header() {
               className="size-6 shrink-0 rounded"
             />
             <span className="text-md font-semibold tracking-tighter">
-              Sistem Informasi Monitoring Sentra KI Bali
+              Kementerian Hukum Republik Indonesia Kantor Wilayah Bali
             </span>
           </Link>
           <NavigationMenu className="hidden lg:block mx-auto">
@@ -78,7 +78,7 @@ export default function Header() {
                 <SheetTitle>
                   <Link to="/" className="flex items-center gap-2">
                     <span className="text-lg font-semibold tracking-tighter">
-                      Sistem Informasi Monitoring Sentra KI Bali
+                      Kementerian Hukum Republik Indonesia Kantor Wilayah Bali
                     </span>
                   </Link>
                 </SheetTitle>
