@@ -22,11 +22,14 @@ export const getAllInformasiKiPaginated = query({
       result = await ctx.db
         .query("informasi_ki")
         .withSearchIndex("informasi_ki_name", (q) =>
-          q.search("name", searchLower)
+          q.search("name", searchLower).eq("userId", user.subject)
         )
         .paginate(args.paginationOpts);
     } else {
-      result = await ctx.db.query("informasi_ki").paginate(args.paginationOpts);
+      result = await ctx.db
+        .query("informasi_ki")
+        .withIndex("by_user", (q) => q.eq("userId", user.subject))
+        .paginate(args.paginationOpts);
     }
 
     return result;
@@ -38,17 +41,25 @@ export const getAllInformasiKi = query({
     searchTerm: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (user === null) {
+      throw new Error("Unauthorized");
+    }
+
     if (args.searchTerm && args.searchTerm.trim() !== "") {
       const searchLower = args.searchTerm.toLowerCase();
 
       return await ctx.db
         .query("informasi_ki")
         .withSearchIndex("informasi_ki_name", (q) =>
-          q.search("name", searchLower)
+          q.search("name", searchLower).eq("userId", user.subject)
         )
         .collect();
     } else {
-      return await ctx.db.query("instansi").collect();
+      return await ctx.db
+        .query("informasi_ki")
+        .withIndex("by_user", (q) => q.eq("userId", user.subject))
+        .collect();
     }
   },
 });
@@ -65,7 +76,10 @@ export const createInformasiKi = mutation({
       throw new Error("Unauthorized");
     }
 
-    const instansiId = await ctx.db.insert("informasi_ki", args);
+    const instansiId = await ctx.db.insert("informasi_ki", {
+      ...args,
+      userId: user.subject,
+    });
     return instansiId;
   },
 });

@@ -75,7 +75,11 @@ export default defineSchema({
     name: v.string(),
     date: v.string(),
     description: v.string(),
-  }).searchIndex("informasi_ki_name", {
-    searchField: "name",
-  }),
+    userId: v.string(),
+  })
+    .searchIndex("informasi_ki_name", {
+      searchField: "name",
+      filterFields: ["userId"],
+    })
+    .index("by_user", ["userId"]),
 });
