@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { dashboardSchema, years } from "@/lib/utils";
 
 export const Route = createFileRoute("/_default/_layout/")({
@@ -26,6 +27,9 @@ function HomeComponent() {
   return (
     <div className="container mx-auto max-w-5xl px-4 py-2 grid gap-10 mb-20">
       <SectionCards />
+      <div className="px-4 lg:px-6">
+        <Separator />
+      </div>
       <div className=" space-y-10">
         <div className="space-y-3">
           <SectionCardsUser search={search} />
