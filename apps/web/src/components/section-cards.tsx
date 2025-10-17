@@ -20,7 +20,7 @@ export function SectionCards() {
     pksData?.forEach((item) => {
       const date = new Date(item.expiry_date_to);
       const activeDate = isFuture(date);
-      const almostExpiredDate = isBefore(date, addDays(new Date(), 30));
+      const almostExpiredDate = isBefore(date, addDays(new Date(), 60));
 
       if (almostExpiredDate) {
         totalAlmostExpired += 1;
