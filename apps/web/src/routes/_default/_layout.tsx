@@ -10,6 +10,9 @@ function RouteComponent() {
   return (
     <div className="grid grid-rows-[auto_1fr] min-h-svh space-y-10">
       <Header />
+      <h1 className="text-center font-bold text-lg">
+        Sistem Informasi Monitoring Sentra KI
+      </h1>
       <Outlet />
       <Footer />
     </div>
