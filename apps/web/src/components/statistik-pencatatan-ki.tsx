@@ -19,6 +19,7 @@ interface DashboardProps {
   search: {
     year_from: number;
     year_to: number;
+    from?: string;
   };
 }
 
@@ -26,6 +27,7 @@ export function StatikPencatatanKi({ search }: DashboardProps) {
   const chartDataByType = useQuery(api.permohonan_ki.getPermohonanKiChartData, {
     year_from: search?.year_from ?? new Date().getFullYear(),
     year_to: search?.year_to ?? new Date().getFullYear() + 1,
+    from: search?.from,
   });
 
   const chartConfig = {

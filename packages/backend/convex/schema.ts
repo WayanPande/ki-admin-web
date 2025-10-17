@@ -65,11 +65,14 @@ export default defineSchema({
     rahasia_dagang: v.number(),
     desain_industri: v.number(),
     ki_komunal: v.number(),
+    userId: v.string(),
   })
     .searchIndex("search_date", {
       searchField: "date",
+      filterFields: ["userId"],
     })
-    .index("by_date", ["date"]),
+    .index("by_date", ["date"])
+    .index("by_user", ["userId"]),
   informasi_ki: defineTable({
     name: v.string(),
     date: v.string(),

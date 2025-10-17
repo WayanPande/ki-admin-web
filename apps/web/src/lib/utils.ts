@@ -78,6 +78,51 @@ export const dashboardSchema = z.object({
     }),
 });
 
+export const dashboardLpSchema = z.object({
+  limit: z
+    .union([z.string(), z.number(), z.undefined()])
+    .default(10)
+    .transform((val) => {
+      if (val === undefined) return 10;
+      const num = typeof val === "string" ? Number(val) : val;
+      return isNaN(num) ? 10 : num;
+    })
+    .refine((val) => val > 0 && val <= 100, {
+      message: "Limit must be between 1 and 100",
+    }),
+  page: z
+    .union([z.string(), z.number(), z.undefined()])
+    .default(1)
+    .transform((val) => {
+      if (val === undefined) return 1;
+      const num = typeof val === "string" ? Number(val) : val;
+      return isNaN(num) ? 1 : num;
+    })
+    .refine((val) => val > 0, { message: "Page must be greater than 0" }),
+  query: z
+    .union([z.string(), z.undefined(), z.null()])
+    .default("")
+    .transform((val) => val ?? ""),
+  year_from: z
+    .union([z.string(), z.number(), z.undefined()])
+    .default(new Date().getFullYear())
+    .transform((val) => {
+      if (val === undefined) return new Date().getFullYear();
+      const num = typeof val === "string" ? Number(val) : val;
+      return isNaN(num) ? new Date().getFullYear() : num;
+    })
+    .refine((val) => val > 0, { message: "year_from must be greater than 0" }),
+  year_to: z
+    .union([z.string(), z.number(), z.undefined()])
+    .default(new Date().getFullYear() + 1)
+    .transform((val) => {
+      if (val === undefined) return new Date().getFullYear();
+      const num = typeof val === "string" ? Number(val) : val;
+      return isNaN(num) ? new Date().getFullYear() : num;
+    }),
+  from: z.optional(z.string()).default("LP"),
+});
+
 export const KI_TYPES = [
   "Merek",
   "Paten",

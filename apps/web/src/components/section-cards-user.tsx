@@ -12,12 +12,14 @@ interface DashboardProps {
   search: {
     year_from: number;
     year_to: number;
+    from?: string;
   };
 }
 
 export function SectionCardsUser({ search }: DashboardProps) {
   const allCounts = useQuery(api.permohonan_ki.getPermohonanKiTypeCounts, {
     year: search?.year_from ?? new Date().getFullYear(),
+    from: search?.from,
   });
 
   if (!allCounts) return <Loader />;

@@ -21,11 +21,14 @@ export const getAllPermohonanKiPaginated = query({
 
       result = await ctx.db
         .query("permohonan_ki")
-        .withSearchIndex("search_date", (q) => q.search("date", searchLower))
+        .withSearchIndex("search_date", (q) =>
+          q.search("date", searchLower).eq("userId", user.subject)
+        )
         .paginate(args.paginationOpts);
     } else {
       result = await ctx.db
         .query("permohonan_ki")
+        .withIndex("by_user", (q) => q.eq("userId", user.subject))
         .paginate(args.paginationOpts);
     }
 
@@ -71,9 +74,21 @@ interface KiTypeCounts {
 export const getPermohonanKiTypeCounts = query({
   args: {
     year: v.optional(v.number()),
+    from: v.optional(v.string()),
   },
   handler: async (ctx, args): Promise<KiTypeCounts> => {
-    const allRecords = await ctx.db.query("permohonan_ki").collect();
+    const user = await ctx.auth.getUserIdentity();
+
+    let allRecords: Doc<"permohonan_ki">[];
+
+    if (user && !args.from) {
+      allRecords = await ctx.db
+        .query("permohonan_ki")
+        .withIndex("by_user", (q) => q.eq("userId", user.subject))
+        .collect();
+    } else {
+      allRecords = await ctx.db.query("permohonan_ki").collect();
+    }
 
     const records = allRecords.filter((record) => {
       if (!record.date) return false;
@@ -151,9 +166,21 @@ export const getPermohonanKiChartData = query({
   args: {
     year_from: v.optional(v.number()),
     year_to: v.optional(v.number()),
+    from: v.optional(v.string()),
   },
   handler: async (ctx, args): Promise<ChartDataByType[]> => {
-    const allRecords = await ctx.db.query("permohonan_ki").collect();
+    const user = await ctx.auth.getUserIdentity();
+
+    let allRecords: Doc<"permohonan_ki">[];
+
+    if (user && !args.from) {
+      allRecords = await ctx.db
+        .query("permohonan_ki")
+        .withIndex("by_user", (q) => q.eq("userId", user.subject))
+        .collect();
+    } else {
+      allRecords = await ctx.db.query("permohonan_ki").collect();
+    }
 
     const records_year_from = allRecords.filter((record) => {
       if (!record.date) return false;
@@ -251,7 +278,10 @@ export const createPermohonanKi = mutation({
       throw new Error("Cannot create permohonan_ki: duplicate date");
     }
 
-    const permohonanKi = await ctx.db.insert("permohonan_ki", args);
+    const permohonanKi = await ctx.db.insert("permohonan_ki", {
+      ...args,
+      userId: user.subject,
+    });
     return permohonanKi;
   },
 });

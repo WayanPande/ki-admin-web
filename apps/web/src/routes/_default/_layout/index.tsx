@@ -11,11 +11,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { dashboardSchema, years } from "@/lib/utils";
+import { dashboardLpSchema, years } from "@/lib/utils";
 
 export const Route = createFileRoute("/_default/_layout/")({
   component: HomeComponent,
-  validateSearch: zodValidator(dashboardSchema),
+  validateSearch: zodValidator(dashboardLpSchema),
 });
 
 function HomeComponent() {
