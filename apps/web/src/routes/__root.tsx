@@ -19,11 +19,11 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
   head: () => ({
     meta: [
       {
-        title: "Sistem Informasi Monitoring Sentra KI Bali",
+        title: "Kementerian Hukum Republik Indonesia Kantor Wilayah Bali",
       },
       {
         name: "description",
-        content: "Sistem Informasi Monitoring Sentra KI Bali",
+        content: "Kementerian Hukum Republik Indonesia Kantor Wilayah Bali",
       },
     ],
     links: [
