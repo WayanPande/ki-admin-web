@@ -21,8 +21,8 @@ function Calendar({
   buttonVariant = "ghost",
   formatters,
   components,
-  startMonth = new Date(),
-  endMonth = new Date(new Date().getFullYear() + 30, 11, 31),
+  startMonth,
+  endMonth,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
