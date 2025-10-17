@@ -9,7 +9,6 @@ export default defineSchema({
     searchField: "name",
   }),
   pks: defineTable({
-    name: v.string(),
     no: v.string(),
     description: v.optional(v.string()),
     document: v.optional(v.id("_storage")),

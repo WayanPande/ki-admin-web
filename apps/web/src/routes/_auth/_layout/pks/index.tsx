@@ -86,10 +86,6 @@ function RouteComponent() {
       header: "Nomor PKS",
     },
     {
-      accessorKey: "name",
-      header: "Nama PKS",
-    },
-    {
       id: "sentra_ki",
       header: "Sentra KI",
       cell: ({ row }) => {
@@ -124,7 +120,6 @@ function RouteComponent() {
 
                 formAdd.setFieldValue("id", data._id);
                 formAdd.setFieldValue("sentra_ki_id", data.sentra_ki_id);
-                formAdd.setFieldValue("name", data.name);
                 formAdd.setFieldValue("no", data.no);
                 formAdd.setFieldValue("description", data.description ?? "");
                 formAdd.setFieldValue("document_url", data.document_url ?? "");
@@ -148,7 +143,6 @@ function RouteComponent() {
 
                 formAdd.setFieldValue("id", data._id);
                 formAdd.setFieldValue("sentra_ki_id", data.sentra_ki_id);
-                formAdd.setFieldValue("name", data.name);
                 formAdd.setFieldValue("no", data.no);
                 formAdd.setFieldValue("description", data.description ?? "");
                 formAdd.setFieldValue("document_url", data.document_url ?? "");
@@ -229,7 +223,6 @@ function RouteComponent() {
   const formAdd = useForm({
     defaultValues: {
       sentra_ki_id: "",
-      name: "",
       no: "",
       description: "",
       document: null as File | null,
@@ -276,11 +269,11 @@ function RouteComponent() {
         promise = updatePks({
           id: value.id as Id<"pks">,
           sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
-          name: value.name,
           description: value.description,
           document: documentId ?? (value.document_id as Id<"_storage">),
           expiry_date_from: value.expiry_date_from,
           expiry_date_to: value.expiry_date_to,
+          no: value.no,
         });
       } else {
         if (!documentId) {
@@ -290,11 +283,11 @@ function RouteComponent() {
 
         promise = createPks({
           sentra_ki_id: value.sentra_ki_id as Id<"sentra_ki">,
-          name: value.name,
           description: value.description,
           document: documentId!,
           expiry_date_from: value.expiry_date_from,
           expiry_date_to: value.expiry_date_to,
+          no: value.no,
         });
       }
 
@@ -310,8 +303,7 @@ function RouteComponent() {
       onSubmit: z
         .object({
           sentra_ki_id: z.string().min(2, "Silahkan Pilih Sentra KI"),
-          name: z.string().min(2, "Silahkan Isi Nama PKS"),
-          no: z.any().and(z.any()),
+          no: z.string().min(2, "Silahkan Isi Nomor PKS"),
           description: z.string().min(2, "Silahkan Isi Deskripsi PKS"),
           document: z.any(),
           expiry_date_from: z.string().min(2, "Silahkan Pilih Tanggal"),
@@ -425,10 +417,10 @@ function RouteComponent() {
                 )}
               </formAdd.Field>
 
-              <formAdd.Field name="name">
+              <formAdd.Field name="no">
                 {(field) => (
                   <div className="grid gap-3">
-                    <Label htmlFor={field.name}>Nama PKS</Label>
+                    <Label htmlFor={field.name}>Nomor PKS</Label>
                     <Input
                       id={field.name}
                       name={field.name}

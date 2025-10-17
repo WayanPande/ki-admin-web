@@ -1,7 +1,7 @@
 import { type PaginationResult, paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import type { Doc } from "./_generated/dataModel";
-import { type MutationCtx, mutation, query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
 export const getAllPksPaginated = query({
   args: {
@@ -71,47 +71,14 @@ export const getAllPks = query({
   },
 });
 
-async function generateCustomId(
-  ctx: MutationCtx,
-  prefix: string
-): Promise<string> {
-  const user = await ctx.auth.getUserIdentity();
-  if (user === null) {
-    throw new Error("Unauthorized");
-  }
-
-  // Get the latest record to determine the next number
-  const latestRecord = await ctx.db
-    .query("pks")
-    .withIndex("by_custom_id") // You'll need to create this index
-    .order("desc")
-    .first();
-
-  let nextNumber = 1;
-
-  if (latestRecord?.no) {
-    // Extract number from existing ID (e.g., "PKS-005" -> 5)
-    const match = latestRecord.no.match(new RegExp(`${prefix}-(\\d+)`));
-    if (match) {
-      nextNumber = parseInt(match[1]) + 1;
-    }
-  }
-
-  // Dynamic padding based on current highest number
-  const minDigits = Math.max(3, nextNumber.toString().length);
-  const formattedNumber = nextNumber.toString().padStart(minDigits, "0");
-
-  return `${prefix}-${formattedNumber}`;
-}
-
 export const createPks = mutation({
   args: {
-    name: v.string(),
     description: v.optional(v.string()),
     document: v.optional(v.id("_storage")),
     expiry_date_from: v.string(),
     expiry_date_to: v.string(),
     sentra_ki_id: v.id("sentra_ki"),
+    no: v.string(),
   },
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity();
@@ -124,12 +91,7 @@ export const createPks = mutation({
       throw new Error("Referenced sentra_ki does not exist");
     }
 
-    const customId = await generateCustomId(ctx, "PKS");
-
-    const pksId = await ctx.db.insert("pks", {
-      ...args,
-      no: customId,
-    });
+    const pksId = await ctx.db.insert("pks", args);
     return pksId;
   },
 });
@@ -138,12 +100,12 @@ export const updatePks = mutation({
   args: {
     id: v.id("pks"),
     name_sentra_ki: v.optional(v.string()),
-    name: v.optional(v.string()),
     description: v.optional(v.string()),
     document: v.optional(v.id("_storage")),
     expiry_date_from: v.optional(v.string()),
     expiry_date_to: v.optional(v.string()),
     sentra_ki_id: v.optional(v.id("sentra_ki")),
+    no: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity();
