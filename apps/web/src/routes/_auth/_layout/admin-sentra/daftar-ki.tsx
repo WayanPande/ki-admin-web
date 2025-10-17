@@ -36,7 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { KI_TYPES, routeSearchSchema } from "@/lib/utils";
+import { KI_TYPES, routeSearchSchema, toLocalISODate } from "@/lib/utils";
 
 export const Route = createFileRoute("/_auth/_layout/admin-sentra/daftar-ki")({
   component: RouteComponent,
@@ -268,7 +268,7 @@ function RouteComponent() {
       pic_phone: currentUser?.phoneNumber,
       pic_email: currentUser?.email,
       pic_id: currentUser?._id,
-      registration_date: new Date().toLocaleDateString(),
+      registration_date: toLocalISODate(new Date()),
       id: "",
       document_url: "",
       document_id: "",
@@ -628,7 +628,7 @@ function RouteComponent() {
                             }
                             onSelect={(date) => {
                               field.handleChange(
-                                date?.toLocaleDateString() ?? ""
+                                date ? toLocalISODate(date) : ""
                               );
                               setOpenCalendar(false);
                             }}

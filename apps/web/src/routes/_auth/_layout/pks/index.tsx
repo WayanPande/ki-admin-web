@@ -36,7 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { routeSearchSchema } from "@/lib/utils";
+import { routeSearchSchema, toLocalISODate } from "@/lib/utils";
 
 export const Route = createFileRoute("/_auth/_layout/pks/")({
   component: RouteComponent,
@@ -233,7 +233,7 @@ function RouteComponent() {
       no: "",
       description: "",
       document: null as File | null,
-      expiry_date_from: new Date().toLocaleDateString(),
+      expiry_date_from: toLocalISODate(new Date()),
       expiry_date_to: "",
       id: "",
       document_url: "",
@@ -493,7 +493,7 @@ function RouteComponent() {
                             captionLayout="dropdown"
                             onSelect={(date) => {
                               field.handleChange(
-                                date?.toLocaleDateString() ?? ""
+                                date ? toLocalISODate(date) : ""
                               );
                               setOpenFromCalendar(false);
                             }}
@@ -535,7 +535,7 @@ function RouteComponent() {
                             captionLayout="dropdown"
                             onSelect={(date) => {
                               field.handleChange(
-                                date?.toLocaleDateString() ?? ""
+                                date ? toLocalISODate(date) : ""
                               );
                               setOpenToCalendar(false);
                             }}
