@@ -317,7 +317,12 @@ export const updatePermohonanKi = mutation({
         .withIndex("by_date", (q) => q.eq("date", cleanUpdates.date as string))
         .first();
 
-      if (similarRecordDate) {
+      const selectedData = await ctx.db
+        .query("permohonan_ki")
+        .withIndex("by_id", (q) => q.eq("_id", id))
+        .first();
+
+      if (similarRecordDate?._id !== selectedData?._id) {
         throw new Error("Cannot create permohonan_ki: duplicate date");
       }
     }

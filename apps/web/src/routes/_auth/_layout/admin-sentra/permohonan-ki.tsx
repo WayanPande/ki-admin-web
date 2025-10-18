@@ -228,7 +228,9 @@ function RouteComponent() {
       rahasia_dagang: 0,
       desain_industri: 0,
       ki_komunal: 0,
-      date: toLocalISODate(new Date()),
+      date: toLocalISODate(
+        new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+      ),
     },
     onSubmit: async ({ value }) => {
       let promise: Promise<
@@ -372,7 +374,12 @@ function RouteComponent() {
                     <PopoverContent className="w-auto p-0">
                       <MonthPicker
                         onMonthSelect={(date) => {
-                          field.handleChange(toLocalISODate(date));
+                          const firstOfMonth = new Date(
+                            date.getFullYear(),
+                            date.getMonth(),
+                            1
+                          );
+                          field.handleChange(toLocalISODate(firstOfMonth));
                         }}
                         selectedMonth={new Date(field.state.value)}
                       />
