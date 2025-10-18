@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { usePaginatedQuery, useQuery } from "convex/react";
-import { addDays, isBefore, isFuture } from "date-fns";
+import { addDays, isBefore } from "date-fns";
 import { useState } from "react";
 import { DataTable } from "@/components/data-table";
 import { Badge } from "@/components/ui/badge";
@@ -69,21 +69,15 @@ function RouteComponent() {
         const item = row.original;
         let status: "Aktif" | "Kedaluwarsa" | "Akan Habis" | "-" = "-";
 
-        const date = new Date(item.expiry_date_to);
-        const activeDate = isFuture(date);
-        const almostExpiredDate = isBefore(
-          date,
-          addDays(new Date(item.expiry_date_from), 60)
-        );
+        const expiryDate = new Date(item.expiry_date_to);
+        const now = new Date();
 
-        if (almostExpiredDate) {
+        if (isBefore(expiryDate, now)) {
+          status = "Kedaluwarsa";
+        } else if (isBefore(expiryDate, addDays(now, 60))) {
           status = "Akan Habis";
         } else {
-          if (activeDate) {
-            status = "Aktif";
-          } else {
-            status = "Kedaluwarsa";
-          }
+          status = "Aktif";
         }
 
         return (

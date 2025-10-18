@@ -2,7 +2,7 @@ import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { useNavigate } from "@tanstack/react-router";
 import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
 import { usePaginatedQuery } from "convex/react";
-import { addDays, isBefore, isFuture } from "date-fns";
+import { addDays, isBefore } from "date-fns";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { DataTable } from "./data-table";
@@ -70,21 +70,15 @@ const DashboardAdmin = ({ search }: DashboardProps) => {
         const item = row.original;
         let status: "Aktif" | "Kedaluwarsa" | "Akan Habis" | "-" = "-";
 
-        const date = new Date(item.expiry_date_to);
-        const activeDate = isFuture(date);
-        const almostExpiredDate = isBefore(
-          date,
-          addDays(new Date(item.expiry_date_from), 60)
-        );
+        const expiryDate = new Date(item.expiry_date_to);
+        const now = new Date();
 
-        if (almostExpiredDate) {
+        if (isBefore(expiryDate, now)) {
+          status = "Kedaluwarsa";
+        } else if (isBefore(expiryDate, addDays(now, 60))) {
           status = "Akan Habis";
         } else {
-          if (activeDate) {
-            status = "Aktif";
-          } else {
-            status = "Kedaluwarsa";
-          }
+          status = "Aktif";
         }
 
         return (
