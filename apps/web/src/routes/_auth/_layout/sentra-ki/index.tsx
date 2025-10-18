@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/select";
 import { usersQueryOptions } from "@/lib/query/users";
 import { routeSearchSchema } from "@/lib/utils";
+import { usePaginationInfo } from "@/hooks/use-pagination-info";
 
 export const Route = createFileRoute("/_auth/_layout/sentra-ki/")({
   component: RouteComponent,
@@ -47,7 +48,7 @@ function RouteComponent() {
 
   const itemsToLoad = search.page * search.limit;
 
-  const { results, status, loadMore } = usePaginatedQuery(
+  const { results, status, loadMore, isLoading } = usePaginatedQuery(
     api.sentra_ki.getAllSentraKiPaginated,
     {
       searchTerm: search.query,
@@ -56,9 +57,6 @@ function RouteComponent() {
   );
 
   const instansiData = useQuery(api.instansi.getAllInstansi, {});
-  const sentraKiData = useQuery(api.sentra_ki.getAllSentraKi, {
-    searchTerm: search.query,
-  });
 
   const createSentraKi = useMutation(api.sentra_ki.createSentraKi);
   const updateSentraKi = useMutation(api.sentra_ki.updateSentraKi);
@@ -188,37 +186,12 @@ function RouteComponent() {
     pageSize: search.limit,
   };
 
-  const paginationInfo = () => {
-    const totalLoadedItems = sentraKiData?.length ?? 0;
-    const currentPageItems = results?.slice(
-      (search.page - 1) * search.limit,
-      search.page * search.limit
-    );
-
-    const canLoadMoreFromConvex = status === "CanLoadMore";
-    const isLoadingFromConvex =
-      status === "LoadingMore" || status === "LoadingFirstPage";
-    const isExhausted = status === "Exhausted";
-
-    const rowCount = totalLoadedItems;
-    let pageCount: number | undefined;
-
-    if (isExhausted) {
-      pageCount = Math.max(1, Math.ceil(totalLoadedItems / search.limit));
-    } else {
-      pageCount = -1;
-    }
-
-    return {
-      currentPageItems,
-      canLoadMoreFromConvex,
-      isLoadingFromConvex,
-      isExhausted,
-      rowCount,
-      pageCount,
-      totalLoadedItems,
-    };
-  };
+  const paginationInfo = usePaginationInfo({
+    results,
+    status,
+    search,
+    isLoading,
+  });
 
   const formAdd = useForm({
     defaultValues: {
@@ -313,7 +286,7 @@ function RouteComponent() {
           columns={columns}
           searchPlaceHolder="Nama Sentra..."
           loadMore={loadMore}
-          paginationInfo={paginationInfo()}
+          paginationInfo={paginationInfo}
           pagination={pagination}
           navigate={navigate}
           search={search}

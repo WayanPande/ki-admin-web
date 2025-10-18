@@ -37,6 +37,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { routeSearchSchema, toLocalISODate } from "@/lib/utils";
+import { usePaginationInfo } from "@/hooks/use-pagination-info";
 
 export const Route = createFileRoute("/_auth/_layout/pks/")({
   component: RouteComponent,
@@ -55,17 +56,13 @@ function RouteComponent() {
 
   const itemsToLoad = search.page * search.limit;
 
-  const { results, status, loadMore } = usePaginatedQuery(
+  const { results, status, loadMore, isLoading } = usePaginatedQuery(
     api.pks.getAllPksPaginated,
     {
       searchTerm: search.query,
     },
     { initialNumItems: itemsToLoad }
   );
-
-  const pksData = useQuery(api.pks.getAllPks, {
-    searchTerm: search.query,
-  });
 
   const sentraKiData = useQuery(api.sentra_ki.getAllSentraKi, {});
 
@@ -188,37 +185,12 @@ function RouteComponent() {
     pageSize: search.limit,
   };
 
-  const paginationInfo = () => {
-    const totalLoadedItems = pksData?.length ?? 0;
-    const currentPageItems = results?.slice(
-      (search.page - 1) * search.limit,
-      search.page * search.limit
-    );
-
-    const canLoadMoreFromConvex = status === "CanLoadMore";
-    const isLoadingFromConvex =
-      status === "LoadingMore" || status === "LoadingFirstPage";
-    const isExhausted = status === "Exhausted";
-
-    const rowCount = totalLoadedItems;
-    let pageCount: number | undefined;
-
-    if (isExhausted) {
-      pageCount = Math.max(1, Math.ceil(totalLoadedItems / search.limit));
-    } else {
-      pageCount = -1;
-    }
-
-    return {
-      currentPageItems,
-      canLoadMoreFromConvex,
-      isLoadingFromConvex,
-      isExhausted,
-      rowCount,
-      pageCount,
-      totalLoadedItems,
-    };
-  };
+  const paginationInfo = usePaginationInfo({
+    results,
+    status,
+    search,
+    isLoading,
+  });
 
   const formAdd = useForm({
     defaultValues: {
@@ -351,7 +323,7 @@ function RouteComponent() {
           search={search}
           columnVisibility={columnVisibility}
           onColumnVisibilityChange={setColumnVisibility}
-          paginationInfo={paginationInfo()}
+          paginationInfo={paginationInfo}
         />
       </div>
 

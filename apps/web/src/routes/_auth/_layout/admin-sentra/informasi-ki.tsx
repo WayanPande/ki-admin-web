@@ -4,7 +4,7 @@ import { useForm } from "@tanstack/react-form";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
 import { zodValidator } from "@tanstack/zod-adapter";
-import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
+import { useMutation, usePaginatedQuery } from "convex/react";
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { routeSearchSchema } from "@/lib/utils";
+import { usePaginationInfo } from "@/hooks/use-pagination-info";
 
 export const Route = createFileRoute(
   "/_auth/_layout/admin-sentra/informasi-ki"
@@ -46,17 +47,13 @@ function RouteComponent() {
 
   const navigate = useNavigate({ from: Route.fullPath });
 
-  const { results, status, loadMore } = usePaginatedQuery(
+  const { results, status, loadMore, isLoading } = usePaginatedQuery(
     api.informasi_ki.getAllInformasiKiPaginated,
     {
       searchTerm: search.query,
     },
     { initialNumItems: search.limit }
   );
-
-  const informasiKi = useQuery(api.informasi_ki.getAllInformasiKi, {
-    searchTerm: search.query,
-  });
 
   const createInformasiKi = useMutation(api.informasi_ki.createInformasiKi);
   const updateInformasiKi = useMutation(api.informasi_ki.updateInformasiKi);
@@ -143,37 +140,12 @@ function RouteComponent() {
     pageSize: search.limit,
   };
 
-  const paginationInfo = () => {
-    const totalLoadedItems = informasiKi?.length ?? 0;
-    const currentPageItems = results?.slice(
-      (search.page - 1) * search.limit,
-      search.page * search.limit
-    );
-
-    const canLoadMoreFromConvex = status === "CanLoadMore";
-    const isLoadingFromConvex =
-      status === "LoadingMore" || status === "LoadingFirstPage";
-    const isExhausted = status === "Exhausted";
-
-    const rowCount = totalLoadedItems;
-    let pageCount: number | undefined;
-
-    if (isExhausted) {
-      pageCount = Math.max(1, Math.ceil(totalLoadedItems / search.limit));
-    } else {
-      pageCount = -1;
-    }
-
-    return {
-      currentPageItems,
-      canLoadMoreFromConvex,
-      isLoadingFromConvex,
-      isExhausted,
-      rowCount,
-      pageCount,
-      totalLoadedItems,
-    };
-  };
+  const paginationInfo = usePaginationInfo({
+    results,
+    status,
+    search,
+    isLoading,
+  });
 
   const formAdd = useForm({
     defaultValues: {
@@ -244,7 +216,7 @@ function RouteComponent() {
           columns={columns}
           searchPlaceHolder="Nama Sosialisasi..."
           loadMore={loadMore}
-          paginationInfo={paginationInfo()}
+          paginationInfo={paginationInfo}
           pagination={pagination}
           navigate={navigate}
           search={search}

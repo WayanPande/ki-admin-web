@@ -2,8 +2,6 @@ import {
   IconChevronDown,
   IconChevronLeft,
   IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
   IconLayoutColumns,
 } from "@tabler/icons-react";
 import type { UseNavigateResult } from "@tanstack/react-router";
@@ -36,6 +34,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import DebouncedInput from "./debounced-input";
+import Loader from "./loader";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -53,13 +52,10 @@ interface DataTableProps<TData, TValue> {
   };
   loadMore: (numItems: number) => void;
   paginationInfo?: {
-    currentPageItems: TData[];
-    canLoadMoreFromConvex: boolean;
-    isLoadingFromConvex: boolean;
-    isExhausted: boolean;
-    rowCount: number | undefined;
-    pageCount: number;
-    totalLoadedItems: number;
+    currentPageItems?: TData[];
+    isLoading?: boolean;
+    canGoNext: boolean;
+    canGoPrevious: boolean;
   };
 }
 
@@ -91,7 +87,6 @@ export function DataTable<TData, TValue>({
       globalFilter: search.query,
     },
     manualPagination: true,
-    rowCount: paginationInfo?.rowCount,
     onGlobalFilterChange: (value) => {
       if (value !== search.query) {
         navigate({
@@ -112,14 +107,7 @@ export function DataTable<TData, TValue>({
         search: { ...search, page: newPage, limit: newLimit },
       });
 
-      const requiredItems = newPage * newLimit;
-      if (
-        requiredItems > (paginationInfo?.totalLoadedItems || 0) &&
-        paginationInfo?.canLoadMoreFromConvex
-      ) {
-        const itemsToLoad = requiredItems - paginationInfo?.totalLoadedItems;
-        loadMore(itemsToLoad);
-      }
+      loadMore(newLimit);
     },
   });
 
@@ -226,7 +214,7 @@ export function DataTable<TData, TValue>({
                     colSpan={table.getAllColumns().length}
                     className="h-24 text-center"
                   >
-                    No data found.
+                    {paginationInfo?.isLoading ? <Loader /> : "No data found."}
                   </TableCell>
                 </TableRow>
               )}
@@ -235,26 +223,13 @@ export function DataTable<TData, TValue>({
         </div>
         <div className="flex items-center justify-end px-4">
           <div className="flex w-full items-center gap-8 lg:w-fit">
-            <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </div>
             <div className="ml-auto flex items-center gap-2 lg:ml-0">
-              <Button
-                variant="outline"
-                className="hidden h-8 w-8 p-0 lg:flex"
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <span className="sr-only">Go to first page</span>
-                <IconChevronsLeft />
-              </Button>
               <Button
                 variant="outline"
                 className="size-8"
                 size="icon"
                 onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
+                disabled={!paginationInfo?.canGoPrevious}
               >
                 <span className="sr-only">Go to previous page</span>
                 <IconChevronLeft />
@@ -264,20 +239,10 @@ export function DataTable<TData, TValue>({
                 className="size-8"
                 size="icon"
                 onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
+                disabled={!paginationInfo?.canGoNext}
               >
                 <span className="sr-only">Go to next page</span>
                 <IconChevronRight />
-              </Button>
-              <Button
-                variant="outline"
-                className="hidden size-8 lg:flex"
-                size="icon"
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-              >
-                <span className="sr-only">Go to last page</span>
-                <IconChevronsRight />
               </Button>
             </div>
           </div>

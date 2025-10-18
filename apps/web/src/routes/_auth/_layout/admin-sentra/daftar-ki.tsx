@@ -37,6 +37,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { KI_TYPES, routeSearchSchema, toLocalISODate } from "@/lib/utils";
+import { usePaginationInfo } from "@/hooks/use-pagination-info";
 
 export const Route = createFileRoute("/_auth/_layout/admin-sentra/daftar-ki")({
   component: RouteComponent,
@@ -63,7 +64,7 @@ function RouteComponent() {
 
   const navigate = useNavigate({ from: Route.fullPath });
 
-  const { results, status, loadMore } = usePaginatedQuery(
+  const { results, status, loadMore, isLoading } = usePaginatedQuery(
     api.daftar_ki.getAllDaftarKiPaginated,
     {
       searchTerm: search.query,
@@ -72,8 +73,6 @@ function RouteComponent() {
   );
 
   const currentUser = useQuery(api.auth.getCurrentUser);
-
-  const daftarKi = useQuery(api.daftar_ki.getAllDaftarKi, {});
 
   const createDaftarKi = useMutation(api.daftar_ki.createDaftarKi);
   const updateDaftarKi = useMutation(api.daftar_ki.updateDaftarKi);
@@ -222,37 +221,12 @@ function RouteComponent() {
     pageSize: search.limit,
   };
 
-  const paginationInfo = () => {
-    const totalLoadedItems = daftarKi?.length ?? 0;
-    const currentPageItems = results?.slice(
-      (search.page - 1) * search.limit,
-      search.page * search.limit
-    );
-
-    const canLoadMoreFromConvex = status === "CanLoadMore";
-    const isLoadingFromConvex =
-      status === "LoadingMore" || status === "LoadingFirstPage";
-    const isExhausted = status === "Exhausted";
-
-    const rowCount = totalLoadedItems;
-    let pageCount: number | undefined;
-
-    if (isExhausted) {
-      pageCount = Math.max(1, Math.ceil(totalLoadedItems / search.limit));
-    } else {
-      pageCount = -1;
-    }
-
-    return {
-      currentPageItems,
-      canLoadMoreFromConvex,
-      isLoadingFromConvex,
-      isExhausted,
-      rowCount,
-      pageCount,
-      totalLoadedItems,
-    };
-  };
+  const paginationInfo = usePaginationInfo({
+    results,
+    status,
+    search,
+    isLoading,
+  });
 
   const formAdd = useForm({
     defaultValues: {
@@ -414,7 +388,7 @@ function RouteComponent() {
           columns={columns}
           searchPlaceHolder="Nama KI..."
           loadMore={loadMore}
-          paginationInfo={paginationInfo()}
+          paginationInfo={paginationInfo}
           pagination={pagination}
           navigate={navigate}
           search={search}

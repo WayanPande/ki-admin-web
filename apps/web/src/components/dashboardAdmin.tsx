@@ -1,7 +1,7 @@
 import { api } from "@ki-admin-web/backend/convex/_generated/api";
 import { useNavigate } from "@tanstack/react-router";
 import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
-import { usePaginatedQuery, useQuery } from "convex/react";
+import { usePaginatedQuery } from "convex/react";
 import { addDays, isBefore, isFuture } from "date-fns";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ import { DataTable } from "./data-table";
 import { SectionCards } from "./section-cards";
 import { SiteHeader } from "./site-header";
 import { Badge } from "./ui/badge";
+import { usePaginationInfo } from "@/hooks/use-pagination-info";
 
 interface DashboardProps {
   search: {
@@ -25,13 +26,11 @@ const DashboardAdmin = ({ search }: DashboardProps) => {
 
   const itemsToLoad = search.page * search.limit;
 
-  const { results, status, loadMore } = usePaginatedQuery(
+  const { results, status, loadMore, isLoading } = usePaginatedQuery(
     api.pks.getAllPksPaginated,
     {},
     { initialNumItems: itemsToLoad }
   );
-
-  const pksData = useQuery(api.pks.getAllPks, {});
 
   const columns: ColumnDef<(typeof results)[number]>[] = [
     {
@@ -109,37 +108,12 @@ const DashboardAdmin = ({ search }: DashboardProps) => {
     pageSize: search.limit,
   };
 
-  const paginationInfo = () => {
-    const totalLoadedItems = pksData?.length ?? 0;
-    const currentPageItems = results?.slice(
-      (search.page - 1) * search.limit,
-      search.page * search.limit
-    );
-
-    const canLoadMoreFromConvex = status === "CanLoadMore";
-    const isLoadingFromConvex =
-      status === "LoadingMore" || status === "LoadingFirstPage";
-    const isExhausted = status === "Exhausted";
-
-    const rowCount = totalLoadedItems;
-    let pageCount: number | undefined;
-
-    if (isExhausted) {
-      pageCount = Math.max(1, Math.ceil(totalLoadedItems / search.limit));
-    } else {
-      pageCount = -1;
-    }
-
-    return {
-      currentPageItems,
-      canLoadMoreFromConvex,
-      isLoadingFromConvex,
-      isExhausted,
-      rowCount,
-      pageCount,
-      totalLoadedItems,
-    };
-  };
+  const paginationInfo = usePaginationInfo({
+    results,
+    status,
+    search,
+    isLoading,
+  });
 
   return (
     <>
@@ -152,7 +126,7 @@ const DashboardAdmin = ({ search }: DashboardProps) => {
               <DataTable
                 columns={columns}
                 loadMore={loadMore}
-                paginationInfo={paginationInfo()}
+                paginationInfo={paginationInfo}
                 pagination={pagination}
                 navigate={navigate}
                 search={search}

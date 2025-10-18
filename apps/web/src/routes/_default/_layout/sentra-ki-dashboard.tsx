@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn, routeSearchSchema } from "@/lib/utils";
+import { usePaginationInfo } from "@/hooks/use-pagination-info";
 
 export const Route = createFileRoute("/_default/_layout/sentra-ki-dashboard")({
   component: RouteComponent,
@@ -26,7 +27,7 @@ function RouteComponent() {
 
   const itemsToLoad = search.page * search.limit;
 
-  const { results, status, loadMore } = usePaginatedQuery(
+  const { results, status, loadMore, isLoading } = usePaginatedQuery(
     api.pks.getAllPksPaginated,
     {
       searchTerm: search.query,
@@ -106,37 +107,12 @@ function RouteComponent() {
     pageSize: search.limit,
   };
 
-  const paginationInfo = () => {
-    const totalLoadedItems = pksData?.length ?? 0;
-    const currentPageItems = results?.slice(
-      (search.page - 1) * search.limit,
-      search.page * search.limit
-    );
-
-    const canLoadMoreFromConvex = status === "CanLoadMore";
-    const isLoadingFromConvex =
-      status === "LoadingMore" || status === "LoadingFirstPage";
-    const isExhausted = status === "Exhausted";
-
-    const rowCount = totalLoadedItems;
-    let pageCount: number | undefined;
-
-    if (isExhausted) {
-      pageCount = Math.max(1, Math.ceil(totalLoadedItems / search.limit));
-    } else {
-      pageCount = -1;
-    }
-
-    return {
-      currentPageItems,
-      canLoadMoreFromConvex,
-      isLoadingFromConvex,
-      isExhausted,
-      rowCount,
-      pageCount,
-      totalLoadedItems,
-    };
-  };
+  const paginationInfo = usePaginationInfo({
+    results,
+    status,
+    search,
+    isLoading,
+  });
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-2 grid gap-10 mb-20">
@@ -157,7 +133,7 @@ function RouteComponent() {
               columns={columns}
               showSearchField={false}
               loadMore={loadMore}
-              paginationInfo={paginationInfo()}
+              paginationInfo={paginationInfo}
               pagination={pagination}
               navigate={navigate}
               search={search}
