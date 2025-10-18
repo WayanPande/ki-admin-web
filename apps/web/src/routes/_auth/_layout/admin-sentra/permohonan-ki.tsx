@@ -30,7 +30,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn, routeSearchSchema } from "@/lib/utils";
+import { cn, routeSearchSchema, toLocalISODate } from "@/lib/utils";
 
 export const Route = createFileRoute(
   "/_auth/_layout/admin-sentra/permohonan-ki"
@@ -254,7 +254,7 @@ function RouteComponent() {
       rahasia_dagang: 0,
       desain_industri: 0,
       ki_komunal: 0,
-      date: new Date().toISOString(),
+      date: toLocalISODate(new Date()),
     },
     onSubmit: async ({ value }) => {
       let promise: Promise<
@@ -398,7 +398,7 @@ function RouteComponent() {
                     <PopoverContent className="w-auto p-0">
                       <MonthPicker
                         onMonthSelect={(date) => {
-                          field.handleChange(date.toISOString());
+                          field.handleChange(toLocalISODate(date));
                         }}
                         selectedMonth={new Date(field.state.value)}
                       />

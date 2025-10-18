@@ -221,7 +221,7 @@ export const getPermohonanKiChartData = query({
     });
 
     records_year_from.forEach((record) => {
-      const monthIndex = new Date(record.date).getMonth() + 1;
+      const monthIndex = new Date(record.date).getMonth();
 
       monthlyData[monthIndex].totalYearFrom +=
         record.desain_industri +
