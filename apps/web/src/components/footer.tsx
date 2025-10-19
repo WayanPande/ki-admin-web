@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <section
       aria-label="Informasi Kantor Wilayah Kementerian Hukum Bali"
-      className="my-6 px-4 xl:px-10 bg-(--brand-navy) text-(--brand-foreground)"
+      className="mt-6 px-4 xl:px-10 bg-(--brand-navy) text-(--brand-foreground)"
     >
       <div className="grid grid-cols-1 gap-8 p-6 md:grid-cols-12 md:p-10">
         <div className="md:col-span-7 flex flex-col gap-4">

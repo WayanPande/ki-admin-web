@@ -8,12 +8,18 @@ export const Route = createFileRoute("/_default/_layout")({
 
 function RouteComponent() {
   return (
-    <div className="grid grid-rows-[auto_1fr] min-h-svh space-y-10">
+    <div className="flex flex-col min-h-svh">
       <Header />
-      <h1 className="text-center font-bold text-lg">
-        Sistem Informasi Monitoring Sentra KI
-      </h1>
-      <Outlet />
+
+      <main className="flex flex-col flex-1 items-center space-y-10 mt-10">
+        <h1 className="text-center font-bold text-lg">
+          Sistem Informasi Monitoring Sentra KI
+        </h1>
+        <div className="flex justify-center w-full">
+          <Outlet />
+        </div>
+      </main>
+
       <Footer />
     </div>
   );
