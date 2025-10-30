@@ -39,7 +39,7 @@ export const Route = createFileRoute("/_auth/_layout/master-data/user")({
   loaderDeps: ({ search: { page, limit, query } }) => ({ page, limit, query }),
   loader: ({ context: { queryClient }, deps: { page, limit, query } }) =>
     queryClient.ensureQueryData(
-      usersPaginatedQueryOptions({ pageSize: limit, currentPage: page, query })
+      usersPaginatedQueryOptions({ pageSize: 999, currentPage: page, query })
     ),
 });
 
@@ -51,7 +51,7 @@ function RouteComponent() {
 
   const usersQuery = useSuspenseQuery(
     usersPaginatedQueryOptions({
-      pageSize: search.limit,
+      pageSize: 999,
       currentPage: search.page,
       query: search.query,
     })
