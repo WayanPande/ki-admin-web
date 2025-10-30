@@ -16,10 +16,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import { cn } from "@/lib/utils";
 
 export default function Header() {
   return (
-    <section className="py-4 px-4 xl:px-10 sticky top-0 z-10 bg-white shadow-sm">
+    <section className="py-4 px-4 xl:px-10 sticky top-0 z-10 bg-(--brand-navy) text-(--brand-foreground) shadow-sm">
       <div className="container mx-auto">
         <nav className="grid grid-cols-3 justify-center">
           <Link to="/" className="flex items-center gap-2">
@@ -38,9 +39,12 @@ export default function Header() {
                 <NavigationMenuLink
                   to="/"
                   activeProps={{
-                    className: "bg-accent text-accent-foreground",
+                    className: "underline underline-offset-2",
                   }}
-                  className={navigationMenuTriggerStyle()}
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    "text-accent-foreground"
+                  )}
                 >
                   Beranda
                 </NavigationMenuLink>
@@ -49,9 +53,12 @@ export default function Header() {
                 <NavigationMenuLink
                   to="/sentra-ki-dashboard"
                   activeProps={{
-                    className: "bg-accent text-accent-foreground",
+                    className: "underline underline-offset-2",
                   }}
-                  className={navigationMenuTriggerStyle()}
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    "text-accent-foreground"
+                  )}
                 >
                   Sentra KI
                 </NavigationMenuLink>
@@ -60,7 +67,9 @@ export default function Header() {
           </NavigationMenu>
           <div className="hidden items-end gap-4 lg:flex w-fit ml-auto mr-0">
             <Link to="/login">
-              <Button variant="outline">Masuk</Button>
+              <Button variant="outline" className="text-accent-foreground">
+                Masuk
+              </Button>
             </Link>
           </div>
           {/* <div className="flex items-center gap-2">

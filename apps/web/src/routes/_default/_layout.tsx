@@ -13,7 +13,7 @@ function RouteComponent() {
 
       <main className="flex flex-col flex-1 items-center space-y-10 mt-10">
         <h1 className="text-center font-bold text-lg">
-          Sistem Informasi Monitoring Sentra KI
+          Sistem Informasi Monitoring Sentra KI Bali
         </h1>
         <div className="flex justify-center w-full">
           <Outlet />
